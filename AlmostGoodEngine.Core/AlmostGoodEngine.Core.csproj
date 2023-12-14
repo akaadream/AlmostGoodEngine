@@ -4,14 +4,33 @@
 	<Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.3" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ECS\" />
-    <Folder Include="Components\" />
-    <Folder Include="Resources\" />
-    <Folder Include="Utils\" />
+    <Folder Include="Components\Physics\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="B:\lorte\Documents\Programmation\Visual Studio\Almost Good Engine\AlmostGoodEngine.Core\Interfaces\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="B:\lorte\Documents\Programmation\Visual Studio\Almost Good Engine\AlmostGoodEngine.Core\Interfaces\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AlmostGoodEngine.AI\AlmostGoodEngine.AI.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Animations\AlmostGoodEngine.Animations.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Audio\AlmostGoodEngine.Audio.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Extended\AlmostGoodEngine.Extended.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.GUI\AlmostGoodEngine.GUI.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Inputs\AlmostGoodEngine.Inputs.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Physics\AlmostGoodEngine.Physics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Fonts\Signika.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

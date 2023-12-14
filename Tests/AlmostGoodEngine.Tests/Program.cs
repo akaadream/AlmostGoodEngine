@@ -1,3 +1,2 @@
-﻿
-using var game = new AlmostGoodEngine.Tests.Game1();
+﻿using var game = new AlmostGoodEngine.Tests.Game1();
 game.Run();
