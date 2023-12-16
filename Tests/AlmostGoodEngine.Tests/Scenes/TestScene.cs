@@ -12,7 +12,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 {
     internal class TestScene : Scene
     {
-        Player player;
+        readonly Player player;
 
         public TestScene() : base()
         {
