@@ -9,7 +9,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 {
     internal class InputReader : Entity
     {
-        Text keyboardText;
+        readonly Text keyboardText;
 
         public InputReader()
         {
@@ -31,7 +31,12 @@ namespace AlmostGoodEngine.Tests.GameObjects
         {
             base.Update(gameTime);
 
-            InputManager.Keyboard.CurrentState.GetPressedKeys().ToString();
+            string keys = "Pressed keys: ";
+            foreach (var key in InputManager.Keyboard.CurrentState.GetPressedKeys())
+            {
+                keys += key.ToString() + ",";
+            }
+            keyboardText.Value = keys;
         }
 
         public override void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)

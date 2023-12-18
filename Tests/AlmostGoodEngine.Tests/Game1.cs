@@ -20,7 +20,7 @@ namespace AlmostGoodEngine.Tests
             base.LoadContent();
 
             GameManager.SceneManager.Add("test", new TestScene());
-            GameManager.SceneManager.A
-
+            GameManager.SceneManager.Add("inputs", new InputScene());
+        }
     }
 }
