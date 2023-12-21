@@ -21,6 +21,8 @@ namespace AlmostGoodEngine.Tests
 
             GameManager.SceneManager.Add("test", new TestScene());
             GameManager.SceneManager.Add("inputs", new InputScene());
+
+            GameManager.SceneManager.Set("test");
         }
     }
 }

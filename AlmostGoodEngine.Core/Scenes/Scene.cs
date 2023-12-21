@@ -44,6 +44,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public void Start()
         {
+            
             Renderer.Camera?.Start();
             foreach (var gameObject in GameObjects)
             {
