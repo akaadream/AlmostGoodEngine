@@ -1,5 +1,6 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
 using AlmostGoodEngine.Core.Utils;
+using AlmostGoodEngine.Core.Utils.Consoles;
 using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,6 +30,26 @@ namespace AlmostGoodEngine.Core
         /// Used to manage the window resize calculations
         /// </summary>
         private bool _resizing = true;
+
+        /// <summary>
+        /// The previous width of the game
+        /// </summary>
+        private int _width = 0;
+
+        /// <summary>
+        /// The previous height of the game
+        /// </summary>
+        private int _height = 0;
+
+        /// <summary>
+        /// True if the game window is borderless
+        /// </summary>
+        private bool _isBorderless = false;
+
+        /// <summary>
+        /// True if the game is in fullscreen mode
+        /// </summary>
+        private bool _isFullscreen = false;
 
         public Engine()
         {
@@ -83,6 +104,7 @@ namespace AlmostGoodEngine.Core
             GameManager.Initialize(this);
             Draw2D.Initialize(GraphicsDevice);
             InputManager.Initialize();
+            AlmostGoodConsole.Initialize();
 
             LoadSettings();
 
@@ -110,11 +132,18 @@ namespace AlmostGoodEngine.Core
 
             // Game manager update functions
             GameManager.BeforeUpdate(gameTime);
-            GameManager.Update(gameTime);
-            if (Time.IsFixedFrame)
+
+            AlmostGoodConsole.Update(gameTime);
+
+            if (!AlmostGoodConsole.Opened)
             {
-                GameManager.FixedUpdate(gameTime);
+                GameManager.Update(gameTime);
+                if (Time.IsFixedFrame)
+                {
+                    GameManager.FixedUpdate(gameTime);
+                }
             }
+
             GameManager.AfterUpdate(gameTime);
 
             base.Update(gameTime);
@@ -128,6 +157,7 @@ namespace AlmostGoodEngine.Core
             Time.Draw(gameTime);
             GameManager.Draw(gameTime, SpriteBatch);
             GameManager.DrawUI(gameTime, SpriteBatch);
+            AlmostGoodConsole.Draw(SpriteBatch);
 
             base.Draw(gameTime);
         }
@@ -182,6 +212,92 @@ namespace AlmostGoodEngine.Core
             _resizing = true;
 
             Logger.Log("Window size changed.");
+        }
+
+        internal void ToggleFullscreen()
+        {
+            bool oldFullscreen = _isFullscreen;
+
+            if (_isBorderless)
+            {
+                _isBorderless = false;
+            }
+            else
+            {
+                _isFullscreen = !_isFullscreen;
+            }
+
+            ApplyFullscreenChange(oldFullscreen);
+        }
+
+        internal void ToggleBorderless()
+        {
+            bool oldFullscreen = _isFullscreen;
+
+            _isBorderless = !_isBorderless;
+            _isFullscreen = _isBorderless;
+
+            ApplyFullscreenChange(oldFullscreen);
+        }
+
+        private void ApplyHardwareMode()
+        {
+            Graphics.HardwareModeSwitch = !_isBorderless;
+            Graphics.ApplyChanges();
+        }
+
+        private void ApplyFullscreenChange(bool oldFullscreen)
+        {
+            if (_isFullscreen)
+            {
+                if (oldFullscreen)
+                {
+                    ApplyHardwareMode();
+                }
+                else
+                {
+                    SetFullscreen();
+                }
+            }
+            else
+            {
+                UnsetFullscreen();
+            }
+        }
+
+        /// <summary>
+        /// Enable the fullscreen mode
+        /// </summary>
+        private void SetFullscreen()
+        {
+            _width = Graphics.PreferredBackBufferWidth;
+            _height = Graphics.PreferredBackBufferHeight;
+
+            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            Graphics.HardwareModeSwitch = !_isBorderless;
+
+            Graphics.IsFullScreen = true;
+            Graphics.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Disable the fullscreen mode
+        /// </summary>
+        private void UnsetFullscreen()
+        {
+            Graphics.PreferredBackBufferWidth = _width;
+            Graphics.PreferredBackBufferHeight = _height;
+            Graphics.IsFullScreen = false;
+            Graphics.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Toggle the window resizing
+        /// </summary>
+        internal void ToggleResizable()
+        {
+            Window.AllowUserResizing = !Window.AllowUserResizing;
         }
     }
 }

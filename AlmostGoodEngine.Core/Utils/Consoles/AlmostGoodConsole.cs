@@ -1,11 +1,14 @@
 ﻿using AlmostGoodEngine.Inputs;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
-namespace AlmostGoodEngine.Core.Utils.Console
+namespace AlmostGoodEngine.Core.Utils.Consoles
 {
-    internal static class AlmostGoodConsole
+    public static class AlmostGoodConsole
     {
         /// <summary>
         /// The current command
@@ -13,9 +16,19 @@ namespace AlmostGoodEngine.Core.Utils.Console
         public static string Current { get; internal set; }
 
         /// <summary>
+        /// The prexif of the command displayed firstly inside the console
+        /// </summary>
+        public static string Prefix { get; set; }
+
+        /// <summary>
+        /// The command line displayed on the screen using the prefix
+        /// </summary>
+        internal static string DisplayCommand { get => Prefix + Current; }
+
+        /// <summary>
         /// The list of known commands
         /// </summary>
-        public static Dictionary<string, Command> Commands { get; private set; }
+        internal static Dictionary<string, Command> Commands { get; set; }
 
         /// <summary>
         /// The commands history
@@ -49,10 +62,33 @@ namespace AlmostGoodEngine.Core.Utils.Console
 
         #endregion
 
-        public static void Initialize()
+        #region Display parameters
+
+        private const int consolePadding = 10;
+        private const float consoleOpacity = 0.65f;
+        private static SpriteFontBase _font;
+
+        private static Vector2 _prefixSize;
+        private static Vector2 _commandSize;
+        private static int _textHeight;
+
+        #endregion
+
+        /// <summary>
+        /// Initialize the console
+        /// </summary>
+        internal static void Initialize()
         {
             Commands = new();
             History = new();
+
+            Current = "";
+            Prefix = "> ";
+
+            _font = GameManager.FontSystem.GetFont(18);
+            _prefixSize = _font.MeasureString(Prefix);
+            _commandSize = _font.MeasureString(Current);
+            _textHeight = (int)_font.MeasureString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|çà&><!:;,?./§*$£µ^ù€²()=").Y;
 
             BuildCommands();
         }
@@ -60,23 +96,28 @@ namespace AlmostGoodEngine.Core.Utils.Console
         /// <summary>
         /// Create the default commands
         /// </summary>
-        public static void BuildCommands()
+        private static void BuildCommands()
         {
 
         }
 
-        public static void Update(GameTime gameTime)
+        /// <summary>
+        /// Update the console
+        /// </summary>
+        /// <param name="gameTime"></param>
+        internal static void Update(GameTime gameTime)
         {
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            ManageToggle(delta);
+
             if (!Opened)
             {
                 return;
             }
 
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             UpdateCursor(delta);
-            ManageToggle(delta);
 
+            string previous = Current;
             for (int i = 0; i < InputManager.Keyboard.CurrentState.GetPressedKeyCount(); i++)
             {
                 var key = InputManager.Keyboard.CurrentState.GetPressedKeys()[i];
@@ -86,8 +127,18 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     HandleInput(key);
                 }
             }
+
+            // If the command has changed, measure the new size of the command text
+            if (previous != Current)
+            {
+                _commandSize = _font.MeasureString(Current);
+            }
         }
 
+        /// <summary>
+        /// Cursor blink animation
+        /// </summary>
+        /// <param name="delta"></param>
         private static void UpdateCursor(float delta)
         {
             _cursorTimer += delta;
@@ -98,11 +149,23 @@ namespace AlmostGoodEngine.Core.Utils.Console
             }
         }
 
+        /// <summary>
+        /// Manager the console's toggle
+        /// </summary>
+        /// <param name="delta"></param>
         private static void ManageToggle(float delta)
         {
-            
+            // The key used to open the console
+            if (InputManager.Keyboard.IsPressed(Keys.F1))
+            {
+                Opened = !Opened;
+            }
         }
 
+        /// <summary>
+        /// Check inputs
+        /// </summary>
+        /// <param name="key"></param>
         private static void HandleInput(Keys key)
         {
             switch (key)
@@ -112,16 +175,16 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                         {
-                            Current += key.ToString();
+                            AddToCurrent(key.ToString());
                         }
                         else
                         {
-                            Current += key.ToString().ToLower();
+                            AddToCurrent(key.ToString().ToLower());
                         }
                     }
                     break;
                 case Keys.Space:
-                    Current += ' ';
+                    AddToCurrent(' ');
                     break;
                 case Keys.Back:
                     if (InputManager.Keyboard.CurrentState[Keys.LeftControl] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightControl] == KeyState.Down)
@@ -131,10 +194,18 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     }
                     else
                     {
-                        if (Current.Length > 0)
+                        if (Current.Length > 0 && _cursorPosition > 0)
                         {
-                            Current = Current.Substring(0, Current.Length - 1);
+                            Current = Current.Remove(_cursorPosition - 1, 1);
                             _cursorPosition--;
+                            if (_cursorPosition < 0)
+                            {
+                                _cursorPosition = 0;
+                            }
+                            if (_cursorPosition >= Current.Length)
+                            {
+                                _cursorPosition = Current.Length - 1;
+                            }
                         }
                     }
                     break;
@@ -146,22 +217,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '0';
+                            AddToCurrent("0");
                         }
                         else
                         {
-                            Current += ')';
+                            AddToCurrent(")");
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += 'à';
+                            AddToCurrent('à');
                         }
                         else
                         {
-                            Current += '0';
+                            AddToCurrent('0');
                         }
                     }
                     break;
@@ -170,22 +241,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '1';
+                            AddToCurrent('1');
                         }
                         else
                         {
-                            Current += '!';
+                            AddToCurrent('!');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '&';
+                            AddToCurrent('&');
                         }
                         else
                         {
-                            Current += '1';
+                            AddToCurrent('1');
                         }
                     }
                     break;
@@ -194,22 +265,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '2';
+                            AddToCurrent('2');
                         }
                         else
                         {
-                            Current += '@';
+                            AddToCurrent('@');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += 'é';
+                            AddToCurrent('é');
                         }
                         else
                         {
-                            Current += '2';
+                            AddToCurrent('2');
                         }
                     }
                     break;
@@ -218,22 +289,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '3';
+                            AddToCurrent('3');
                         }
                         else
                         {
-                            Current += '#';
+                            AddToCurrent('#');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '"';
+                            AddToCurrent('"');
                         }
                         else
                         {
-                            Current += '3';
+                            AddToCurrent('3');
                         }
                     }
                     break;
@@ -242,22 +313,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '4';
+                            AddToCurrent('4');
                         }
                         else
                         {
-                            Current += '$';
+                            AddToCurrent('$');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '\'';
+                            AddToCurrent('\'');
                         }
                         else
                         {
-                            Current += '4';
+                            AddToCurrent('4');
                         }
                     }
                     break;
@@ -266,22 +337,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '5';
+                            AddToCurrent('5');
                         }
                         else
                         {
-                            Current += '%';
+                            AddToCurrent('%');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '(';
+                            AddToCurrent('(');
                         }
                         else
                         {
-                            Current += '5';
+                            AddToCurrent('5');
                         }
                     }
                     break;
@@ -290,22 +361,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '6';
+                            AddToCurrent('6');
                         }
                         else
                         {
-                            Current += '^';
+                            AddToCurrent('^');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '-';
+                            AddToCurrent('-');
                         }
                         else
                         {
-                            Current += '6';
+                            AddToCurrent('6');
                         }
                     }
                     break;
@@ -314,22 +385,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '7';
+                            AddToCurrent('7');
                         }
                         else
                         {
-                            Current += '&';
+                            AddToCurrent('&');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += 'è';
+                            AddToCurrent('è');
                         }
                         else
                         {
-                            Current += '7';
+                            AddToCurrent('7');
                         }
                     }
                     break;
@@ -338,22 +409,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '8';
+                            AddToCurrent('8');
                         }
                         else
                         {
-                            Current += '*';
+                            AddToCurrent('*');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += '_';
+                            AddToCurrent('_');
                         }
                         else
                         {
-                            Current += '8';
+                            AddToCurrent('8');
                         }
                     }
                     break;
@@ -362,22 +433,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '9';
+                            AddToCurrent('9');
                         }
                         else
                         {
-                            Current += '(';
+                            AddToCurrent('(');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += 'ç';
+                            AddToCurrent('ç');
                         }
                         else
                         {
-                            Current += '9';
+                            AddToCurrent('9');
                         }
                     }
                     break;
@@ -386,22 +457,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '?';
+                            AddToCurrent('?');
                         }
                         else
                         {
-                            Current += '<';
+                            AddToCurrent('<');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += ',';
+                            AddToCurrent(',');
                         }
                         else
                         {
-                            Current += ',';
+                            AddToCurrent(',');
                         }
                     }
                     break;
@@ -410,11 +481,11 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '.';
+                            AddToCurrent('.');
                         }
                         else
                         {
-                            Current += '>';
+                            AddToCurrent('>');
                         }
 
                     }
@@ -422,11 +493,11 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += ';';
+                            AddToCurrent(';');
                         }
                         else
                         {
-                            Current += '.';
+                            AddToCurrent('.');
                         }
                     }
                     break;
@@ -435,22 +506,22 @@ namespace AlmostGoodEngine.Core.Utils.Console
                     {
                         if (Azerty)
                         {
-                            Current += '/';
+                            AddToCurrent('/');
                         }
                         else
                         {
-                            Current += '?';
+                            AddToCurrent('?');
                         }
                     }
                     else
                     {
                         if (Azerty)
                         {
-                            Current += ':';
+                            AddToCurrent(':');
                         }
                         else
                         {
-                            Current += '/';
+                            AddToCurrent('/');
                         }
                     }
                     break;
@@ -463,7 +534,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += ':';
+                            AddToCurrent(':');
                         }
                     }
                     else
@@ -474,7 +545,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += ';';
+                            AddToCurrent(';');
                         }
                     }
                     break;
@@ -487,7 +558,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '"';
+                            AddToCurrent('"');
                         }
                     }
                     else
@@ -498,7 +569,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '\'';
+                            AddToCurrent('\'');
                         }
                     }
                     break;
@@ -511,7 +582,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '|';
+                            AddToCurrent('|');
                         }
                     }
                     else
@@ -522,7 +593,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '\\';
+                            AddToCurrent('\\');
                         }
                     }
                     break;
@@ -535,7 +606,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '{';
+                            AddToCurrent('{');
                         }
                     }
                     else
@@ -546,7 +617,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '[';
+                            AddToCurrent('[');
                         }
                     }
                     break;
@@ -559,7 +630,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '}';
+                            AddToCurrent('}');
                         }
                     }
                     else
@@ -570,7 +641,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += ']';
+                            AddToCurrent(']');
                         }
                     }
                     break;
@@ -583,7 +654,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '_';
+                            AddToCurrent('_');
                         }
                     }
                     else
@@ -594,7 +665,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '-';
+                            AddToCurrent('-');
                         }
                     }
                     break;
@@ -607,7 +678,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '+';
+                            AddToCurrent('+');
                         }
                     }
                     else
@@ -618,7 +689,7 @@ namespace AlmostGoodEngine.Core.Utils.Console
                         }
                         else
                         {
-                            Current += '=';
+                            AddToCurrent('=');
                         }
                     }
                     break;
@@ -640,7 +711,10 @@ namespace AlmostGoodEngine.Core.Utils.Console
                 switch (key)
                 {
                     case Keys.Left:
-                        if (_cursorPosition > 0) _cursorPosition--;
+                        if (_cursorPosition > 0)
+                        {
+                            _cursorPosition--;
+                        }
                         break;
                     case Keys.Right:
                         if (_cursorPosition < Current.Length)
@@ -702,9 +776,107 @@ namespace AlmostGoodEngine.Core.Utils.Console
             }
         }
 
-        public static void EnterCommand()
+        private static void AddToCurrent(string sub)
         {
+            Current = Current.Insert(Math.Max(0, _cursorPosition - 1), sub);
+        }
 
+        private static void AddToCurrent(char sub) => AddToCurrent(sub.ToString());
+
+        /// <summary>
+        /// When the user's want to 
+        /// </summary>
+        private static void EnterCommand()
+        {
+            if (Current.Length == 0)
+            {
+                return;
+            }
+
+            // Get the command data
+            string[] data = Current.Split(' ');
+            if (data.Length == 0)
+            {
+                return;
+            }
+
+            if (Commands.ContainsKey(data[0]))
+            {
+                Commands[data[0]].Action?.Invoke(data);
+            }
+
+            // Manage history
+            if (History.Count >= maxHistoryCapacity)
+            {
+                History.RemoveAt(0);
+            }
+            History.Add(Current);
+
+            // Reset command
+            Current = _tempCommand = "";
+            _cursorPosition = 0;
+        }
+
+        /// <summary>
+        /// Add a command to the console
+        /// </summary>
+        /// <param name="command"></param>
+        public static void AddCommand(Command command)
+        {
+            if (Commands.ContainsKey(command.Name))
+            {
+                return;
+            }
+
+            Commands.Add(command.Name, command);
+        }
+
+        /// <summary>
+        /// Remove a command from the console
+        /// </summary>
+        /// <param name="name"></param>
+        public static void RemoveCommand(string name)
+        {
+            if (!Commands.ContainsKey(name))
+            {
+                return;
+            }
+
+            Commands.Remove(name);
+        }
+
+        /// <summary>
+        /// Draw the console
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public static void Draw(SpriteBatch spriteBatch)
+        {
+            if (!Opened)
+            {
+                return;
+            }
+
+            var viewport = spriteBatch.GraphicsDevice.Viewport;
+            var consoleRect = new Rectangle(consolePadding, viewport.Height - consolePadding - 30, viewport.Width - consolePadding * 2, 30);
+
+            spriteBatch.Begin();
+
+            // Console structure
+            Debug.FillRectangle(spriteBatch, consoleRect, Color.Black * consoleOpacity);
+            Debug.FillRectangle(spriteBatch, new(consoleRect.X, consoleRect.Y - 300 - consolePadding, consoleRect.Width, 300), Color.Black * consoleOpacity);
+
+            // Text display
+            int commandY = (int)(consoleRect.Y + consoleRect.Height / 2 - _textHeight / 2);
+            spriteBatch.DrawString(_font, DisplayCommand, new(consoleRect.X + 5, commandY), Color.White);
+
+            // Cursor
+            if (_cursorBlink)
+            {
+                Vector2 subPos = _font.MeasureString(Current.Substring(0, _cursorPosition));
+                spriteBatch.DrawString(_font, "|", new(consoleRect.X + 5 + _prefixSize.X + subPos.X, commandY), Color.White);
+            }
+
+            spriteBatch.End();
         }
     }
 }

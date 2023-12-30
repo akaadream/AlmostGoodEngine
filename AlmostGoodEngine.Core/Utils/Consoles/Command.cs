@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AlmostGoodEngine.Core.Utils.Console
+namespace AlmostGoodEngine.Core.Utils.Consoles
 {
     public class Command
     {

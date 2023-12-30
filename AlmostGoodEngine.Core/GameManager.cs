@@ -13,13 +13,27 @@ namespace AlmostGoodEngine.Core
         /// The game instance
         /// </summary>
         public static Engine Game { get; private set; }
+
+        /// <summary>
+        /// The scene manager
+        /// </summary>
         public static SceneManager SceneManager { get; private set; }
 
+        /// <summary>
+        /// The font system used to draw text
+        /// </summary>
         public static FontSystem FontSystem { get; private set; }
 
+        /// <summary>
+        /// The spritebatch used to draw the game's content
+        /// </summary>
         public static SpriteBatch SpriteBatch { get => Game.SpriteBatch; }
 
-        public static void Initialize(Engine game)
+        /// <summary>
+        /// Game initialization
+        /// </summary>
+        /// <param name="game"></param>
+        internal static void Initialize(Engine game)
         {
             Game = game;
             SceneManager = new SceneManager();
@@ -27,6 +41,10 @@ namespace AlmostGoodEngine.Core
             FontSystem.AddFont(File.ReadAllBytes(@"Fonts/Signika.ttf"));
         }
 
+        /// <summary>
+        /// Return the current active scene
+        /// </summary>
+        /// <returns></returns>
         public static Scene CurrentScene()
         {
             if (SceneManager == null)
@@ -42,6 +60,10 @@ namespace AlmostGoodEngine.Core
             return SceneManager.CurrentScene;
         }
 
+        /// <summary>
+        /// Return the main camera used by the current scene
+        /// </summary>
+        /// <returns></returns>
         public static Camera2D MainCamera()
         {
             Scene current = CurrentScene();
@@ -62,17 +84,24 @@ namespace AlmostGoodEngine.Core
         /// <summary>
         /// Load the content of scenes
         /// </summary>
-        public static void LoadContent()
+        internal static void LoadContent()
         {
             SceneManager.LoadContent(Game.Content);
         }
 
-        public static void Start()
+        /// <summary>
+        /// Called when the game sart
+        /// </summary>
+        internal static void Start()
         {
             SceneManager?.Start();
         }
 
-        public static void Resize(Viewport viewport)
+        /// <summary>
+        /// Called when the window is resized
+        /// </summary>
+        /// <param name="viewport"></param>
+        internal static void Resize(Viewport viewport)
         {
             SceneManager?.CurrentScene?.Renderer.Resize(viewport);
         }
@@ -81,7 +110,7 @@ namespace AlmostGoodEngine.Core
         /// Life-cycle before the update
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void BeforeUpdate(GameTime gameTime)
+        internal static void BeforeUpdate(GameTime gameTime)
         {
             SceneManager?.CurrentScene?.BeforeUpdate(gameTime);
         }
@@ -90,12 +119,12 @@ namespace AlmostGoodEngine.Core
         /// Life-cycle update
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void Update(GameTime gameTime)
+        internal static void Update(GameTime gameTime)
         {
             SceneManager?.CurrentScene?.Update(gameTime);
         }
 
-        public static void FixedUpdate(GameTime gameTime)
+        internal static void FixedUpdate(GameTime gameTime)
         {
             SceneManager?.CurrentScene?.FixedUpdate(gameTime);
         }
@@ -104,7 +133,7 @@ namespace AlmostGoodEngine.Core
         /// Life-cycle after the update
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void AfterUpdate(GameTime gameTime)
+        internal static void AfterUpdate(GameTime gameTime)
         {
             SceneManager?.CurrentScene?.AfterUpdate(gameTime);
         }
@@ -113,7 +142,7 @@ namespace AlmostGoodEngine.Core
         /// Life-cycle draw
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        internal static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SceneManager?.CurrentScene?.Draw(gameTime, spriteBatch);
         }
@@ -122,9 +151,33 @@ namespace AlmostGoodEngine.Core
         /// Life-cycle draw UI
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
+        internal static void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SceneManager?.CurrentScene?.DrawUI(gameTime, spriteBatch);
+        }
+
+        /// <summary>
+        /// Toggle the fullscreen mode
+        /// </summary>
+        public static void ToggleFullscreen()
+        {
+            Game.ToggleFullscreen();
+        }
+
+        /// <summary>
+        /// Toggle the borderless mode
+        /// </summary>
+        public static void ToggleBorderless()
+        {
+            Game.ToggleBorderless();
+        }
+
+        /// <summary>
+        /// Toggle the window resizing
+        /// </summary>
+        public static void ToggleResizable()
+        {
+            Game.ToggleResizable();
         }
     }
 }

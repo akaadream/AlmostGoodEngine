@@ -8,6 +8,9 @@ namespace AlmostGoodEngine.Core.Scenes
 {
     public class Scene : IGameObject
     {
+        /// <summary>
+        /// The renderer used to draw the scene
+        /// </summary>
         public Renderer Renderer { get; private set; }
 
         /// <summary>
@@ -20,6 +23,9 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public bool ContentLoaded { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Scene()
         {
             GameObjects = new();
@@ -90,6 +96,10 @@ namespace AlmostGoodEngine.Core.Scenes
             }
         }
 
+        /// <summary>
+        /// Fixed update the scene's content
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void FixedUpdate(GameTime gameTime)
         {
             Renderer.Camera.FixedUpdate(gameTime);
