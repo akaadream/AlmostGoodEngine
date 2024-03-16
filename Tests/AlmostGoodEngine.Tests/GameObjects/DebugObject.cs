@@ -22,7 +22,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-            if (InputManager.Keyboard.IsPressed(Keys.F2))
+            if (Input.Keyboard.IsPressed(Keys.F2))
             {
                 showThings = !showThings;
             }
@@ -38,9 +38,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
             spriteBatch.DrawString(font, "FPS:" + Time.FPS, new Vector2(15, 15), Color.White);
             spriteBatch.DrawString(font, "UPS:" + Time.UPS, new Vector2(15, 45), Color.White);
 
-            Vector2 mousePosition = GameManager.MainCamera().ScreenToWorld(new(InputManager.Mouse.X, InputManager.Mouse.Y));
+            Vector2 mousePosition = GameManager.MainCamera().ScreenToWorld(new(Input.Mouse.X, Input.Mouse.Y));
 
-            spriteBatch.DrawString(font, "Mouse position (X:" + InputManager.Mouse.X + ", Y: " + InputManager.Mouse.Y + ")", new Vector2(15, 75), Color.White);
+            spriteBatch.DrawString(font, "Mouse position (X:" + Input.Mouse.X + ", Y: " + Input.Mouse.Y + ")", new Vector2(15, 75), Color.White);
             spriteBatch.DrawString(font, "World mouse position (X:" + (int)mousePosition.X + ", Y: " + (int)mousePosition.Y + ")", new Vector2(15, 105), Color.White);
 
             Vector2 titleSize = font.MeasureString(GameManager.Game.Settings.Name);

@@ -2,28 +2,10 @@
 
 namespace AlmostGoodEngine.Core.Utils.Consoles
 {
-    public class Command
-    {
-        /// <summary>
-        /// The name of the command
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// The helper (arguments) of the command
-        /// </summary>
-        public string Helper { get; set; }
-
-        /// <summary>
-        /// The callback action executed when the user is using the command
-        /// </summary>
-        public Action<string[]> Action { get; set; }
-
-        public Command(string name, string helper, Action<string[]> action = null)
-        {
-            Name = name;
-            Helper = helper;
-            Action = action;
-        }
-    }
+	public struct Command
+	{
+		public Action<string[]> Action { get; set; }
+		public string Usage { get; set; }
+		public string Description { get; set; }
+	}
 }

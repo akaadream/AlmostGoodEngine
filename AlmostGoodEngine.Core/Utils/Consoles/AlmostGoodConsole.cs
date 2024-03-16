@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace AlmostGoodEngine.Core.Utils.Consoles
 {
@@ -79,8 +81,8 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
         /// </summary>
         internal static void Initialize()
         {
-            Commands = new();
-            History = new();
+            Commands = [];
+            History = [];
 
             Current = "";
             Prefix = "> ";
@@ -98,7 +100,25 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
         /// </summary>
         private static void BuildCommands()
         {
+            MethodInfo[] methods = typeof(AlmostGoodConsole).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
+            foreach (var method in methods)
+            {
+                CommandAttribute attribute = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false).FirstOrDefault();
+                if (attribute != null)
+                {
+                    Command command = new()
+                    {
+						Action = (args) =>
+                        {
+                            method.Invoke(method, args);
+                        },
+                        Usage = attribute.Name,
+                        Description = attribute.Description,
+					};
+                    Commands.Add(command.Usage, command);
+                }
+            }
         }
 
         /// <summary>
@@ -118,11 +138,11 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
             UpdateCursor(delta);
 
             string previous = Current;
-            for (int i = 0; i < InputManager.Keyboard.CurrentState.GetPressedKeyCount(); i++)
+            for (int i = 0; i < Input.Keyboard.CurrentState.GetPressedKeyCount(); i++)
             {
-                var key = InputManager.Keyboard.CurrentState.GetPressedKeys()[i];
+                var key = Input.Keyboard.CurrentState.GetPressedKeys()[i];
                 
-                if (InputManager.Keyboard.PreviousState[key] == KeyState.Up)
+                if (Input.Keyboard.PreviousState[key] == KeyState.Up)
                 {
                     HandleInput(key);
                 }
@@ -156,7 +176,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
         private static void ManageToggle(float delta)
         {
             // The key used to open the console
-            if (InputManager.Keyboard.IsPressed(Keys.F1))
+            if (Input.Keyboard.IsPressed(Keys.F1))
             {
                 Opened = !Opened;
             }
@@ -173,7 +193,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                 default:
                     if (key.ToString().Length == 1)
                     {
-                        if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                        if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                         {
                             AddToCurrent(key.ToString());
                         }
@@ -187,7 +207,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     AddToCurrent(' ');
                     break;
                 case Keys.Back:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftControl] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightControl] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftControl] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightControl] == KeyState.Down)
                     {
                         Current = "";
                         _cursorPosition = 0;
@@ -213,7 +233,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     Current = "";
                     break;
                 case Keys.D0:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -237,7 +257,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D1:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -261,7 +281,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D2:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -285,7 +305,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D3:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -309,7 +329,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D4:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -333,7 +353,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D5:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -357,7 +377,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D6:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -381,7 +401,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D7:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -405,7 +425,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D8:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -429,7 +449,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.D9:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -453,7 +473,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemComma:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -477,7 +497,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemPeriod:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -502,7 +522,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemQuestion:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -526,7 +546,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemSemicolon:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -550,7 +570,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemQuotes:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -574,7 +594,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemBackslash:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -598,7 +618,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemOpenBrackets:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -622,7 +642,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemCloseBrackets:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -646,7 +666,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemMinus:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -670,7 +690,7 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
                     }
                     break;
                 case Keys.OemPlus:
-                    if (InputManager.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || InputManager.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
+                    if (Input.Keyboard.CurrentState[Keys.LeftShift] == KeyState.Down || Input.Keyboard.CurrentState[Keys.RightShift] == KeyState.Down)
                     {
                         if (Azerty)
                         {
@@ -823,12 +843,12 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
         /// <param name="command"></param>
         public static void AddCommand(Command command)
         {
-            if (Commands.ContainsKey(command.Name))
+            if (Commands.ContainsKey(command.Usage))
             {
                 return;
             }
 
-            Commands.Add(command.Name, command);
+            Commands.Add(command.Usage, command);
         }
 
         /// <summary>
@@ -878,5 +898,15 @@ namespace AlmostGoodEngine.Core.Utils.Consoles
 
             spriteBatch.End();
         }
-    }
+
+        #region Commands
+
+        [Command("fullscreen", "Toggle the fullscreen mode")]
+        private static void Fullscreen()
+        {
+            GameManager.ToggleFullscreen();
+        }
+
+		#endregion
+	}
 }

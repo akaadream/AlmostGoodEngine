@@ -1,6 +1,7 @@
 ﻿using AlmostGoodEngine.Core;
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Camera;
+using AlmostGoodEngine.Core.Components.Curves;
 using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Scenes;
@@ -19,7 +20,11 @@ namespace AlmostGoodEngine.Tests.Scenes
             Entity entity = new();
             entity.AddComponent(new DebugObject());
 
+            Entity pathEntity = new();
+            entity.AddComponent(new DrawPath());
+
             GameObjects.Add(entity);
+            GameObjects.Add(pathEntity);
 
             player = new();
             GameObjects.Add(player);
@@ -47,7 +52,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             {
                 text.Color = Color.White;
             }
-            Logger.Log("The entity " + e.Entity.Tag + " entered the hitbox");
+            Logger.Log("The entity " + e.Entity.Tags.ToString() + " entered the hitbox");
         }
 
         private void Hitbox_OnEntityExit(object sender, Core.Events.EntityEventArgs e)
@@ -57,7 +62,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             {
                 text.Color = Color.Transparent;
             }
-            Logger.Log("The entity " + e.Entity.Tag + " exited the hitbox");
+            Logger.Log("The entity " + e.Entity.Tags.ToString() + " exited the hitbox");
         }
     }
 }

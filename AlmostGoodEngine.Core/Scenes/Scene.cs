@@ -129,7 +129,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Renderer.Draw(gameTime, spriteBatch);
-            
         }
 
         /// <summary>

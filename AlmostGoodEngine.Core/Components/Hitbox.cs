@@ -60,7 +60,7 @@ namespace AlmostGoodEngine.Core.Components
                 // The default bounds of an entity
                 Rectangle entityBounds = GetEntityRect(entity);
 
-                if (entity.Tag == "Player")
+                if (entity.Tags.Contains("Player"))
                 {
 
                 }

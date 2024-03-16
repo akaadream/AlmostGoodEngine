@@ -12,7 +12,7 @@ namespace AlmostGoodEngine.Core.ECS
         /// <summary>
         /// Entity's tag
         /// </summary>
-        public string Tag { get; set; }
+        public List<string> Tags { get; set; }
 
         /// <summary>
         /// The position of the entity inside the world
@@ -41,17 +41,13 @@ namespace AlmostGoodEngine.Core.ECS
 
         public Entity()
         {
-            Children = new();
-            Components = new();
+            Children = [];
+            Components = [];
 
             Scale = new(1f);
             Position = Vector3.Zero;
 
-            Tag = "Entity";
-            if (Parent != null)
-            {
-                Tag += "_" + Parent.Children.Count;
-            }
+            Tags = [];
         }
 
         /// <summary>
@@ -246,7 +242,7 @@ namespace AlmostGoodEngine.Core.ECS
         {
             foreach (Entity entity in Children)
             {
-                if (entity.Tag == tag)
+                if (entity.Tags.Contains(tag))
                 {
                     return entity;
                 }
@@ -298,7 +294,7 @@ namespace AlmostGoodEngine.Core.ECS
         /// <returns></returns>
         public List<T> GetComponents<T>() where T : Component
         {
-            List<T> components = new();
+            List<T> components = [];
             
             foreach (Component component in Components)
             {
@@ -318,7 +314,7 @@ namespace AlmostGoodEngine.Core.ECS
         /// <returns></returns>
         public List<Component> GetComponents(Type type)
         {
-            List<Component> components = new();
+            List<Component> components = [];
 
             foreach (Component component in Components)
             {

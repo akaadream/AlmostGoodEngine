@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Inputs
 {
-    public class InputManager
+    public static class Input
     {
         /// <summary>
         /// Keyboard manager

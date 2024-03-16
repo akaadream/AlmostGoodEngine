@@ -22,7 +22,7 @@ namespace AlmostGoodEngine.Inputs
         {
             foreach (var key in Keys)
             {
-                if (InputManager.Keyboard.IsPressed(key))
+                if (Input.Keyboard.IsPressed(key))
                 {
                     return true;
                 }
@@ -39,7 +39,7 @@ namespace AlmostGoodEngine.Inputs
         {
             foreach (var key in Keys)
             {
-                if (InputManager.Keyboard.IsReleased(key))
+                if (Input.Keyboard.IsReleased(key))
                 {
                     return true;
                 }
@@ -56,7 +56,7 @@ namespace AlmostGoodEngine.Inputs
         {
             foreach (var key in Keys)
             {
-                if (InputManager.Keyboard.IsDown(key))
+                if (Input.Keyboard.IsDown(key))
                 {
                     return true;
                 }

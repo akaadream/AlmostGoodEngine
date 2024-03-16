@@ -59,8 +59,8 @@ namespace AlmostGoodEngine.Inputs
 
             if (LeftStick)
             {
-                float horizontal = InputManager.GamePads[Index].GetHorizontalAxis(true);
-                float vertical = InputManager.GamePads[Index].GetVerticalAxis(true);
+                float horizontal = Input.GamePads[Index].GetHorizontalAxis(true);
+                float vertical = Input.GamePads[Index].GetVerticalAxis(true);
 
                 if (LeftStickValue.X > 0 && horizontal > LeftStickValue.X)
                 {
@@ -85,8 +85,8 @@ namespace AlmostGoodEngine.Inputs
 
             if (RightStick)
             {
-                float horizontal = InputManager.GamePads[Index].GetRightHorizontalAxis(true);
-                float vertical = InputManager.GamePads[Index].GetRightVerticalAxis(true);
+                float horizontal = Input.GamePads[Index].GetRightHorizontalAxis(true);
+                float vertical = Input.GamePads[Index].GetRightVerticalAxis(true);
 
                 if (RightStickValue.X > 0 && horizontal > RightStickValue.X)
                 {

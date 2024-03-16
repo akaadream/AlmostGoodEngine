@@ -32,7 +32,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
             base.Update(gameTime);
 
             string keys = "Pressed keys: ";
-            foreach (var key in InputManager.Keyboard.CurrentState.GetPressedKeys())
+            foreach (var key in Input.Keyboard.CurrentState.GetPressedKeys())
             {
                 keys += key.ToString() + ",";
             }

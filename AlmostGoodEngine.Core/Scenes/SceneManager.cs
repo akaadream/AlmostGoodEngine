@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.IO;
 
 namespace AlmostGoodEngine.Core.Scenes
 {
@@ -67,10 +66,7 @@ namespace AlmostGoodEngine.Core.Scenes
                 return;
             }
 
-            if (CurrentScene != null)
-            {
-                CurrentScene.End();
-            }
+            CurrentScene?.End();
 
             CurrentScene = scene;
 

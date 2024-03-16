@@ -27,7 +27,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
         public Player()
         {
-            Tag = "Player";
+            Tags = ["Player"];
             Scale = new(4f);
             Position = new(100, 100, 1);
         }
@@ -84,16 +84,16 @@ namespace AlmostGoodEngine.Tests.GameObjects
         {
             base.Update(gameTime);
 
-            //Position = new(InputManager.Mouse.X, InputManager.Mouse.Y, 1);
+			//Position = new(Input.Mouse.X, Input.Mouse.Y, 1);
 
-            timerText.Value = "Remaining time: " + timer.ToString() + "s";
+			timerText.Value = "Remaining time: " + timer.ToString() + "s";
 
-            if (InputManager.Keyboard.IsPressed(Keys.T))
+            if (Input.Keyboard.IsPressed(Keys.T))
             {
                 Coroutines.StartCoroutine(FadeOut());
             }
 
-            if (InputManager.Keyboard.IsPressed(Keys.D))
+            if (Input.Keyboard.IsPressed(Keys.D))
             {
                 Logger.Log(Position.ToVector2().ToString());
             }
@@ -101,65 +101,65 @@ namespace AlmostGoodEngine.Tests.GameObjects
             Text text = GetComponent<Text>();
             if (text != null)
             {
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad7))
+                if (Input.Keyboard.IsPressed(Keys.NumPad7))
                 {
                     text.Anchor = Anchor.TopLeft;
                     text.TextAnchor = Anchor.TopLeft;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad8))
+                if (Input.Keyboard.IsPressed(Keys.NumPad8))
                 {
                     text.Anchor = Anchor.TopCentered;
                     text.TextAnchor = Anchor.TopCentered;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad9))
+                if (Input.Keyboard.IsPressed(Keys.NumPad9))
                 {
                     text.Anchor = Anchor.TopRight;
                     text.TextAnchor = Anchor.TopRight;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad4))
+                if (Input.Keyboard.IsPressed(Keys.NumPad4))
                 {
                     text.Anchor = Anchor.MiddleLeft;
                     text.TextAnchor = Anchor.MiddleLeft;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad5))
+                if (Input.Keyboard.IsPressed(Keys.NumPad5))
                 {
                     text.Anchor = Anchor.MiddleCentered;
                     text.TextAnchor = Anchor.MiddleCentered;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad6))
+                if (Input.Keyboard.IsPressed(Keys.NumPad6))
                 {
                     text.Anchor = Anchor.MiddleRight;
                     text.TextAnchor = Anchor.MiddleRight;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad1))
+                if (Input.Keyboard.IsPressed(Keys.NumPad1))
                 {
                     text.Anchor = Anchor.BottomLeft;
                     text.TextAnchor = Anchor.BottomLeft;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad2))
+                if (Input.Keyboard.IsPressed(Keys.NumPad2))
                 {
                     text.Anchor = Anchor.BottomCentered;
                     text.TextAnchor = Anchor.BottomCentered;
                 }
 
-                if (InputManager.Keyboard.IsPressed(Keys.NumPad3))
+                if (Input.Keyboard.IsPressed(Keys.NumPad3))
                 {
                     text.Anchor = Anchor.BottomRight;
                     text.TextAnchor = Anchor.BottomRight;
                 }
 
-                if (InputManager.Mouse.WheelDelta() > 0)
+                if (Input.Mouse.WheelDelta() > 0)
                 {
                     text.Position = new(text.Position.X + 15, text.Position.Y + 15);
                 }
-                else if (InputManager.Mouse.WheelDelta() < 0)
+                else if (Input.Mouse.WheelDelta() < 0)
                 {
                     text.Position = new(text.Position.X - 15, text.Position.Y - 15);
                 }
@@ -169,11 +169,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
             float speed = 200f;
 
-            if (InputManager.Keyboard.IsDown(Keys.Left)) velocity.X = -1;
-            else if (InputManager.Keyboard.IsDown(Keys.Right)) velocity.X = 1;
+            if (Input.Keyboard.IsDown(Keys.Left)) velocity.X = -1;
+            else if (Input.Keyboard.IsDown(Keys.Right)) velocity.X = 1;
 
-            if (InputManager.Keyboard.IsDown(Keys.Up)) velocity.Y = -1;
-            else if (InputManager.Keyboard.IsDown(Keys.Down)) velocity.Y = 1;
+            if (Input.Keyboard.IsDown(Keys.Up)) velocity.Y = -1;
+            else if (Input.Keyboard.IsDown(Keys.Down)) velocity.Y = 1;
 
             Position = new(Position.X + velocity.X * speed * Time.FixedDeltaTime, Position.Y + velocity.Y * speed * Time.FixedDeltaTime, Position.Z);
         }

@@ -52,7 +52,7 @@ namespace AlmostGoodEngine.Core.Components.Rendering
         public override void Update(GameTime gameTime)
         {
 #if DEBUG
-            if (InputManager.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.F3))
+            if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.F3))
             {
                 ShowDebug = !ShowDebug;
             }

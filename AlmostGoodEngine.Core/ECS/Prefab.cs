@@ -13,7 +13,7 @@ namespace AlmostGoodEngine.Core.ECS
 
         public Prefab()
         {
-            Components = new List<Component>();
+            Components = new();
         }
     }
 }

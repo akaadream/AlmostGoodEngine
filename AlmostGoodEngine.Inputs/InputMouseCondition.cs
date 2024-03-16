@@ -32,9 +32,9 @@ namespace AlmostGoodEngine.Inputs
         /// <returns></returns>
         public bool Pressed()
         {
-            if (LeftButton && InputManager.Mouse.IsLeftButtonPressed()) return true;
-            if (RightButton && InputManager.Mouse.IsRightButtonPressed()) return true;
-            if (MiddleButton && InputManager.Mouse.IsMiddleButtonPressed()) return true;
+            if (LeftButton && Input.Mouse.IsLeftButtonPressed()) return true;
+            if (RightButton && Input.Mouse.IsRightButtonPressed()) return true;
+            if (MiddleButton && Input.Mouse.IsMiddleButtonPressed()) return true;
 
             return false;
         }
@@ -45,9 +45,9 @@ namespace AlmostGoodEngine.Inputs
         /// <returns></returns>
         public bool Released()
         {
-            if (LeftButton && InputManager.Mouse.IsLeftButtonReleased()) return true;
-            if (RightButton && InputManager.Mouse.IsRightButtonReleased()) return true;
-            if (MiddleButton && InputManager.Mouse.IsMiddleButtonReleased()) return true;
+            if (LeftButton && Input.Mouse.IsLeftButtonReleased()) return true;
+            if (RightButton && Input.Mouse.IsRightButtonReleased()) return true;
+            if (MiddleButton && Input.Mouse.IsMiddleButtonReleased()) return true;
 
             return false;
         }
@@ -58,9 +58,9 @@ namespace AlmostGoodEngine.Inputs
         /// <returns></returns>
         public bool Down()
         {
-            if (LeftButton && InputManager.Mouse.IsLeftButtonDown()) return true;
-            if (RightButton && InputManager.Mouse.IsRightButtonDown()) return true;
-            if (MiddleButton && InputManager.Mouse.IsMiddleButtonDown()) return true;
+            if (LeftButton && Input.Mouse.IsLeftButtonDown()) return true;
+            if (RightButton && Input.Mouse.IsRightButtonDown()) return true;
+            if (MiddleButton && Input.Mouse.IsMiddleButtonDown()) return true;
 
             return false;
         }

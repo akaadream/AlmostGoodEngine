@@ -26,7 +26,7 @@ namespace AlmostGoodEngine.Inputs
         /// <returns></returns>
         private bool IsAvailable()
         {
-            return InputManager.GamePads.Count - 1 >= Index;
+            return Input.GamePads.Count - 1 >= Index;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace AlmostGoodEngine.Inputs
 
             foreach (var button in Buttons)
             {
-                if (InputManager.GamePads[Index].IsPressed(button))
+                if (Input.GamePads[Index].IsPressed(button))
                 {
                     return true;
                 }
@@ -64,7 +64,7 @@ namespace AlmostGoodEngine.Inputs
 
             foreach (var button in Buttons)
             {
-                if (InputManager.GamePads[Index].IsReleased(button))
+                if (Input.GamePads[Index].IsReleased(button))
                 {
                     return true;
                 }
@@ -86,7 +86,7 @@ namespace AlmostGoodEngine.Inputs
 
             foreach (var button in Buttons)
             {
-                if (InputManager.GamePads[Index].IsDown(button))
+                if (Input.GamePads[Index].IsDown(button))
                 {
                     return true;
                 }

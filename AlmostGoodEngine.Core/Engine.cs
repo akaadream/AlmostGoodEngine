@@ -103,7 +103,7 @@ namespace AlmostGoodEngine.Core
             // Game manager initialization
             GameManager.Initialize(this);
             Draw2D.Initialize(GraphicsDevice);
-            InputManager.Initialize();
+            Input.Initialize();
             AlmostGoodConsole.Initialize();
 
             LoadSettings();
@@ -126,7 +126,7 @@ namespace AlmostGoodEngine.Core
             Time.Update(gameTime);
 
             // Inputs
-            InputManager.Update();
+            Input.Update();
             // Coroutine engine
             Coroutines.Update(gameTime);
 
