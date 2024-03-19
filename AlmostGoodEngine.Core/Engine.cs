@@ -1,6 +1,7 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
+using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,6 +87,7 @@ namespace AlmostGoodEngine.Core
             // Window size
             Graphics.PreferredBackBufferWidth = Settings.Width;
             Graphics.PreferredBackBufferHeight = Settings.Height;
+            Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.ApplyChanges();
 
             // Window other settings
@@ -117,7 +119,8 @@ namespace AlmostGoodEngine.Core
 
             GameManager.LoadContent();
             SpriteBatch = new(GraphicsDevice);
-            GameManager.Start();
+			GUIManager.Initialize(Content, GraphicsDevice);
+			GameManager.Start();
         }
 
         protected override void Update(GameTime gameTime)
@@ -144,6 +147,8 @@ namespace AlmostGoodEngine.Core
                 }
             }
 
+            GUIManager.Update(gameTime);
+
             GameManager.AfterUpdate(gameTime);
 
             base.Update(gameTime);
@@ -157,6 +162,10 @@ namespace AlmostGoodEngine.Core
             Time.Draw(gameTime);
             GameManager.Draw(gameTime, SpriteBatch);
             GameManager.DrawUI(gameTime, SpriteBatch);
+
+            // Draw the GUI
+            GUIManager.Draw(gameTime);
+
             AlmostGoodConsole.Draw(SpriteBatch);
 
             base.Draw(gameTime);

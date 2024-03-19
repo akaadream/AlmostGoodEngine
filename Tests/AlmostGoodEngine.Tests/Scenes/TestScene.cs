@@ -6,6 +6,7 @@ using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Scenes;
 using AlmostGoodEngine.Core.Utils;
+using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Tests.GameObjects;
 using Microsoft.Xna.Framework;
 
@@ -42,6 +43,22 @@ namespace AlmostGoodEngine.Tests.Scenes
 
             Renderer.Camera.AddComponent(new FollowTarget(Renderer.Camera, player));
             Renderer.Camera.AddComponent(new CameraLimit(new(-470, -320, 1), new(470, 320, 1)));
+
+            GUILayout menu = new();
+            menu.Style.FullWidth = true;
+            menu.Style.Height = 42;
+            menu.Style.BackgroundColor = new Color(35, 35, 35);
+
+            GUIElement window = new();
+            window.Style.Width = 400;
+            window.Style.Height = 280;
+            window.Style.BorderRadius = 20;
+            window.Style.BackgroundColor = new Color(185, 35, 35);
+            window.Style.Top = 10;
+            window.Style.Left = 115;
+
+            menu.Children.Add(window);
+            GUIManager.Layouts.Add(menu);
         }
 
         private void Hitbox_OnEntityEnter(object sender, Core.Events.EntityEventArgs e)

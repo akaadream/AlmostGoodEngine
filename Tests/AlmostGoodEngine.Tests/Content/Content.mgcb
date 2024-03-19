@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin apos-shapes.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:apos-shapes.fx
+
 #begin Sprites/character.png
 /importer:TextureImporter
 /processor:TextureProcessor
