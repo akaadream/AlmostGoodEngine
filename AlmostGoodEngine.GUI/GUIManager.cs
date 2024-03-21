@@ -34,6 +34,8 @@ namespace AlmostGoodEngine.GUI
 		public static int MouseX { get => MouseState.X; }
 		public static int MouseY { get => MouseState.Y; }
 
+		private static ContentManager _contentManager;
+
 		/// <summary>
 		/// Initialize the GUI library
 		/// </summary>
@@ -49,7 +51,18 @@ namespace AlmostGoodEngine.GUI
 				_graphicsDevice = graphicsDevice;
 				Width = _graphicsDevice.Viewport.Width;
 				Height = _graphicsDevice.Viewport.Height;
+				_contentManager = contentManager;
 			}
+		}
+
+		public static void LoadStyle(string filename)
+		{
+			if (_contentManager == null)
+			{
+				return;
+			}
+
+			
 		}
 
 		/// <summary>

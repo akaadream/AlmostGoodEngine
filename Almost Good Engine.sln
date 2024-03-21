@@ -29,7 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.iOS", "Tem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.Tests", "Tests\AlmostGoodEngine.Tests\AlmostGoodEngine.Tests.csproj", "{BD2A3E25-99BC-4F81-A357-D34C3A758EE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGoodEngine.Serialization", "AlmostGoodEngine.Serialization\AlmostGoodEngine.Serialization.csproj", "{254262C5-FCA8-4148-BA15-8C27142BE3D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.Serialization", "AlmostGoodEngine.Serialization\AlmostGoodEngine.Serialization.csproj", "{254262C5-FCA8-4148-BA15-8C27142BE3D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGameEngine.CssContent", "AlmostGameEngine.CssContent\AlmostGameEngine.CssContent.csproj", "{E8662109-22E1-4EF0-AB99-F6558DEE18E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.CSS", "AlmostGoodEngine.CSS\AlmostGoodEngine.CSS.csproj", "{9346C318-CD71-4F8C-B430-C0E82EA7F38D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGoodEngine.Editor", "AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj", "{823546FC-D888-4918-B5AB-90BC3CAFEDCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +103,18 @@ Global
 		{254262C5-FCA8-4148-BA15-8C27142BE3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254262C5-FCA8-4148-BA15-8C27142BE3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254262C5-FCA8-4148-BA15-8C27142BE3D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8662109-22E1-4EF0-AB99-F6558DEE18E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8662109-22E1-4EF0-AB99-F6558DEE18E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8662109-22E1-4EF0-AB99-F6558DEE18E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8662109-22E1-4EF0-AB99-F6558DEE18E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9346C318-CD71-4F8C-B430-C0E82EA7F38D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9346C318-CD71-4F8C-B430-C0E82EA7F38D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9346C318-CD71-4F8C-B430-C0E82EA7F38D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9346C318-CD71-4F8C-B430-C0E82EA7F38D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

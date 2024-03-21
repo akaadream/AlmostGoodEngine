@@ -1,0 +1,21 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+/reference:..\..\AlmostGameEngine.CssContent\bin\Debug\net8.0\AlmostGameEngine.CssContent.dll
+
+#---------------------------------- Content ---------------------------------#
+
+#begin styles/main.css
+/importer:
+/processor:
+/build:styles/main.css
+

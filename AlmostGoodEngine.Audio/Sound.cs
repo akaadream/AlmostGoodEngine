@@ -39,6 +39,7 @@ namespace AlmostGoodEngine.Audio
 
         public Sound(SoundEffect soundEffect)
         {
+            
             Effect = soundEffect;
             instances = [];
         }
