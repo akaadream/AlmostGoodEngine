@@ -1,4 +1,5 @@
 ﻿using Apos.Shapes;
+using ExCSS;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -196,6 +197,90 @@ namespace AlmostGoodEngine.GUI
 						Style.BorderRadius);
 				}
 			}
+		}
+
+		public T GetElement<T>() where T : GUIElement
+		{
+			foreach (var child in Children)
+			{
+				if (child.GetType() == typeof(T))
+				{
+					return (T)child;
+				}
+			}
+
+			return default;
+		}
+
+		public List<T> GetElements<T>() where T : GUIElement
+		{
+			List<T> elements = [];
+
+			foreach (var child in Children)
+			{
+				if (child.GetType() == typeof(T))
+				{
+					elements.Add((T)child);
+				}
+			}
+
+			return elements;
+		}
+
+		public GUIElement GetElementById(string id)
+		{
+			foreach (var child in Children)
+			{
+				if (child.Id == id)
+				{
+					return child;
+				}
+			}
+
+			return null;
+		}
+
+		public GUIElement GetElementByClass(string className)
+		{
+			foreach (var child in Children)
+			{
+				if (child.Classes.Contains(className))
+				{
+					return child;
+				}
+			}
+
+			return null;
+		}
+
+		public List<GUIElement> GetElementsByClass(string className)
+		{
+			List<GUIElement> elements = [];
+
+			foreach (var child in Children)
+			{
+				if (child.Classes.Contains(className))
+				{
+					elements.Add(child);
+				}
+
+				if (child.Children.Count > 0)
+				{
+					elements.AddRange(child.GetElementsByClass(className));
+				}
+			}
+
+			return elements;
+		}
+
+		public void ApplyStylesheet(Stylesheet stylesheet)
+		{
+			if (stylesheet == null)
+			{
+				return;
+			}
+
+
 		}
 	}
 }

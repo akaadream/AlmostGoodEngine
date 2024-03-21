@@ -1,4 +1,5 @@
 ﻿using Apos.Shapes;
+using ExCSS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,6 +37,8 @@ namespace AlmostGoodEngine.GUI
 
 		private static ContentManager _contentManager;
 
+		internal static List<Stylesheet> Stylesheets { get; set; }
+
 		/// <summary>
 		/// Initialize the GUI library
 		/// </summary>
@@ -44,6 +47,7 @@ namespace AlmostGoodEngine.GUI
 		public static void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
 		{
 			Layouts = [];
+			Stylesheets = [];
 
 			if (contentManager != null && graphicsDevice != null)
 			{
@@ -62,7 +66,75 @@ namespace AlmostGoodEngine.GUI
 				return;
 			}
 
-			
+			var stylesheet = _contentManager.Load<Stylesheet>(filename);
+			Stylesheets.Add(stylesheet);
+			ApplyStylesheets();
+		}
+
+		public static void ApplyStylesheets()
+		{
+			foreach (var stylesheet in Stylesheets)
+			{
+				foreach (var rule in stylesheet.StyleRules)
+				{
+					// Class
+					if (rule.SelectorText.StartsWith("."))
+					{
+						foreach (var element in FindElements(rule.SelectorText.Substring(1)))
+						{
+							element.ApplyStylesheet(stylesheet);
+						}
+					}
+					// Id
+					else if (rule.SelectorText.StartsWith("#"))
+					{
+						var element = FindById(rule.SelectorText.Substring(1));
+						if (element != null)
+						{
+							element.ApplyStylesheet(stylesheet);
+						}
+					}
+				}
+			}
+		}
+
+		public static GUIElement FindById(string id)
+		{
+			foreach (var layout in Layouts)
+			{
+				if (layout.Id == id)
+				{
+					return layout;
+				}
+
+				if (layout.Children.Count > 0)
+				{
+					var element = layout.GetElementById(id);
+					if (element != null)
+					{
+						return element;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		public static List<GUIElement> FindElements(string className)
+		{
+			var elements = new List<GUIElement>();
+
+			foreach (var layout in Layouts)
+			{
+				if (layout.Classes.Contains(className))
+				{
+					elements.Add(layout);
+				}
+
+				elements.AddRange(layout.GetElementsByClass(className));
+			}
+
+			return elements;
 		}
 
 		/// <summary>

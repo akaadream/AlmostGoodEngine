@@ -19,7 +19,6 @@ namespace AlmostGoodEngine.Audio.Effects
 		{
 			base.Play(sound);
 
-			Effect.
 		}
 	}
 }

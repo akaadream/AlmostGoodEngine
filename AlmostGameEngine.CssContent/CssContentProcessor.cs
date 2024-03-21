@@ -12,8 +12,7 @@ namespace AlmostGameEngine.CssContent
 		[DisplayName("Minify CSS")]
 		public bool Minify { get; set; } = true;
 
-		[DisplayName("Runtime Type")]
-		public string RuntimeType { get; set; } = string.Empty;
+		public string RuntimeType { get; set; } = "AlmostGoodEngine.CSS.CssContentTypeReader, AlmostGoodEngine.CSS";
 
 		public override TOutput Process(TInput input, ContentProcessorContext context)
 		{

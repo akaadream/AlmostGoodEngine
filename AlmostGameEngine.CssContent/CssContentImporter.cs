@@ -26,7 +26,7 @@ namespace AlmostGameEngine.CssContent
 			try
 			{
 				var parser = new StylesheetParser();
-				_ = parser.Parse(css);
+				parser.Parse(css);
 			}
 			catch (Exception ex)
 			{

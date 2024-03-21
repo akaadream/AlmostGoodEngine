@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExCSS" Version="4.2.5" />
+    <PackageReference Include="ExCSS" Version="4.2.5">
+    </PackageReference>
     <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.1.303">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
