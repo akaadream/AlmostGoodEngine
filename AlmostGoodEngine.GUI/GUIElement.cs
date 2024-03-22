@@ -3,6 +3,9 @@ using ExCSS;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using MColor = Microsoft.Xna.Framework.Color;
+using EColor = ExCSS.Color;
+using AlmostGoodEngine.GUI.Utils;
 
 namespace AlmostGoodEngine.GUI
 {
@@ -12,6 +15,8 @@ namespace AlmostGoodEngine.GUI
 		public List<string> Classes { get; set; } = [];
 
 		public GUIStyle Style { get; set; }
+		public GUIStyle HoverStyle { get; set; }
+		public GUIStyle FocusStyle { get; set; }
 
 		public GUIElement Parent { get; set; }
 		public List<GUIElement> Children { get; set; } = [];
@@ -31,6 +36,24 @@ namespace AlmostGoodEngine.GUI
 		public Action OnPressed { get; set; }
 
 		#endregion
+
+		public GUIStyle CurrentStyle
+		{
+			get
+			{
+				if (IsDown)
+				{
+					return FocusStyle;
+				}
+
+				if (IsHovered)
+				{
+					return HoverStyle;
+				}
+
+				return Style;
+			}
+		}
 
 		/// <summary>
 		/// Get the X coordinate of this element
@@ -149,7 +172,7 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			// Background is transparent and no border or transparent border
-			if (Style.BackgroundColor == Color.Transparent && (Style.Border == 0 || Style.BorderColor == Color.Transparent))
+			if (Style.BackgroundColor == MColor.Transparent && (Style.Border == 0 || Style.BorderColor == MColor.Transparent))
 			{
 				return;
 			}
@@ -273,14 +296,276 @@ namespace AlmostGoodEngine.GUI
 			return elements;
 		}
 
-		public void ApplyStylesheet(Stylesheet stylesheet)
+		/// <summary>
+		/// Apply the given style on this element
+		/// </summary>
+		/// <param name="style"></param>
+		public void ApplyStyle(StyleDeclaration style)
 		{
-			if (stylesheet == null)
+			ApplyStyleOn(Style, style);	
+			ApplyStyleOn(HoverStyle, style);	
+			ApplyStyleOn(FocusStyle, style);	
+		}
+
+		/// <summary>
+		/// Apply the given hover style on this element
+		/// </summary>
+		/// <param name="style"></param>
+		public void ApplyHoverStyle(StyleDeclaration style)
+		{
+			ApplyStyleOn(HoverStyle, style);
+		}
+
+		/// <summary>
+		/// Apply the given focus style on this element
+		/// </summary>
+		/// <param name="style"></param>
+		public void ApplyFocusStyle(StyleDeclaration style)
+		{
+			ApplyStyleOn(FocusStyle, style);
+		}
+
+		/// <summary>
+		/// Hydrate the given style with the given stylesheet
+		/// </summary>
+		/// <param name="style"></param>
+		/// <param name="properties"></param>
+		private void ApplyStyleOn(GUIStyle style, StyleDeclaration properties)
+		{
+			if (style == null || properties == null)
 			{
 				return;
 			}
 
+			// Colors
+			style.BackgroundColor = StylesheetHelper.FromCssString(properties.BackgroundColor);
+			style.BorderColor = StylesheetHelper.FromCssString(properties.BorderColor);
+			style.TextColor = StylesheetHelper.FromCssString(properties.Color);
 
+			// Width
+			if (IsValid(properties.Width))
+			{
+				if (IsPercent(properties.Width))
+				{
+					style.WidthPercent = true;
+				}
+				else if (IsAuto(properties.Width))
+				{
+					style.AutoWidth = true;
+				}
+
+				style.Width = StylesheetHelper.FromCssToSize(properties.Width);
+			}
+
+			// Height
+			if (IsValid(properties.Height))
+			{
+				if (IsPercent(properties.Height))
+				{
+					style.HeightPercent = true;
+				}
+				else if (IsAuto(properties.Height))
+				{
+					style.AutoHeight = true;
+				}
+
+				style.Height = StylesheetHelper.FromCssToSize(properties.Height);
+			}
+
+			// Left
+			if (IsValid(properties.Left))
+			{
+				if (IsPercent(properties.Left))
+				{
+					style.LeftPercent = true;
+				}
+
+				style.Left = StylesheetHelper.FromCssToSize(properties.Left);
+			}
+
+			// Right
+			if (IsValid(properties.Right))
+			{
+				if (IsPercent(properties.Right))
+				{
+					style.RightPercent = true;
+				}
+
+				style.Right = StylesheetHelper.FromCssToSize(properties.Right);
+			}
+
+			// Top
+			if (IsValid(properties.Top))
+			{
+				if (IsPercent(properties.Top))
+				{
+					style.TopPercent = true;
+				}
+
+				style.Top = StylesheetHelper.FromCssToSize(properties.Top);
+			}
+
+			// Bottom
+			if (IsValid(properties.Bottom))
+			{
+				if (IsPercent(properties.Bottom))
+				{
+					style.BottomPercent = true;
+				}
+
+				style.Bottom = StylesheetHelper.FromCssToSize(properties.Bottom);
+			}
+
+			// Margin left
+			if (IsValid(properties.MarginLeft))
+			{
+				if (IsPercent(properties.MarginLeft))
+				{
+					style.MarginLeftPercent = true;
+				}
+
+				style.MarginLeft = StylesheetHelper.FromCssToSize(properties.MarginLeft);
+			}
+
+			// Margin right
+			if (IsValid(properties.MarginRight))
+			{
+				if (IsPercent(properties.MarginRight))
+				{
+					style.MarginRightPercent = true;
+				}
+
+				style.MarginRight = StylesheetHelper.FromCssToSize(properties.MarginRight);
+			}
+
+			// Margin top
+			if (IsValid(properties.MarginTop))
+			{
+				if (IsPercent(properties.MarginTop))
+				{
+					style.MarginTopPercent = true;
+				}
+
+				style.MarginTop = StylesheetHelper.FromCssToSize(properties.MarginTop);
+			}
+
+			// Margin bottom
+			if (IsValid(properties.MarginBottom))
+			{
+				if (IsPercent(properties.MarginBottom))
+				{
+					style.MarginBottomPercent = true;
+				}
+
+				style.MarginBottom = StylesheetHelper.FromCssToSize(properties.MarginBottom);
+			}
+
+			// Padding left
+			if (IsValid(properties.PaddingLeft))
+			{
+				if (IsPercent(properties.PaddingLeft))
+				{
+					style.PaddingLeftPercent = true;
+				}
+
+				style.PaddingLeft = StylesheetHelper.FromCssToSize(properties.PaddingLeft);
+			}
+
+			// Padding right
+			if (IsValid(properties.PaddingRight))
+			{
+				if (IsPercent(properties.PaddingRight))
+				{
+					style.PaddingRightPercent = true;
+				}
+
+				style.PaddingRight = StylesheetHelper.FromCssToSize(properties.PaddingRight);
+			}
+
+			// Padding top
+			if (IsValid(properties.PaddingTop))
+			{
+				if (IsPercent(properties.PaddingTop))
+				{
+					style.PaddingTopPercent = true;
+				}
+
+				style.PaddingTop = StylesheetHelper.FromCssToSize(properties.PaddingTop);
+			}
+
+			// Padding bottom
+			if (IsValid(properties.PaddingBottom))
+			{
+				if (IsPercent(properties.PaddingBottom))
+				{
+					style.PaddingBottomPercent = true;
+				}
+
+				style.PaddingBottom = StylesheetHelper.FromCssToSize(properties.PaddingBottom);
+			}
+
+			// Borders
+			if (IsValid(properties.BorderLeft))
+			{
+				int left = StylesheetHelper.FromCssToSize(properties.BorderLeft);
+				int right = StylesheetHelper.FromCssToSize(properties.BorderRight);
+				int bottom = StylesheetHelper.FromCssToSize(properties.BorderBottom);
+				int top = StylesheetHelper.FromCssToSize(properties.BorderTop);
+
+				int max = Math.Max(left, right);
+				max = Math.Max(max, top);
+				max = Math.Max(max, bottom);
+
+				style.Border = max;
+			}
+
+			// Border radius
+			if (IsValid(properties.BorderRadius))
+			{
+				style.BorderRadius = StylesheetHelper.FromCssToSize(properties.BorderRadius);
+			}
+
+			// Transition
+			if (IsValid(properties.TransitionDuration))
+			{
+				style.TransitionDuration = StylesheetHelper.FromCssToSeconds(properties.TransitionDuration);
+			}
+
+			// Opacity
+			if (IsValid(properties.Opacity))
+			{
+				style.Opacity = float.Parse(properties.Opacity);
+			}
+		}
+
+		/// <summary>
+		/// Return true if the given css string is in percent
+		/// </summary>
+		/// <param name="css"></param>
+		/// <returns></returns>
+		private static bool IsPercent(string css)
+		{
+			return css.EndsWith("%") || css.EndsWith("vw") || css.EndsWith("vh");
+		}
+
+		/// <summary>
+		/// Return true if the given css string is auto
+		/// </summary>
+		/// <param name="css"></param>
+		/// <returns></returns>
+		private static bool IsAuto(string css)
+		{
+			return css.EndsWith("auto");
+		}
+
+		/// <summary>
+		/// Return true if the given css string is valid
+		/// </summary>
+		/// <param name="css"></param>
+		/// <returns></returns>
+		private static bool IsValid(string css)
+		{
+			return !string.IsNullOrWhiteSpace(css);
 		}
 	}
 }

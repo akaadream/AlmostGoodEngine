@@ -1,3 +1,4 @@
 .test {
     background-color: red;
+    pointer-events: all;
 }

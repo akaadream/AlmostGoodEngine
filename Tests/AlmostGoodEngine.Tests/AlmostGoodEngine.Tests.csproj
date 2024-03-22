@@ -22,6 +22,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Reload" Version="0.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AlmostGoodEngine.Core\AlmostGoodEngine.Core.csproj" />

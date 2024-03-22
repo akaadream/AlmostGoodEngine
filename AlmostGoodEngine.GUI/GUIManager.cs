@@ -71,18 +71,39 @@ namespace AlmostGoodEngine.GUI
 			ApplyStylesheets();
 		}
 
+		public static void LoadPlainCss(string css)
+		{
+			var parser = new StylesheetParser();
+			var stylesheet = parser.Parse(css);
+			Stylesheets.Add(stylesheet);
+			ApplyStylesheets();
+		}
+
 		public static void ApplyStylesheets()
 		{
 			foreach (var stylesheet in Stylesheets)
 			{
 				foreach (var rule in stylesheet.StyleRules)
 				{
+					string[] selectors = rule.SelectorText.Split(':');
+					
 					// Class
 					if (rule.SelectorText.StartsWith("."))
 					{
 						foreach (var element in FindElements(rule.SelectorText.Substring(1)))
 						{
-							element.ApplyStylesheet(stylesheet);
+							if (Contains(selectors, "hover"))
+							{
+								element.ApplyHoverStyle(rule.Style);
+							}
+							else if (Contains(selectors, "focus"))
+							{
+								element.ApplyFocusStyle(rule.Style);
+							}
+							else
+							{
+								element.ApplyStyle(rule.Style);
+							}
 						}
 					}
 					// Id
@@ -91,11 +112,35 @@ namespace AlmostGoodEngine.GUI
 						var element = FindById(rule.SelectorText.Substring(1));
 						if (element != null)
 						{
-							element.ApplyStylesheet(stylesheet);
+							if (Contains(selectors, "hover"))
+							{
+								element.ApplyHoverStyle(rule.Style);
+							}
+							else if (Contains(selectors, "focus"))
+							{
+								element.ApplyFocusStyle(rule.Style);
+							}
+							else
+							{
+								element.ApplyStyle(rule.Style);
+							}
 						}
 					}
 				}
 			}
+		}
+
+		private static bool Contains(string[] arr, string text)
+		{
+			foreach (var item in arr)
+			{
+				if (item == text)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public static GUIElement FindById(string id)
