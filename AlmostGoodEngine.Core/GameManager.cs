@@ -103,7 +103,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="viewport"></param>
         internal static void Resize(Viewport viewport)
         {
-            SceneManager?.CurrentScene?.Renderer.Resize(viewport);
+            SceneManager?.Resize(viewport);
         }
 
         /// <summary>

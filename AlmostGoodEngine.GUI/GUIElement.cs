@@ -37,6 +37,8 @@ namespace AlmostGoodEngine.GUI
 
 		#endregion
 
+		public GUITransition Transition { get; private set; }
+
 		public GUIStyle CurrentStyle
 		{
 			get
@@ -67,10 +69,10 @@ namespace AlmostGoodEngine.GUI
 				{
 					x = Parent.X;
 				}
-				x += Style.Left;
-				x -= Style.Right;
-				x += Style.MarginLeft;
-				x -= Style.MarginRight;
+				x += CurrentStyle.Left;
+				x -= CurrentStyle.Right;
+				x += CurrentStyle.MarginLeft;
+				x -= CurrentStyle.MarginRight;
 				return x;
 			}
 		}
@@ -87,10 +89,10 @@ namespace AlmostGoodEngine.GUI
 				{
 					y = Parent.Y;
 				}
-				y += Style.Top;
-				y -= Style.Bottom;
-				y += Style.MarginLeft;
-				y -= Style.MarginRight;
+				y += CurrentStyle.Top;
+				y -= CurrentStyle.Bottom;
+				y += CurrentStyle.MarginLeft;
+				y -= CurrentStyle.MarginRight;
 				return y;
 			}
 		}
@@ -99,17 +101,18 @@ namespace AlmostGoodEngine.GUI
 		{
 			get
 			{
-				if (Parent != null && Style.FullWidth)
+				if (doingTransition)
 				{
-					return Math.Max(Style.TotalWidth, Parent.Width);
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return (int)MathHelper.Lerp(Style.GetWidth(this), HoverStyle.GetWidth(this), transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return (int)MathHelper.Lerp(HoverStyle.GetWidth(this), Style.GetWidth(this), transitionTimer / Style.TransitionDuration);
+					}
 				}
 
-				if (Style.FullWidth)
-				{
-					return GUIManager.Width;
-				}
-
-				return Style.TotalWidth;
+				return CurrentStyle.GetWidth(this);
 			}
 		}
 
@@ -117,17 +120,47 @@ namespace AlmostGoodEngine.GUI
 		{
 			get
 			{
-				if (Parent != null && Style.FullHeight)
+				if (doingTransition)
 				{
-					return Math.Max(Style.TotalHeight, Parent.Height);
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return (int)MathHelper.Lerp(Style.GetHeight(this), HoverStyle.GetHeight(this), transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return (int)MathHelper.Lerp(HoverStyle.GetHeight(this), Style.GetHeight(this), transitionTimer / Style.TransitionDuration);
+					}
+				}
+				return CurrentStyle.GetHeight(this);
+			}
+		}
+
+		private bool doingTransition = false;
+		private bool transitionFinished = true;
+		private float transitionTimer = 0f;
+
+		private bool wasHovered = false;
+		private bool wasDown = false;
+
+		public MColor BackgroundColor
+		{
+			get
+			{
+				if (doingTransition)
+				{
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return MColor.Lerp(Style.BackgroundColor, HoverStyle.BackgroundColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return MColor.Lerp(HoverStyle.BackgroundColor, Style.BackgroundColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.Focus:
+							return MColor.Lerp(HoverStyle.BackgroundColor, FocusStyle.BackgroundColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasFocus:
+							return MColor.Lerp(FocusStyle.BackgroundColor, Style.BackgroundColor, transitionTimer / Style.TransitionDuration);
+					}
 				}
 
-				if (Style.FullHeight)
-				{
-					return GUIManager.Height;
-				}
-
-				return Style.TotalHeight;
+				return CurrentStyle.BackgroundColor;
 			}
 		}
 
@@ -138,7 +171,11 @@ namespace AlmostGoodEngine.GUI
 
 		public GUIElement()
 		{
-			Style = new();	
+			Style = new();
+			HoverStyle = new();
+			FocusStyle = new();
+
+			Transition = GUITransition.None;
 		}
 
 		public virtual void Update(float delta)
@@ -147,9 +184,32 @@ namespace AlmostGoodEngine.GUI
 			IsDown = IsHovered && GUIManager.IsMouseLeftDown();
 			IsPressed = IsHovered && GUIManager.IsMouseLeftPressed();
 
+			if (doingTransition)
+			{
+				if (transitionTimer >= Style.TransitionDuration)
+				{
+					transitionTimer = Style.TransitionDuration;
+					transitionFinished = true;
+					doingTransition = false;
+				}
+				else
+				{
+					transitionTimer += delta;
+				}
+			}
+
 			if (IsHovered)
 			{
+				if (!wasHovered && Style.TransitionDuration > 0f)
+				{
+					StartTransition(GUITransition.Hover);
+				}
+
 				OnHover?.Invoke();
+			}
+			else if (wasHovered && Style.TransitionDuration > 0f)
+			{
+				StartTransition(GUITransition.WasHover);
 			}
 
 			if (IsDown)
@@ -161,6 +221,18 @@ namespace AlmostGoodEngine.GUI
 			{
 				OnPressed?.Invoke();
 			}
+
+			// Update previous state
+			wasDown = IsDown;
+			wasHovered = IsHovered;
+		}
+
+		private void StartTransition(GUITransition transition)
+		{
+			transitionTimer = 0f;
+			doingTransition = true;
+			transitionFinished = false;
+			Transition = transition;
 		}
 
 		public virtual void Draw(ShapeBatch shapeBatch, float delta)
@@ -172,52 +244,54 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			// Background is transparent and no border or transparent border
-			if (Style.BackgroundColor == MColor.Transparent && (Style.Border == 0 || Style.BorderColor == MColor.Transparent))
+			if (CurrentStyle.BackgroundColor == MColor.Transparent && (CurrentStyle.Border == 0 || CurrentStyle.BorderColor == MColor.Transparent))
 			{
 				return;
 			}
 
 			// If the element draw is a circle
-			if (Style.IsCircle)
+			if (CurrentStyle.IsCircle)
 			{
 				var origin = new Vector2(X - Width / 2, Y - Height / 2);
-				if (Style.Border > 0)
+				if (CurrentStyle.Border > 0)
 				{
 					shapeBatch.DrawCircle(
 						origin,
 						Width,
-						Style.BackgroundColor,
-						Style.BorderColor,
-						Style.Border);
+						BackgroundColor,
+						CurrentStyle.BorderColor,
+						CurrentStyle.Border);
 				}
 				else
 				{
 					shapeBatch.FillCircle(
 						origin,
 						Width,
-						Style.BackgroundColor);
+						BackgroundColor);
 				}
 			}
 			// Else, it's a rectangle
 			else
 			{
-				if (Style.Border > 0)
+				if (CurrentStyle.Border > 0)
 				{
 					shapeBatch.DrawRectangle(
 						new Vector2(X, Y),
 						new Vector2(Width, Height),
-						Style.BackgroundColor,
-						Style.BorderColor,
-						Style.Border,
-						Style.BorderRadius);
+						BackgroundColor,
+						CurrentStyle.BorderColor,
+						CurrentStyle.Border,
+						CurrentStyle.BorderRadius);
 				}
 				else
 				{
 					shapeBatch.FillRectangle(
 						new Vector2(X, Y),
 						new Vector2(Width, Height),
-						Style.BackgroundColor,
-						Style.BorderRadius);
+						BackgroundColor,
+						CurrentStyle.BorderRadius);
+
+					//Console.WriteLine("{X: " + X + ", Y: " + Y + ", Width: " + Width + ", Height: " + Height + "}");
 				}
 			}
 		}
@@ -302,27 +376,27 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="style"></param>
 		public void ApplyStyle(StyleDeclaration style)
 		{
-			ApplyStyleOn(Style, style);	
-			ApplyStyleOn(HoverStyle, style);	
-			ApplyStyleOn(FocusStyle, style);	
+			ApplyStyleOn(Style, style);
+			ApplyStyleOn(HoverStyle, style);
+			ApplyStyleOn(FocusStyle, style);
 		}
 
 		/// <summary>
 		/// Apply the given hover style on this element
 		/// </summary>
 		/// <param name="style"></param>
-		public void ApplyHoverStyle(StyleDeclaration style)
+		public void ApplyHoverStyle(StyleDeclaration style, bool replaceIfExists = false)
 		{
-			ApplyStyleOn(HoverStyle, style);
+			ApplyStyleOn(HoverStyle, style, replaceIfExists);
 		}
 
 		/// <summary>
 		/// Apply the given focus style on this element
 		/// </summary>
 		/// <param name="style"></param>
-		public void ApplyFocusStyle(StyleDeclaration style)
+		public void ApplyFocusStyle(StyleDeclaration style, bool replaceIfExists = false)
 		{
-			ApplyStyleOn(FocusStyle, style);
+			ApplyStyleOn(FocusStyle, style, replaceIfExists);
 		}
 
 		/// <summary>
@@ -330,7 +404,7 @@ namespace AlmostGoodEngine.GUI
 		/// </summary>
 		/// <param name="style"></param>
 		/// <param name="properties"></param>
-		private void ApplyStyleOn(GUIStyle style, StyleDeclaration properties)
+		private void ApplyStyleOn(GUIStyle style, StyleDeclaration properties, bool replaceIfExists = false)
 		{
 			if (style == null || properties == null)
 			{
@@ -338,20 +412,47 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			// Colors
-			style.BackgroundColor = StylesheetHelper.FromCssString(properties.BackgroundColor);
-			style.BorderColor = StylesheetHelper.FromCssString(properties.BorderColor);
-			style.TextColor = StylesheetHelper.FromCssString(properties.Color);
+			if (IsValid(properties.BackgroundColor))
+			{
+				style.BackgroundColor = StylesheetHelper.FromCssString(properties.BackgroundColor);
+			}
+
+			if (IsValid(properties.BorderColor))
+			{
+				style.BorderColor = StylesheetHelper.FromCssString(properties.BorderColor);
+			}
+
+			if (IsValid(properties.Color))
+			{
+				style.TextColor = StylesheetHelper.FromCssString(properties.Color);
+			}
 
 			// Width
 			if (IsValid(properties.Width))
 			{
 				if (IsPercent(properties.Width))
 				{
-					style.WidthPercent = true;
+					if (properties.Width == "100%")
+					{
+						style.FullWidth = true;
+					}
+					else
+					{
+						style.WidthPercent = true;
+					}
 				}
-				else if (IsAuto(properties.Width))
+				else
+				{
+					style.FullWidth = false;
+					style.WidthPercent = false;
+				}
+				if (IsAuto(properties.Width))
 				{
 					style.AutoWidth = true;
+				}
+				else
+				{
+					style.AutoWidth = false;
 				}
 
 				style.Width = StylesheetHelper.FromCssToSize(properties.Width);
@@ -362,11 +463,27 @@ namespace AlmostGoodEngine.GUI
 			{
 				if (IsPercent(properties.Height))
 				{
-					style.HeightPercent = true;
+					if (properties.Height == "100%")
+					{
+						style.FullHeight = true;
+					}
+					else
+					{
+						style.HeightPercent = true;
+					}
 				}
-				else if (IsAuto(properties.Height))
+				else
+				{
+					style.FullHeight = false;
+					style.HeightPercent = false;
+				}
+				if (IsAuto(properties.Height))
 				{
 					style.AutoHeight = true;
+				}
+				else
+				{
+					style.AutoHeight = false;
 				}
 
 				style.Height = StylesheetHelper.FromCssToSize(properties.Height);
@@ -536,6 +653,16 @@ namespace AlmostGoodEngine.GUI
 			{
 				style.Opacity = float.Parse(properties.Opacity);
 			}
+		}
+
+		/// <summary>
+		/// Return true if the given css string is a calc
+		/// </summary>
+		/// <param name="css"></param>
+		/// <returns></returns>
+		private static bool IsCalc(string css)
+		{
+			return css.StartsWith("calc(") && css.EndsWith(")");
 		}
 
 		/// <summary>

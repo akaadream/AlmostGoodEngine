@@ -105,6 +105,14 @@ namespace AlmostGoodEngine.Core.Scenes
             CurrentScene?.End();
         }
 
+        public void Resize(Viewport viewport)
+        {
+            foreach (var scene in Scenes.Values)
+            {
+                scene.Resize(viewport);
+            }
+        }
+
         /// <summary>
         /// Before the update of the scene
         /// </summary>

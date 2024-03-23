@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AlmostGoodEngine.GUI
 {
@@ -95,5 +97,62 @@ namespace AlmostGoodEngine.GUI
 		public bool IsCircle { get => TotalWidth == TotalHeight; }
 
 		#endregion
+
+		public int GetWidth(GUIElement element)
+		{
+			if (FullWidth)
+			{
+				return GUIManager.Width;
+			}
+
+            if (AutoWidth)
+            {
+                if (element.Parent != null)
+				{
+					return Math.Max(element.Parent.Width, Width);
+				}
+            }
+
+			if (WidthPercent)
+			{
+				if (element.Parent != null)
+				{
+					return Width * element.Parent.Width / 100;
+				}
+
+				return Width * GUIManager.Width / 100;
+			}
+
+			return Width;
+		}
+
+		public int GetHeight(GUIElement element)
+		{
+			if (FullHeight)
+			{
+				return GUIManager.Height;
+			}
+
+			if (AutoHeight)
+			{
+				if (element.Parent != null)
+				{
+					return Math.Max(element.Parent.Height, Height);
+				}
+			}
+
+			if (HeightPercent)
+			{
+				if (element.Parent != null)
+				{
+					return Height * element.Parent.Height / 100;
+				}
+
+				return Height * GUIManager.Height / 100;
+			}
+
+			return Height;
+		}
+
 	}
 }

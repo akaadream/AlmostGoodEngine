@@ -35,7 +35,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <summary>
         /// Load scene's content
         /// </summary>
-        public void LoadContent(ContentManager content)
+        public virtual void LoadContent(ContentManager content)
         {
             foreach (var gameObject in GameObjects)
             {
@@ -48,7 +48,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <summary>
         /// When the scene's start
         /// </summary>
-        public void Start()
+        public virtual void Start()
         {
             
             Renderer.Camera?.Start();
@@ -61,7 +61,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <summary>
         /// When the scene's end
         /// </summary>
-        public void End()
+        public virtual void End()
         {
             Renderer.Camera.End();
             foreach (var gameObject in GameObjects)
@@ -69,12 +69,19 @@ namespace AlmostGoodEngine.Core.Scenes
                 gameObject.End();
             }
         }
+        /// <summary>
+        /// Resize the scene
+        /// </summary>
+        public virtual void Resize(Viewport viewport)
+        {
+            Renderer.Resize(viewport);
+        }
 
         /// <summary>
         /// Before the scene's update
         /// </summary>
         /// <param name="gameTime"></param>
-        public void BeforeUpdate(GameTime gameTime)
+        public virtual void BeforeUpdate(GameTime gameTime)
         {
             Renderer.Camera.BeforeUpdate(gameTime);
             foreach (var gameObject in GameObjects)
@@ -87,7 +94,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// Update the scene's content
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             Renderer.Camera.Update(gameTime);
             foreach (var gameObject in GameObjects)
@@ -100,7 +107,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// Fixed update the scene's content
         /// </summary>
         /// <param name="gameTime"></param>
-        public void FixedUpdate(GameTime gameTime)
+        public virtual void FixedUpdate(GameTime gameTime)
         {
             Renderer.Camera.FixedUpdate(gameTime);
             foreach (var gameObject in GameObjects)
@@ -113,7 +120,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// After the scene's update
         /// </summary>
         /// <param name="gameTime"></param>
-        public void AfterUpdate(GameTime gameTime)
+        public virtual void AfterUpdate(GameTime gameTime)
         {
             Renderer.Camera.AfterUpdate(gameTime);
             foreach (var gameObject in GameObjects)
@@ -126,7 +133,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// Draw the scene's content
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Renderer.Draw(gameTime, spriteBatch);
         }
@@ -135,7 +142,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// Draw the scene's UI layer
         /// </summary>
         /// <param name="gameTime"></param>
-        public void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Renderer.DrawUI(gameTime, spriteBatch);
         }

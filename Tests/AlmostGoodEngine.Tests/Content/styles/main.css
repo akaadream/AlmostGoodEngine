@@ -1,3 +1,34 @@
+.main {
+    background-color: #333333;
+    width: 100%;
+    top: 42px;
+}
+
 .test {
-    background-color: red;
+    background-color: #b83232;
+    width: calc(50% - 200px);
+    height: 300px;
+
+    top: 52px;
+    left: 10px;
+    border: 3px solid rgb(212, 224, 37);
+    border-radius: 20px;
+    transition: 200ms;
+}
+
+.test:hover {
+    background-color: #d12087;
+    width: 1000px;
+    height: 600px;
+}
+
+.menu {
+    width: 100%;
+    height: 42px;
+    background-color: #191919;
+    transition: 200ms;
+}
+
+.menu:hover {
+    background-color: #292929;
 }

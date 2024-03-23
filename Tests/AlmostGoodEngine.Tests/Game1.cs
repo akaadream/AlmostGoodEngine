@@ -43,7 +43,11 @@ namespace AlmostGoodEngine.Tests
 
         private void StyleUpdated(object sender, FileSystemEventArgs args)
         {
-            GUIManager.LoadPlainCSS()
+            if (!AssetsManager.DataFiles.ContainsKey("styles/main"))
+            {
+                return;
+            }
+            GUIManager.LoadPlainCss(AssetsManager.DataFiles["styles/main"]);
         }
 
 		protected override void LoadContent()
@@ -52,9 +56,10 @@ namespace AlmostGoodEngine.Tests
 
             GameManager.SceneManager.Add("test", new TestScene());
             GameManager.SceneManager.Add("inputs", new InputScene());
+            GameManager.SceneManager.Add("gui", new GUIScene());
 
-            GameManager.SceneManager.Set("test");
-
+            GameManager.SceneManager.Set("gui");
+            GUIManager.LoadStyle("styles/main");
 
         }
     }

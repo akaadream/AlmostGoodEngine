@@ -1,4 +1,5 @@
 ﻿using Apos.Shapes;
+using System;
 using System.Collections.Generic;
 
 namespace AlmostGoodEngine.GUI
@@ -18,6 +19,8 @@ namespace AlmostGoodEngine.GUI
 		{
 			// Scissor rectangle
 			GUIManager.SetScissor(ScissorRectangle);
+
+			//Console.WriteLine(ScissorRectangle.ToString());
 
 			// Start drawing shapes
 			shapeBatch.Begin();

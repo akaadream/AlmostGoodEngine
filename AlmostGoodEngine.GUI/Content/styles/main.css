@@ -1,4 +1,8 @@
 .test {
     background-color: red;
-    pointer-events: all;
+    width: 250px;
+    height: 100px;
+
+    top: 25px;
+    left: 25px;
 }

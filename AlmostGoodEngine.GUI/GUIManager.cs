@@ -4,15 +4,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlmostGoodEngine.GUI
 {
 	public static class GUIManager
 	{
-		public static int Width { get; private set; }
+		public static int Width { get => _graphics.PreferredBackBufferWidth; }
 
-		public static int Height { get; private set; }
+		public static int Height { get => _graphics.PreferredBackBufferHeight; }
 
 		/// <summary>
 		/// GUI Layouts
@@ -29,6 +31,8 @@ namespace AlmostGoodEngine.GUI
 		/// </summary>
 		private static GraphicsDevice _graphicsDevice { get; set; }
 
+		private static GraphicsDeviceManager _graphics { get; set; }
+
 		public static MouseState MouseState { get; private set; }
 		public static MouseState PreviousState { get; private set; }
 
@@ -44,7 +48,7 @@ namespace AlmostGoodEngine.GUI
 		/// </summary>
 		/// <param name="contentManager"></param>
 		/// <param name="graphicsDevice"></param>
-		public static void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
+		public static void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics)
 		{
 			Layouts = [];
 			Stylesheets = [];
@@ -53,8 +57,7 @@ namespace AlmostGoodEngine.GUI
 			{
 				_shapeBatch = new(graphicsDevice, contentManager);
 				_graphicsDevice = graphicsDevice;
-				Width = _graphicsDevice.Viewport.Width;
-				Height = _graphicsDevice.Viewport.Height;
+				_graphics = graphics;
 				_contentManager = contentManager;
 			}
 		}
@@ -86,19 +89,32 @@ namespace AlmostGoodEngine.GUI
 				foreach (var rule in stylesheet.StyleRules)
 				{
 					string[] selectors = rule.SelectorText.Split(':');
-					
+
+					if (selectors.Length == 0)
+					{
+						continue;
+					}
+
+					if (selectors.Length > 1)
+					{
+						
+					}
+
 					// Class
 					if (rule.SelectorText.StartsWith("."))
 					{
-						foreach (var element in FindElements(rule.SelectorText.Substring(1)))
+						foreach (var element in FindElements(selectors[0].Substring(1)))
 						{
-							if (Contains(selectors, "hover"))
+							if (selectors.Length > 1)
 							{
-								element.ApplyHoverStyle(rule.Style);
-							}
-							else if (Contains(selectors, "focus"))
-							{
-								element.ApplyFocusStyle(rule.Style);
+								if (selectors[1] == "hover")
+								{
+									element.ApplyHoverStyle(rule.Style, true);
+								}
+								else if (selectors[1] == "focus")
+								{
+									element.ApplyFocusStyle(rule.Style, true);
+								}
 							}
 							else
 							{
@@ -109,16 +125,16 @@ namespace AlmostGoodEngine.GUI
 					// Id
 					else if (rule.SelectorText.StartsWith("#"))
 					{
-						var element = FindById(rule.SelectorText.Substring(1));
+						var element = FindById(selectors[0].Substring(1));
 						if (element != null)
 						{
-							if (Contains(selectors, "hover"))
+							if (rule.SelectorText.EndsWith(":hover"))
 							{
-								element.ApplyHoverStyle(rule.Style);
+								element.ApplyHoverStyle(rule.Style, true);
 							}
-							else if (Contains(selectors, "focus"))
+							else if (rule.SelectorText.EndsWith(":focus"))
 							{
-								element.ApplyFocusStyle(rule.Style);
+								element.ApplyFocusStyle(rule.Style, true);
 							}
 							else
 							{
@@ -189,6 +205,8 @@ namespace AlmostGoodEngine.GUI
 		public static void Update(GameTime gameTime)
 		{
 			MouseState = Mouse.GetState();
+
+			Console.WriteLine("{Width: " + Width + ", Height: " + Height + "}");
 
 			foreach (var layout in Layouts)
 			{

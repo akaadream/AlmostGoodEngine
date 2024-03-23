@@ -119,7 +119,7 @@ namespace AlmostGoodEngine.Core
 
             GameManager.LoadContent();
             SpriteBatch = new(GraphicsDevice);
-			GUIManager.Initialize(Content, GraphicsDevice);
+			GUIManager.Initialize(Content, GraphicsDevice, Graphics);
 			GameManager.Start();
         }
 
@@ -215,7 +215,7 @@ namespace AlmostGoodEngine.Core
 
                 Window.Position = windowPosition;
 
-                GameManager.Resize(GraphicsDevice.Viewport);
+                GameManager.Resize(new Viewport(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight));
             }
 
             _resizing = true;

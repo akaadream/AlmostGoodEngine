@@ -1,5 +1,7 @@
 ﻿using ExCSS;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using MColor = Microsoft.Xna.Framework.Color;
 
 namespace AlmostGoodEngine.GUI.Utils
@@ -74,6 +76,65 @@ namespace AlmostGoodEngine.GUI.Utils
 			return new MColor(red, green, blue);
 		}
 
+		public static int FromCssCalcToSize(string cssValue)
+		{
+			string pattern = @"calc\((.*)\)";
+			Match match = Regex.Match(cssValue, pattern);
+			if (match.Success)
+			{
+				string innerExpression = match.Groups[1].Value;
+				return ComputeCalc(innerExpression);
+			}
+
+			// Not able to compute the css calc
+			return 0;
+		}
+
+		private static int ComputeCalc(string expression)
+		{
+			string pattern = @"\d+\.?\d*|\+|\-|\*|\/";
+			MatchCollection matches = Regex.Matches(expression, pattern);
+
+			List<int> numbers = [];
+			List<string> operators = [];
+
+			foreach (Match match in matches)
+			{
+				string matchValue = match.Value;
+				if (int.TryParse(matchValue, out int number))
+				{
+					numbers.Add(number);
+				}
+				else
+				{
+					operators.Add(matchValue);
+				}
+			}
+
+			// Priorities (* and /)
+			for (int i = 0; i < operators.Count; i++)
+			{
+				if (operators[i] == "*" || operators[i] == "/")
+				{
+					int left = numbers[i];
+					int right = numbers[i + 1];
+					int result = operators[i] switch
+					{
+						"*" => left * right,
+						"/" => left / right,
+						_ => 0
+					};
+
+					numbers[i] = result;
+					numbers.RemoveAt(i + 1);
+					operators.RemoveAt(i);
+					i--;
+				}
+			}
+
+			int total = numbers[0]
+		}
+
 		public static int FromCssToSize(string cssValue)
 		{
 			if (cssValue.EndsWith("px") ||
@@ -81,12 +142,12 @@ namespace AlmostGoodEngine.GUI.Utils
 				cssValue.EndsWith("vh") ||
 				cssValue.EndsWith("em"))
 			{
-				return int.Parse(cssValue.Substring(0, cssValue.Length - 3));
+				return int.Parse(cssValue.Substring(0, cssValue.Length - 2));
 			}
 
 			if (cssValue.EndsWith("%"))
 			{
-				return int.Parse(cssValue.Substring(0, cssValue.Length - 2));
+				return int.Parse(cssValue.Substring(0, cssValue.Length - 1));
 			}
 
 			return 0;
@@ -96,12 +157,12 @@ namespace AlmostGoodEngine.GUI.Utils
 		{
 			if (cssValue.EndsWith("ms"))
 			{
-				return float.Parse(cssValue.Substring(0, cssValue.Length - 3)) / 1000f;
+				return float.Parse(cssValue.Substring(0, cssValue.Length - 2)) / 1000f;
 			}
 
 			if (cssValue.EndsWith("s"))
 			{
-				return float.Parse(cssValue.Substring(0, cssValue.Length - 2));
+				return (float)double.Parse(cssValue.Substring(0, cssValue.Length - 1));
 			}
 
 			return 0f;
