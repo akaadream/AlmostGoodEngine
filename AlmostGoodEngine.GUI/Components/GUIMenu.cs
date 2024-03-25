@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace AlmostGoodEngine.GUI.Components
 {
-	internal class GUIMenu
+
+
+	public class GUIMenu : GUILayout
 	{
+
 	}
 }

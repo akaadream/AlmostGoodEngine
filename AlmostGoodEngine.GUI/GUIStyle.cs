@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Reflection.Metadata.Ecma335;
 
@@ -70,7 +71,7 @@ namespace AlmostGoodEngine.GUI
 
 		// Default
 		public Color BackgroundColor { get; set; } = Color.Transparent;
-		public Color TextColor { get; set; } = Color.Transparent;
+		public Color TextColor { get; set; } = Color.White;
 		public Color BorderColor { get; set; } = Color.Transparent;
 
 		#endregion
@@ -81,11 +82,24 @@ namespace AlmostGoodEngine.GUI
 
 		#endregion
 
+		#region Text
+
+		public string Content = string.Empty;
+		public int FontSize { get; set; } = 12;
+		public string FontFamily { get; set; } = "inherit";
+		public SpriteFontBase Font { get; set; } = null;
+		public GUIHAlign HAlign { get; set; } = GUIHAlign.Center;
+		public GUIVAlign VAlign { get; set; } = GUIVAlign.Middle;
+
+		#endregion
+
 		#region Others
 
 		public int BorderRadius { get; set; } = 0;
 
 		public float Opacity { get; set; } = 1f;
+
+		public bool Events { get; set; } = true;
 
 		#endregion
 

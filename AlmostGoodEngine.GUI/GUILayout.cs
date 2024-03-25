@@ -1,4 +1,5 @@
 ﻿using Apos.Shapes;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -15,23 +16,26 @@ namespace AlmostGoodEngine.GUI
 			}
 		}
 
-		public override void Draw(ShapeBatch shapeBatch, float delta)
+		public override void Draw(ShapeBatch shapeBatch, SpriteBatch spriteBatch, float delta)
 		{
 			// Scissor rectangle
 			GUIManager.SetScissor(ScissorRectangle);
 
 			//Console.WriteLine(ScissorRectangle.ToString());
+			spriteBatch.Begin();
 
 			// Start drawing shapes
 			shapeBatch.Begin();
 
-			base.Draw(shapeBatch, delta);
+			base.Draw(shapeBatch, spriteBatch, delta);
 			foreach (var child in Children)
 			{
-				child.Draw(shapeBatch, delta);
+				child.Draw(shapeBatch, spriteBatch, delta);
 			}
 
 			shapeBatch.End();
+
+			spriteBatch.End();
 
 			// Remove the scissor rectangle
 			GUIManager.ClearScissor();

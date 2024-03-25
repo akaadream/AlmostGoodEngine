@@ -21,6 +21,9 @@
 /processorParam:DebugMode=Auto
 /build:apos-shapes.fx
 
+#begin Fonts/Signika-Bold.ttf
+/copy:Fonts/Signika-Bold.ttf
+
 #begin Sprites/character.png
 /importer:TextureImporter
 /processor:TextureProcessor

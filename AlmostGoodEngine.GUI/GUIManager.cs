@@ -1,11 +1,13 @@
 ﻿using Apos.Shapes;
 using ExCSS;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace AlmostGoodEngine.GUI
@@ -41,6 +43,8 @@ namespace AlmostGoodEngine.GUI
 
 		private static ContentManager _contentManager;
 
+		public static FontSystem FontSystem { get; private set; }
+
 		internal static List<Stylesheet> Stylesheets { get; set; }
 
 		/// <summary>
@@ -60,6 +64,28 @@ namespace AlmostGoodEngine.GUI
 				_graphics = graphics;
 				_contentManager = contentManager;
 			}
+
+			FontSystem = new();
+		}
+
+		public static void LoadFont(string fontName)
+		{
+			if (FontSystem == null)
+			{
+				return;
+			}
+
+			if (!File.Exists(fontName))
+			{
+				return;
+			}
+
+			FontSystem.AddFont(File.ReadAllBytes(@"" + fontName));
+		}
+
+		public static SpriteFontBase GetFont(int size)
+		{
+			return FontSystem.GetFont(size);
 		}
 
 		public static void LoadStyle(string filename)
@@ -118,6 +144,10 @@ namespace AlmostGoodEngine.GUI
 							}
 							else
 							{
+								if (rule.SelectorText == ".test")
+								{
+
+								}
 								element.ApplyStyle(rule.Style);
 							}
 						}
@@ -144,19 +174,6 @@ namespace AlmostGoodEngine.GUI
 					}
 				}
 			}
-		}
-
-		private static bool Contains(string[] arr, string text)
-		{
-			foreach (var item in arr)
-			{
-				if (item == text)
-				{
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		public static GUIElement FindById(string id)
@@ -244,7 +261,7 @@ namespace AlmostGoodEngine.GUI
 		/// Draw the GUI content
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public static void Draw(GameTime gameTime)
+		public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
 		{
 			if (_shapeBatch == null)
 			{
@@ -253,7 +270,7 @@ namespace AlmostGoodEngine.GUI
 
 			foreach (var layout in Layouts)
 			{
-				layout.Draw(_shapeBatch, (float)gameTime.ElapsedGameTime.TotalSeconds);
+				layout.Draw(_shapeBatch, spriteBatch, (float)gameTime.ElapsedGameTime.TotalSeconds);
 			}
 		}
 

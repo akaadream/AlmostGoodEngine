@@ -132,7 +132,8 @@ namespace AlmostGoodEngine.GUI.Utils
 				}
 			}
 
-			int total = numbers[0]
+			//int total = numbers[0]
+			return 0;
 		}
 
 		public static int FromCssToSize(string cssValue)

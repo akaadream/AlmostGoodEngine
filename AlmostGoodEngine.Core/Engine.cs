@@ -164,7 +164,7 @@ namespace AlmostGoodEngine.Core
             GameManager.DrawUI(gameTime, SpriteBatch);
 
             // Draw the GUI
-            GUIManager.Draw(gameTime);
+            GUIManager.Draw(gameTime, SpriteBatch);
 
             AlmostGoodConsole.Draw(SpriteBatch);
 

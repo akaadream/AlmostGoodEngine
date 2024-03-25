@@ -59,8 +59,8 @@ namespace AlmostGoodEngine.Tests
             GameManager.SceneManager.Add("gui", new GUIScene());
 
             GameManager.SceneManager.Set("gui");
-            GUIManager.LoadStyle("styles/main");
-
+			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
+			GUIManager.LoadStyle("styles/main");
         }
     }
 }

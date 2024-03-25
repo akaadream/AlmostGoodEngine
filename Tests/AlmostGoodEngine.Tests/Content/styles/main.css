@@ -1,25 +1,38 @@
+.test {
+    background-color: #b83232;
+    width: 300px;
+    height: 60px;
+
+    top: 52px;
+    left: 10px;
+    border: 6px solid #5631f4;
+    border-radius: 20px;
+    transition: 200ms;
+
+    padding: 20px;
+
+    border-radius: 60px;
+
+    font-size: 32px;
+    content: "Test";
+    color: white;
+
+    text-align: left;
+    vertical-align: middle;
+    pointer-events: none;
+
+    box-sizing: unset;
+}
+
+.test:hover {
+    background-color: #e95612;
+    border-color: #4655d7;
+}
+
 .main {
     background-color: #333333;
     width: 100%;
     top: 42px;
-}
-
-.test {
-    background-color: #b83232;
-    width: calc(50% - 200px);
-    height: 300px;
-
-    top: 52px;
-    left: 10px;
-    border: 3px solid rgb(212, 224, 37);
-    border-radius: 20px;
-    transition: 200ms;
-}
-
-.test:hover {
-    background-color: #d12087;
-    width: 1000px;
-    height: 600px;
 }
 
 .menu {

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using MColor = Microsoft.Xna.Framework.Color;
 using EColor = ExCSS.Color;
 using AlmostGoodEngine.GUI.Utils;
+using Microsoft.Xna.Framework.Graphics;
+using FontStashSharp;
 
 namespace AlmostGoodEngine.GUI
 {
@@ -134,6 +136,103 @@ namespace AlmostGoodEngine.GUI
 			}
 		}
 
+		public int Border
+		{
+			get
+			{
+				if (doingTransition)
+				{
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return (int)MathHelper.Lerp(Style.Border, HoverStyle.Border, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return (int)MathHelper.Lerp(HoverStyle.Border, Style.Border, transitionTimer / Style.TransitionDuration);
+					}
+				}
+				return CurrentStyle.Border;
+			}
+		}
+
+		public int BorderRadius
+		{
+			get
+			{
+				if (doingTransition)
+				{
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return (int)MathHelper.Lerp(Style.BorderRadius, HoverStyle.BorderRadius, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return (int)MathHelper.Lerp(HoverStyle.BorderRadius, Style.BorderRadius, transitionTimer / Style.TransitionDuration);
+					}
+				}
+				return CurrentStyle.BorderRadius;
+			}
+		}
+
+		private string _text = "";
+		public string Text
+		{
+			get
+			{
+				if (!string.IsNullOrWhiteSpace(Style.Content))
+				{
+					return Style.Content;
+				}
+				return _text;
+			}
+
+			set
+			{
+				_text = value;
+			}
+		}
+
+		public Vector2 TextPosition
+		{
+			get
+			{
+				int x = 0;
+				int y = 0;
+
+				Vector2 textSize = Vector2.Zero;
+				if (Style.Font != null)
+				{
+					textSize = Style.Font.MeasureString(Text);
+				}
+
+				switch (Style.HAlign)
+				{
+					case GUIHAlign.Left:
+						x = X + CurrentStyle.PaddingLeft + CurrentStyle.Border;
+						break;
+					case GUIHAlign.Right:
+						x = (int)(X + Width - textSize.X - CurrentStyle.PaddingRight - CurrentStyle.Border);
+						break;
+					case GUIHAlign.Center:
+						x = (int)(X + Width / 2 - textSize.X / 2);
+						break;
+				}
+
+				switch (Style.VAlign)
+				{
+					case GUIVAlign.Top:
+						y = Y + CurrentStyle.PaddingTop + CurrentStyle.Border;
+						break;
+					case GUIVAlign.Bottom:
+						y = (int)(Y + Height - textSize.Y - CurrentStyle.PaddingBottom - CurrentStyle.Border);
+						break;
+					case GUIVAlign.Middle:
+						y = (int)(Y + Height / 2 - textSize.Y / 2);
+						break;
+				}
+
+				return new Vector2(x, y);
+			}
+		}
+
 		private bool doingTransition = false;
 		private bool transitionFinished = true;
 		private float transitionTimer = 0f;
@@ -164,6 +263,29 @@ namespace AlmostGoodEngine.GUI
 			}
 		}
 
+		public MColor BorderColor
+		{
+			get
+			{
+				if (doingTransition)
+				{
+					switch (Transition)
+					{
+						case GUITransition.Hover:
+							return MColor.Lerp(Style.BorderColor, HoverStyle.BorderColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasHover:
+							return MColor.Lerp(HoverStyle.BorderColor, Style.BorderColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.Focus:
+							return MColor.Lerp(HoverStyle.BorderColor, FocusStyle.BorderColor, transitionTimer / Style.TransitionDuration);
+						case GUITransition.WasFocus:
+							return MColor.Lerp(FocusStyle.BorderColor, Style.BorderColor, transitionTimer / Style.TransitionDuration);
+					}
+				}
+
+				return CurrentStyle.BorderColor;
+			}
+		}
+
 		public Rectangle ScissorRectangle
 		{
 			get => new(X, Y, Width, Height);
@@ -180,6 +302,11 @@ namespace AlmostGoodEngine.GUI
 
 		public virtual void Update(float delta)
 		{
+			if (!CurrentStyle.Events)
+			{
+				return;
+			}
+
 			IsHovered = GUIManager.MouseState.X >= X && GUIManager.MouseState.Y >= Y && GUIManager.MouseState.X < X + Width && GUIManager.MouseState.Y < Y + Height;
 			IsDown = IsHovered && GUIManager.IsMouseLeftDown();
 			IsPressed = IsHovered && GUIManager.IsMouseLeftPressed();
@@ -235,7 +362,7 @@ namespace AlmostGoodEngine.GUI
 			Transition = transition;
 		}
 
-		public virtual void Draw(ShapeBatch shapeBatch, float delta)
+		public virtual void Draw(ShapeBatch shapeBatch, SpriteBatch spriteBatch, float delta)
 		{
 			// Do not render anything if any axis does not have a size
 			if (Width == 0 || Height == 0)
@@ -244,54 +371,37 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			// Background is transparent and no border or transparent border
-			if (CurrentStyle.BackgroundColor == MColor.Transparent && (CurrentStyle.Border == 0 || CurrentStyle.BorderColor == MColor.Transparent))
+			if (BackgroundColor == MColor.Transparent && (Border == 0 || BorderColor == MColor.Transparent))
 			{
 				return;
 			}
 
-			// If the element draw is a circle
-			if (CurrentStyle.IsCircle)
+			// Draw the element
+			if (CurrentStyle.Border > 0)
 			{
-				var origin = new Vector2(X - Width / 2, Y - Height / 2);
-				if (CurrentStyle.Border > 0)
-				{
-					shapeBatch.DrawCircle(
-						origin,
-						Width,
-						BackgroundColor,
-						CurrentStyle.BorderColor,
-						CurrentStyle.Border);
-				}
-				else
-				{
-					shapeBatch.FillCircle(
-						origin,
-						Width,
-						BackgroundColor);
-				}
+				shapeBatch.DrawRectangle(
+					new Vector2(X, Y),
+					new Vector2(Width, Height),
+					BackgroundColor,
+					BorderColor,
+					Border,
+					BorderRadius);
 			}
-			// Else, it's a rectangle
 			else
 			{
-				if (CurrentStyle.Border > 0)
-				{
-					shapeBatch.DrawRectangle(
-						new Vector2(X, Y),
-						new Vector2(Width, Height),
-						BackgroundColor,
-						CurrentStyle.BorderColor,
-						CurrentStyle.Border,
-						CurrentStyle.BorderRadius);
-				}
-				else
-				{
-					shapeBatch.FillRectangle(
-						new Vector2(X, Y),
-						new Vector2(Width, Height),
-						BackgroundColor,
-						CurrentStyle.BorderRadius);
+				shapeBatch.FillRectangle(
+					new Vector2(X, Y),
+					new Vector2(Width, Height),
+					BackgroundColor,
+					BorderRadius);
+			}
 
-					//Console.WriteLine("{X: " + X + ", Y: " + Y + ", Width: " + Width + ", Height: " + Height + "}");
+			// Draw the text
+			if (!string.IsNullOrWhiteSpace(Text))
+			{
+				if (CurrentStyle.Font != null)
+				{
+					spriteBatch.DrawString(CurrentStyle.Font, Text, TextPosition, Style.TextColor);
 				}
 			}
 		}
@@ -406,22 +516,25 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="properties"></param>
 		private void ApplyStyleOn(GUIStyle style, StyleDeclaration properties, bool replaceIfExists = false)
 		{
+			// No style or no properties
 			if (style == null || properties == null)
 			{
 				return;
 			}
 
-			// Colors
+			// Background color
 			if (IsValid(properties.BackgroundColor))
 			{
 				style.BackgroundColor = StylesheetHelper.FromCssString(properties.BackgroundColor);
 			}
 
+			// Border color
 			if (IsValid(properties.BorderColor))
 			{
 				style.BorderColor = StylesheetHelper.FromCssString(properties.BorderColor);
 			}
 
+			// Text color
 			if (IsValid(properties.Color))
 			{
 				style.TextColor = StylesheetHelper.FromCssString(properties.Color);
@@ -622,18 +735,22 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			// Borders
-			if (IsValid(properties.BorderLeft))
+			if (IsValid(properties.Border))
 			{
-				int left = StylesheetHelper.FromCssToSize(properties.BorderLeft);
-				int right = StylesheetHelper.FromCssToSize(properties.BorderRight);
-				int bottom = StylesheetHelper.FromCssToSize(properties.BorderBottom);
-				int top = StylesheetHelper.FromCssToSize(properties.BorderTop);
+				int left = StylesheetHelper.FromCssToSize(properties.BorderLeftWidth);
+				int right = StylesheetHelper.FromCssToSize(properties.BorderRightWidth);
+				int bottom = StylesheetHelper.FromCssToSize(properties.BorderBottomWidth);
+				int top = StylesheetHelper.FromCssToSize(properties.BorderTopWidth);
 
 				int max = Math.Max(left, right);
 				max = Math.Max(max, top);
 				max = Math.Max(max, bottom);
 
 				style.Border = max;
+			}
+			else if (IsValid(properties.BorderWidth))
+			{
+				style.Border = StylesheetHelper.FromCssToSize(properties.BorderWidth);
 			}
 
 			// Border radius
@@ -652,6 +769,74 @@ namespace AlmostGoodEngine.GUI
 			if (IsValid(properties.Opacity))
 			{
 				style.Opacity = float.Parse(properties.Opacity);
+			}
+
+			// Font family
+			if (IsValid(properties.FontFamily))
+			{
+				GUIManager.LoadFont("Content/Fonts/" + properties.FontFamily);
+			}
+
+			// Font size
+			if (IsValid(properties.FontSize))
+			{
+				style.FontSize = StylesheetHelper.FromCssToSize(properties.FontSize);
+				style.Font = GUIManager.GetFont(style.FontSize);
+			}
+
+			// Font horizontal align
+			if (IsValid(properties.TextAlign))
+			{
+				switch (properties.TextAlign)
+				{
+					case "left":
+						style.HAlign = GUIHAlign.Left;
+						break;
+					case "center":
+						style.HAlign = GUIHAlign.Center;
+						break;
+					case "right":
+						style.HAlign = GUIHAlign.Right;
+						break;
+				}
+			}
+
+			// Text vertical align
+			if (IsValid(properties.VerticalAlign))
+			{
+				switch (properties.VerticalAlign)
+				{
+					case "top":
+						style.VAlign = GUIVAlign.Top;
+						break;
+					case "middle":
+						style.VAlign = GUIVAlign.Middle;
+						break;
+					case "bottom":
+						style.VAlign = GUIVAlign.Bottom;
+						break;
+				}
+			}
+
+			// Font content
+			if (IsValid(properties.Content))
+			{
+				style.Content = properties.Content.Replace("\"", "");
+			}
+
+			// Events
+			if (IsValid(properties.PointerEvents))
+			{
+				switch (properties.PointerEvents)
+				{
+					case "all":
+					case "fill":
+						style.Events = true;
+						break;
+					case "none":
+						style.Events = false;
+						break;
+				}
 			}
 		}
 
