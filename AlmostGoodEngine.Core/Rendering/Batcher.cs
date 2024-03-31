@@ -36,7 +36,7 @@ namespace AlmostGoodEngine.Core.Rendering
 		{
 			GraphicsDevice = graphicsDevice;
 
-			_shader = GameManager.Game.Content.Load<Effect>("shaders/first-shader");
+			_shader = GameManager.Engine.Content.Load<Effect>("shaders/first-shader");
 
 			_vertices = new Vertex[_initialVertices];
 			_indices = new uint[_initialIndices];

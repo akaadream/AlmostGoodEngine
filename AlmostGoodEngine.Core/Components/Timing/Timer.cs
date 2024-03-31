@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 
-namespace AlmostGoodEngine.Core.Components.Time
+namespace AlmostGoodEngine.Core.Components.Timing
 {
     public class Timer : Component
     {

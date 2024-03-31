@@ -3,7 +3,6 @@ using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.ComponentModel.DataAnnotations;
 
 namespace AlmostGoodEngine.Core.Entities
 {
@@ -12,7 +11,16 @@ namespace AlmostGoodEngine.Core.Entities
         /// <summary>
         /// The viewport of the camera
         /// </summary>
-        public Viewport Viewport { get; set; }
+        public Viewport Viewport
+        {
+            get => _viewport;
+            set
+            {
+                _viewport = value;
+                ComputeMatrixes();
+            }
+        }
+        private Viewport _viewport;
 
         public int Width { get => Viewport.Width; }
         public int Height { get => Viewport.Height; }
@@ -75,6 +83,8 @@ namespace AlmostGoodEngine.Core.Entities
         /// </summary>
         public Matrix ZoomMatrix { get => Matrix.CreateScale(Zoom, Zoom, 1f); }
 
+        public Color BackgroundColor { get; set; } = Color.Transparent;
+
         public Camera2D(int width, int height)
         {
             Viewport = new((int)Position.X, (int)Position.Y, width, height);
@@ -121,7 +131,7 @@ namespace AlmostGoodEngine.Core.Entities
         /// <returns></returns>
         public Matrix ViewMatrix()
         {
-            return Matrix.CreateTranslation(new Vector3(-Position.X, -Position.Y, 0)) *
+            return Matrix.CreateTranslation(new Vector3((int)-Position.X, (int)-Position.Y, 0)) *
                 Matrix.CreateRotationZ(Rotation.Radians) *
                 Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                 Matrix.CreateTranslation(new Vector3(Offset.X, Offset.Y, 0));
@@ -179,5 +189,15 @@ namespace AlmostGoodEngine.Core.Entities
         {
             return Vector2.Transform(position, View);
         }
-    }
+
+		public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			if (BackgroundColor == Color.Transparent)
+            {
+                return;
+            }
+
+            Debug.FillRectangle(spriteBatch, Viewport.Bounds, BackgroundColor);
+		}
+	}
 }

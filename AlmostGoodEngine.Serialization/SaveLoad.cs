@@ -6,7 +6,6 @@ namespace AlmostGoodEngine.Serialization
     {
         Json,
         Xml,
-        Binary
     }
 
     public static class SaveLoad
@@ -48,9 +47,6 @@ namespace AlmostGoodEngine.Serialization
                 case SaveLoadType.Xml:
                     await Xml.Write(instance, filename);
                     break;
-                case SaveLoadType.Binary:
-                    await Binary.Write(instance, filename);
-                    break;
                 case SaveLoadType.Json:
                 default:
                     await Json.Write(instance, filename);
@@ -66,7 +62,7 @@ namespace AlmostGoodEngine.Serialization
         /// <param name="type"></param>
         /// <param name="safe"></param>
         /// <returns></returns>
-        public static async Task<T> Load<T>(string filename, SaveLoadType type, bool safe = true)
+        public static async ValueTask<T> Load<T>(string filename, SaveLoadType type, bool safe = true)
         {
             if (safe)
             {
@@ -76,7 +72,7 @@ namespace AlmostGoodEngine.Serialization
             return await Read<T>(filename, type);
         }
 
-        private static async Task<T> SafeLoad<T>(string filename, SaveLoadType type)
+        private static async ValueTask<T> SafeLoad<T>(string filename, SaveLoadType type)
         {
             try
             {
@@ -87,12 +83,11 @@ namespace AlmostGoodEngine.Serialization
             return default;
         }
 
-        private static async Task<T> Read<T>(string filename, SaveLoadType type)
+        private static async ValueTask<T> Read<T>(string filename, SaveLoadType type)
         {
             return type switch
             {
                 SaveLoadType.Xml => await Xml.Read<T>(filename),
-                SaveLoadType.Binary => await Binary.Read<T>(filename),
                 _ => await Json.Read<T>(filename),
             };
         }

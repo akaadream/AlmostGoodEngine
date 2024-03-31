@@ -88,6 +88,7 @@ namespace AlmostGoodEngine.Core
             Graphics.PreferredBackBufferWidth = Settings.Width;
             Graphics.PreferredBackBufferHeight = Settings.Height;
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            Graphics.PreferMultiSampling = true;
             Graphics.ApplyChanges();
 
             // Window other settings
@@ -96,7 +97,9 @@ namespace AlmostGoodEngine.Core
             Window.Title = Settings.Name;
 
             // Window events
+            // When a file is droped inside the window
             Window.FileDrop += Window_FileDrop;
+            // When the user resized the client
             Window.ClientSizeChanged += Window_ClientSizeChanged;
         }
 
@@ -104,10 +107,14 @@ namespace AlmostGoodEngine.Core
         {
             // Game manager initialization
             GameManager.Initialize(this);
+            // Drawing helper (used to draw shapes)
             Draw2D.Initialize(GraphicsDevice);
+            // Inputs
             Input.Initialize();
+            // In-engine console
             AlmostGoodConsole.Initialize();
 
+            // Load the application's settings
             LoadSettings();
 
             base.Initialize();
@@ -117,9 +124,13 @@ namespace AlmostGoodEngine.Core
         {
             base.LoadContent();
 
-            GameManager.LoadContent();
-            SpriteBatch = new(GraphicsDevice);
+			SpriteBatch = new(GraphicsDevice);
+
+			// Start the app cycle by loading the game content
+			GameManager.LoadContent();
+            // Initialize the GUI library
 			GUIManager.Initialize(Content, GraphicsDevice, Graphics);
+            // Scene starting
 			GameManager.Start();
         }
 
@@ -136,19 +147,29 @@ namespace AlmostGoodEngine.Core
             // Game manager update functions
             GameManager.BeforeUpdate(gameTime);
 
+            // Console update
             AlmostGoodConsole.Update(gameTime);
 
+            // If the console is not open, we can update  the game
             if (!AlmostGoodConsole.Opened)
             {
-                GameManager.Update(gameTime);
-                if (Time.IsFixedFrame)
-                {
-                    GameManager.FixedUpdate(gameTime);
-                }
+				// The fixed update loop
+				while (Time.accumulator >= Time.FixedDeltaTimeTarget)
+				{
+					// Fixed update
+					GameManager.FixedUpdate(gameTime);
+
+					// Update the accumulator
+					Time.accumulator -= Time.FixedDeltaTimeTarget;
+				}
+
+				GameManager.Update(gameTime);
             }
 
+            // Update the GUI layer
             GUIManager.Update(gameTime);
 
+            // After everything gets updated
             GameManager.AfterUpdate(gameTime);
 
             base.Update(gameTime);
@@ -156,12 +177,18 @@ namespace AlmostGoodEngine.Core
 
         protected override void Draw(GameTime gameTime)
         {
+            // Clear the screen
             GraphicsDevice.Clear(Settings.ClearColor);
 
-            // Draw content
+            // Capture the draw calls rate
             Time.Draw(gameTime);
+
             GameManager.Draw(gameTime, SpriteBatch);
             GameManager.DrawUI(gameTime, SpriteBatch);
+
+#if DEBUG
+            GameManager.DrawDebug(gameTime, SpriteBatch);
+#endif
 
             // Draw the GUI
             GUIManager.Draw(gameTime, SpriteBatch);

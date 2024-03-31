@@ -1,7 +1,9 @@
 ﻿using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Scenes;
+using AlmostGoodEngine.Core.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 namespace AlmostGoodEngine.Core
 {
     public class Renderer
@@ -9,22 +11,44 @@ namespace AlmostGoodEngine.Core
         /// <summary>
         /// The camera used by the renderer to display game content
         /// </summary>
-        public Camera2D Camera { get; private set; }
+        public List<Camera2D> Cameras { get; private set; }
 
         /// <summary>
         /// The scene where this renderer is attached to
         /// </summary>
         public Scene Scene { get; private set; }
 
+		/// <summary>
+		/// Game main viewport shortcut
+		/// </summary>
+		public static Viewport Viewport { get => GameManager.Engine.GraphicsDevice.Viewport; }
+
         public Renderer(Scene scene)
         {
             Scene = scene;
 
-            Camera = new(GameManager.Game.GraphicsDevice.Viewport)
+            Cameras = [];
+            Cameras.Add(new (Viewport)
             {
                 SamplerState = SamplerState.PointClamp
-            };
+            });
         }
+
+        public void Start()
+        {
+            foreach (var camera in Cameras)
+            {
+                camera.Start();
+            }
+        }
+
+        public void End()
+        {
+			foreach (var camera in Cameras)
+			{
+				camera.End();
+			}
+		}
 
         /// <summary>
         /// Called when the viewport is resized
@@ -32,51 +56,117 @@ namespace AlmostGoodEngine.Core
         /// <param name="viewport"></param>
         public void Resize(Viewport viewport)
         {
-            Camera.Viewport = viewport;
-            Camera.ComputeMatrixes();
+            foreach (var camera in Cameras)
+            {
+				camera.Viewport = viewport;
+				camera.ComputeMatrixes();
+			}
         }
+
+        public void BeforeUpdate(GameTime gameTime)
+        {
+			foreach (var camera in Cameras)
+			{
+				camera.BeforeUpdate(gameTime);
+			}
+		}
 
         public void Update(GameTime gameTime)
         {
-            Camera.BeforeUpdate(gameTime);
-            Camera.Update(gameTime);
-            Camera.AfterUpdate(gameTime);
+            foreach (var camera in Cameras)
+            {
+				camera.Update(gameTime);
+			}
         }
 
-        /// <summary>
-        /// Display the game
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+		public void AfterUpdate(GameTime gameTime)
+		{
+			foreach (var camera in Cameras)
+			{
+				camera.AfterUpdate(gameTime);
+			}
+		}
+
+		public void FixedUpdate(GameTime gameTime)
+		{
+			foreach (var camera in Cameras)
+			{
+				camera.FixedUpdate(gameTime);
+			}
+		}
+
+		/// <summary>
+		/// Display the game
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, Camera.SamplerState, null, null, null, Camera.GetTransform());
-
-            // Camera
-            Camera.Draw(gameTime, spriteBatch);
-            
-            // Draw scene objects
-            foreach (var gameObject in Scene.GameObjects)
+            foreach (var camera in Cameras)
             {
-                gameObject.Draw(gameTime, spriteBatch);
-            }
+				// Camera draw
+				spriteBatch.Begin();
+				camera.Draw(gameTime, spriteBatch);
+				spriteBatch.End();
 
-            spriteBatch.End();
+				//spriteBatch.GraphicsDevice.Viewport = camera.Viewport;
+				var rasterizerState = new RasterizerState()
+				{
+					ScissorTestEnable = true,
+				};
+				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)camera.Viewport.X, (int)camera.Viewport.Y, camera.Width, camera.Height);
+				spriteBatch.Begin(SpriteSortMode.Deferred, null, camera.SamplerState, null, rasterizerState, null, camera.GetTransform());
+
+				// Draw scene objects
+				foreach (var entity in Scene.Entities)
+				{
+					// TODO: Check if the game object bounds is visible within the camera, else do not render it
+					entity.Draw(gameTime, spriteBatch);
+				}
+
+				spriteBatch.End();
+			}
         }
 
         public void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
-
-            // Camera UI
-            Camera.DrawUI(gameTime, spriteBatch);
-
-            // Draw scene objects
-            foreach (var gameObject in Scene.GameObjects)
+            foreach (var camera in Cameras)
             {
-                gameObject.DrawUI(gameTime, spriteBatch);
-            }
+				spriteBatch.Begin();
 
-            spriteBatch.End();
+				// Camera UI
+				camera.DrawUI(gameTime, spriteBatch);
+
+				// Draw scene objects
+				foreach (var entity in Scene.Entities)
+				{
+					entity.DrawUI(gameTime, spriteBatch);
+				}
+
+				spriteBatch.End();
+			}
         }
+
+		public void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			spriteBatch.Begin();
+			foreach (var camera in Cameras)
+			{
+				Debug.Rectangle(
+					spriteBatch,
+					new Rectangle(
+						camera.Viewport.X + 1,
+						camera.Viewport.Y + 1,
+						camera.Viewport.Width - 3,
+						camera.Viewport.Height - 3), 
+					Color.Red);
+			}
+
+			// Draw scene objects
+			foreach (var entity in Scene.Entities)
+			{
+				entity.DrawDebug(gameTime, spriteBatch);
+			}
+			spriteBatch.End();
+		}
     }
 }

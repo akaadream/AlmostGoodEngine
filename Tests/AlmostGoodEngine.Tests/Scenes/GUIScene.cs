@@ -16,7 +16,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 
 			main = new();
 			main.Classes.Add("main");
-			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Camera.Height - 42;
+			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Cameras[0].Height - 42;
 
 			GUIElement test = new();
 			test.Classes.Add("test");
@@ -31,7 +31,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 		{
 			base.Resize(viewport);
 
-			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Camera.Height - 42;
+			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Cameras[0].Height - 42;
 		}
 	}
 }

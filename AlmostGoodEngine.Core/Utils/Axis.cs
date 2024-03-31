@@ -72,7 +72,7 @@ namespace AlmostGoodEngine.Core.Utils
         /// <returns></returns>
         public static Vector2 Compute(int x, int y)
         {
-            return new(x, GameManager.Game.GraphicsDevice.Viewport.Height - y);
+            return new(x, GameManager.Engine.GraphicsDevice.Viewport.Height - y);
         }
     }
 }

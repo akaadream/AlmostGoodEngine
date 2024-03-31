@@ -4,7 +4,7 @@ using AlmostGoodEngine.Core;
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Animations;
 using AlmostGoodEngine.Core.Components.Rendering;
-using AlmostGoodEngine.Core.Components.Time;
+using AlmostGoodEngine.Core.Components.Timing;
 using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
@@ -22,6 +22,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
     {
         Text timerText;
         Timer timer;
+
+        Vector3 velocity = Vector3.Zero;
+        float speed = 390f;
 
         public Text TestText { get; set; }
 
@@ -45,16 +48,20 @@ namespace AlmostGoodEngine.Tests.GameObjects
             AddComponent(TestText);
 
             Texture2D playerTexture = content.Load<Texture2D>("Sprites/character");
-            if (playerTexture != null )
+            if (playerTexture != null)
             {
                 AnimatedSprite2D animatedSprite2D = new(16, 19, 4, playerTexture);
                 animatedSprite2D.SpriteSheet.Scale = 4f;
+                animatedSprite2D.OnMouseClicked += (object sender, EventArgs args) =>
+                {
+                    Logger.Log("Sprite clicked");
+                };
                 AddComponent(animatedSprite2D);
             }
 
             Hitbox hitbox = new(new Rectangle(-5, 4, 10, 5), false)
             {
-                DisplayDebug = true,
+                DisplayDebug = false,
             };
             AddComponent(hitbox);
 
@@ -88,7 +95,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
 			timerText.Value = "Remaining time: " + timer.ToString() + "s";
 
-            if (Input.Keyboard.IsPressed(Keys.T))
+            if (Input.Keyboard.IsPressed(Keys.C))
             {
                 Coroutines.StartCoroutine(FadeOut());
             }
@@ -165,9 +172,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 }
             }
 
-            Vector2 velocity = Vector2.Zero;
-
-            float speed = 200f;
+            velocity = Vector3.Zero;
 
             if (Input.Keyboard.IsDown(Keys.Left)) velocity.X = -1;
             else if (Input.Keyboard.IsDown(Keys.Right)) velocity.X = 1;
@@ -175,13 +180,18 @@ namespace AlmostGoodEngine.Tests.GameObjects
             if (Input.Keyboard.IsDown(Keys.Up)) velocity.Y = -1;
             else if (Input.Keyboard.IsDown(Keys.Down)) velocity.Y = 1;
 
-            Position = new(Position.X + velocity.X * speed * Time.FixedDeltaTime, Position.Y + velocity.Y * speed * Time.FixedDeltaTime, Position.Z);
-        }
+			if (velocity.Length() > 0)
+			{
+				velocity.Normalize();
+				Position += velocity * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+				Position = Vector3.Clamp(Position, new(16, 16, 1), new(Renderer.Viewport.Width - 16, Renderer.Viewport.Height - 32, 1));
+            }
+		}
 
         public override void FixedUpdate(GameTime gameTime)
         {
             base.FixedUpdate(gameTime);
-        }
+		}
 
         public IEnumerator<TimeSpan> FadeOut()
         {

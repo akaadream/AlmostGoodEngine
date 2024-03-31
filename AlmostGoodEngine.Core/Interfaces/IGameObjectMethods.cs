@@ -14,5 +14,7 @@ namespace AlmostGoodEngine.Core.Interfaces
         void AfterUpdate(GameTime gameTime);
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
         void DrawUI(GameTime gameTime, SpriteBatch spriteBatch);
+
+        void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }

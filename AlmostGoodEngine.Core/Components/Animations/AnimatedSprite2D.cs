@@ -1,5 +1,6 @@
 ﻿using AlmostGoodEngine.Animations;
 using AlmostGoodEngine.Core.ECS;
+using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +27,16 @@ namespace AlmostGoodEngine.Core.Components.Animations
             }
         }
 
-        public override void Start()
+		public override Rectangle GetBounds()
+		{
+            return new(
+                (int)Owner.Position.X - (int)(SpriteSheet.FrameWidth / 2 * Owner.Scale.X), 
+                (int)Owner.Position.Y - (int)(SpriteSheet.FrameHeight / 2 * Owner.Scale.Y), 
+                (int)(SpriteSheet.FrameWidth * Owner.Scale.X), 
+                (int)(SpriteSheet.FrameHeight * Owner.Scale.Y));
+		}
+
+		public override void Start()
         {
             base.Start();
             SpriteSheet.Start();
@@ -50,7 +60,18 @@ namespace AlmostGoodEngine.Core.Components.Animations
                 return;
             }
 
-            SpriteSheet.Draw(spriteBatch, Owner.Position.ToVector2().Rounded());
-        }
+            Color color = Color.White;
+            if (IsMouseHovering)
+            {
+                color = Color.Red;
+            }
+            else if (IsMouseDown)
+            {
+                color = Color.BlueViolet;
+            }
+
+			SpriteSheet.Draw(spriteBatch, Owner.Position.ToVector2().Rounded(), color);
+			//Debug.Rectangle(spriteBatch, GetBounds(), Color.Green, 2);
+		}
     }
 }

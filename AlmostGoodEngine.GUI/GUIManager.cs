@@ -223,7 +223,7 @@ namespace AlmostGoodEngine.GUI
 		{
 			MouseState = Mouse.GetState();
 
-			Console.WriteLine("{Width: " + Width + ", Height: " + Height + "}");
+			//Console.WriteLine("{Width: " + Width + ", Height: " + Height + "}");
 
 			foreach (var layout in Layouts)
 			{

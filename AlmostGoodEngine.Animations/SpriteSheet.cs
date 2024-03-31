@@ -179,7 +179,18 @@ namespace AlmostGoodEngine.Animations
         /// <param name="position"></param>
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            spriteBatch.Draw(Texture, position, Source, Color.White, Rotation, SpriteOrigin, Scale, SpriteEffects.None, 1f);
+            Draw(spriteBatch, position, Color.White);
         }
+
+        /// <summary>
+        /// Draw the animation
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="position"></param>
+        /// <param name="color"></param>
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
+        {
+			spriteBatch.Draw(Texture, position, Source, color, Rotation, SpriteOrigin, Scale, SpriteEffects.None, 1f);
+		}
     }
 }

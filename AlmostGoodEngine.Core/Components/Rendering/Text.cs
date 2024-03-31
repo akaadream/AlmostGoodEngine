@@ -89,8 +89,8 @@ namespace AlmostGoodEngine.Core.Components.Rendering
                 return;
             }
 
-            int width = GameManager.Game.GraphicsDevice.Viewport.Width;
-            int height = GameManager.Game.GraphicsDevice.Viewport.Height;
+            int width = GameManager.MainCamera()?.Width ?? 0;
+            int height = GameManager.MainCamera()?.Height ?? 0;
 
             Vector2 finalPosition = FinalPosition();
             Vector2 textSize = _font.MeasureString(Value);
@@ -113,8 +113,8 @@ namespace AlmostGoodEngine.Core.Components.Rendering
 
         private Vector2 AnchorPosition()
         {
-            int width = GameManager.Game.GraphicsDevice.Viewport.Width;
-            int height = GameManager.Game.GraphicsDevice.Viewport.Height;
+            int width = Renderer.Viewport.Width;
+            int height = Renderer.Viewport.Height;
 
             return Anchor switch
             {

@@ -1,4 +1,5 @@
 ﻿using AlmostGoodEngine.Core.Interfaces;
+using AlmostGoodEngine.Core.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,17 +28,22 @@ namespace AlmostGoodEngine.Core.ECS
         /// <summary>
         /// Children entities of this entity
         /// </summary>
-        private List<Entity> Children { get; set; }
+        internal List<Entity> Children { get; set; }
 
         /// <summary>
         /// Components attached to this entity
         /// </summary>
-        private List<Component> Components { get; set; }
+        internal List<Component> Components { get; set; }
 
         /// <summary>
         /// Parent entity of this entity
         /// </summary>
         public Entity Parent { get; internal set; }
+
+        /// <summary>
+        /// The scene where this entity is
+        /// </summary>
+        public Scene Scene { get; internal set; }
 
         public Entity()
         {
@@ -66,6 +72,9 @@ namespace AlmostGoodEngine.Core.ECS
             }
         }
 
+        /// <summary>
+        /// When the game's start
+        /// </summary>
         public virtual void Start()
         {
             foreach (var child in Children)
@@ -79,6 +88,9 @@ namespace AlmostGoodEngine.Core.ECS
             }
         }
 
+        /// <summary>
+        /// When the game's end
+        /// </summary>
         public virtual void End()
         {
             foreach (var child in Children)
@@ -126,6 +138,10 @@ namespace AlmostGoodEngine.Core.ECS
             }
         }
 
+        /// <summary>
+        /// Fixed update
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void FixedUpdate(GameTime gameTime)
         {
             foreach (var component in Components)
@@ -190,7 +206,29 @@ namespace AlmostGoodEngine.Core.ECS
             }
         }
 
-        public bool AddComponent(Component component)
+		/// <summary>
+		/// Draw entity debug
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public virtual void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			foreach (var component in Components)
+			{
+				component.DrawDebug(gameTime, spriteBatch);
+			}
+
+			foreach (var child in Children)
+			{
+				child.DrawDebug(gameTime, spriteBatch);
+			}
+		}
+
+        /// <summary>
+        /// Add the given component instance inside the list
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
+		public bool AddComponent(Component component)
         {
             if (Components.Contains(component))
             {

@@ -4,15 +4,16 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using System.Transactions;
 
 namespace AlmostGoodEngine.Core
 {
     public static class GameManager
     {
         /// <summary>
-        /// The game instance
+        /// The game engine instance
         /// </summary>
-        public static Engine Game { get; private set; }
+        public static Engine Engine { get; private set; }
 
         /// <summary>
         /// The scene manager
@@ -27,15 +28,15 @@ namespace AlmostGoodEngine.Core
         /// <summary>
         /// The spritebatch used to draw the game's content
         /// </summary>
-        public static SpriteBatch SpriteBatch { get => Game.SpriteBatch; }
+        public static SpriteBatch SpriteBatch { get => Engine.SpriteBatch; }
 
         /// <summary>
         /// Game initialization
         /// </summary>
         /// <param name="game"></param>
-        internal static void Initialize(Engine game)
+        internal static void Initialize(Engine engine)
         {
-            Game = game;
+            Engine = engine;
             SceneManager = new SceneManager();
             FontSystem = new FontSystem();
             FontSystem.AddFont(File.ReadAllBytes(@"Fonts/Signika.ttf"));
@@ -73,12 +74,15 @@ namespace AlmostGoodEngine.Core
                 return null;
             }
 
-            if (current.Renderer.Camera == null)
+            foreach (var camera in current.Renderer.Cameras)
             {
-                return null;
+                if (camera != null)
+                {
+                    return camera;
+                }
             }
 
-            return current.Renderer.Camera;
+            return null;
         }
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         internal static void LoadContent()
         {
-            SceneManager.LoadContent(Game.Content);
+            SceneManager.LoadContent(Engine.Content);
         }
 
         /// <summary>
@@ -157,11 +161,21 @@ namespace AlmostGoodEngine.Core
         }
 
         /// <summary>
+        /// Life-cycle draw debug
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
+        internal static void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            SceneManager?.CurrentScene?.DrawDebug(gameTime, spriteBatch);
+        }
+
+        /// <summary>
         /// Toggle the fullscreen mode
         /// </summary>
         public static void ToggleFullscreen()
         {
-            Game.ToggleFullscreen();
+            Engine.ToggleFullscreen();
         }
 
         /// <summary>
@@ -169,7 +183,7 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static void ToggleBorderless()
         {
-            Game.ToggleBorderless();
+            Engine.ToggleBorderless();
         }
 
         /// <summary>
@@ -177,7 +191,7 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static void ToggleResizable()
         {
-            Game.ToggleResizable();
+            Engine.ToggleResizable();
         }
     }
 }

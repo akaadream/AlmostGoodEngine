@@ -7,7 +7,7 @@ namespace AlmostGoodEngine.Tests.Scenes
     {
         public InputScene()
         {
-            GameObjects.Add(new InputReader());
+            AddEntity(new InputReader());
         }
     }
 }

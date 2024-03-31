@@ -29,6 +29,7 @@
     <ProjectReference Include="..\AlmostGoodEngine.GUI\AlmostGoodEngine.GUI.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Inputs\AlmostGoodEngine.Inputs.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Physics\AlmostGoodEngine.Physics.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Serialization\AlmostGoodEngine.Serialization.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Fonts\Signika.ttf">

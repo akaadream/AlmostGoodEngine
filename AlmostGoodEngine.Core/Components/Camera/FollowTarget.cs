@@ -1,27 +1,48 @@
 ﻿using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Entities;
+using AlmostGoodEngine.Core.Utils;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace AlmostGoodEngine.Core.Components.Camera
 {
-    public class FollowTarget : Component
+    public class FollowTarget(Camera2D camera, Entity target) : Component
     {
-        public Entity Target { get; set; }
-        public Camera2D Camera { get; set; }
+		public Entity Target { get; set; } = target;
+		public Camera2D Camera { get; set; } = camera;
 
-        readonly float smoothSpeed = 0.05f;
+		public bool Smoothed { get; set; } = false;
+		public bool Limit { get; set; } = true;
+		public Vector3 Min { get; set; }
+		public Vector3 Max { get; set; }
 
-        public FollowTarget(Camera2D camera, Entity target)
+		readonly float smoothSpeed = 0.05f;
+
+		public override void FixedUpdate(GameTime gameTime)
+		{
+			//Vector3 desiredPosition = new(Target.Position.X - Camera.Width / 2, Target.Position.Y - Camera.Height / 2, Camera.Position.Z);
+			//Vector3 smoothedPosition = Vector3.Lerp(Camera.Position, desiredPosition, smoothSpeed);
+			//Camera.SetPosition(smoothedPosition);
+		}
+
+		public override void AfterUpdate(GameTime gameTime)
         {
-            Camera = camera;
-            Target = target;
-        }
+			Vector3 desiredPosition = new(Target.Position.X - Camera.Width / 2, Target.Position.Y - Camera.Height / 2, Camera.Position.Z);
 
-        public override void AfterUpdate(GameTime gameTime)
-        {
-            Vector3 desiredPosition = new (Target.Position.X - Camera.Width / 2, Target.Position.Y - Camera.Height / 2, Camera.Position.Z);
-            Vector3 smoothedPosition = Vector3.Lerp(Camera.Position, desiredPosition, smoothSpeed);
-            Camera.SetPosition(smoothedPosition);
-        }
-    }
+			if (Limit)
+			{
+				desiredPosition = Vector3.Clamp(desiredPosition, Min, Max);
+			}
+
+			if (Smoothed)
+			{
+				Vector3 smoothedPosition = Vector3.Lerp(Camera.Position, desiredPosition, smoothSpeed);
+				Camera.SetPosition(smoothedPosition);
+			}
+			else
+			{
+				Camera.SetPosition(desiredPosition);
+			}
+		}
+	}
 }

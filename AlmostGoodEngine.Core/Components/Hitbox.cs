@@ -36,21 +36,8 @@ namespace AlmostGoodEngine.Core.Components
                 return;
             }
 
-            foreach (var gameObject in GameManager.CurrentScene().GameObjects)
+            foreach (var entity in GameManager.CurrentScene().Entities)
             {
-                // The game object is not an entity, so don't consider it
-                if (gameObject is not Entity)
-                {
-                    continue;
-                }
-
-                // Get the entity instance
-                Entity entity = (Entity)gameObject;
-                if (entity == null)
-                {
-                    continue;
-                }
-
                 Hitbox hitbox = entity.GetComponent<Hitbox>();
                 if (hitbox != null && hitbox == this)
                 {
@@ -104,8 +91,8 @@ namespace AlmostGoodEngine.Core.Components
             if (entityHitbox != null)
             {
                 entityBounds = new(
-                    (int)((entity.Position.X + entityHitbox.Bounds.X * entity.Scale.X)),
-                    (int)((entity.Position.Y + entityHitbox.Bounds.Y * entity.Scale.Y)),
+                    (int)(((int)entity.Position.X + entityHitbox.Bounds.X * entity.Scale.X)),
+                    (int)(((int)entity.Position.Y + entityHitbox.Bounds.Y * entity.Scale.Y)),
                     (int)(entityHitbox.Bounds.Width * entity.Scale.X),
                     (int)(entityHitbox.Bounds.Height * entity.Scale.Y));
             }
@@ -141,5 +128,10 @@ namespace AlmostGoodEngine.Core.Components
         {
             
         }
-    }
+
+		public override void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			base.DrawDebug(gameTime, spriteBatch);
+		}
+	}
 }

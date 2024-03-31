@@ -11,7 +11,10 @@ namespace AlmostGoodEngine.Core.Components.Rendering
         /// </summary>
         public Texture2D Texture { get; set; }
 
-        private Rectangle? _source;
+        /// <summary>
+        /// Effects of the sprite (flip)
+        /// </summary>
+        public SpriteEffects Effect { get; set; } = SpriteEffects.None;
 
         /// <summary>
         /// The source rectangle inside the texture
@@ -24,6 +27,28 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             {
                 _source = value;
                 ComputeOrigin();
+            }
+        }
+		private Rectangle? _source;
+
+		/// <summary>
+		/// The size of the texture
+		/// </summary>
+		public Vector2 Size
+        {
+            get
+            {
+                if (Texture != null)
+                {
+                    if (Source != null)
+                    {
+                        return new(Source.Value.Width, Source.Value.Height);
+                    }
+
+                    return new(Texture.Width, Texture.Height);
+                }
+
+                return Vector2.Zero;
             }
         }
 
@@ -54,7 +79,7 @@ namespace AlmostGoodEngine.Core.Components.Rendering
 
         private void ComputeOrigin()
         {
-            if (GameManager.Game.Settings.OriginCentered && Texture != null)
+            if (GameManager.Engine.Settings.OriginCentered && Texture != null)
             {
                 if (Source != null)
                 {
@@ -78,7 +103,7 @@ namespace AlmostGoodEngine.Core.Components.Rendering
                 return;
             }
 
-            spriteBatch.Draw(Texture, Owner.Position.ToVector2().Rounded(), Source, Color.White * Opacity, Rotation, Origin, Owner.Scale.X, SpriteEffects.None, 1f);
+            spriteBatch.Draw(Texture, Owner.Position.ToVector2().Rounded(), Source, Color.White * Opacity, Rotation, Origin, Owner.Scale.X, Effect, 1f);
         }
     }
 }

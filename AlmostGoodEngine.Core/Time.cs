@@ -10,7 +10,7 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static float DeltaTime { get; private set; }
 
-        public static float FixedDeltaTime { get => 1.0f / 60f; }
+        public static float FixedDeltaTimeTarget { get => (int)(1000 / (float)60); }
 
         /// <summary>
         /// The delta time of the previous frame
@@ -51,34 +51,44 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static int UPS { get; private set; } = 60;
 
-        /// <summary>
-        /// True if the current frame correspond to a fixed time step frame
-        /// </summary>
-        public static bool IsFixedFrame { get; private set; }
-
         // Variables to compute the UPS counter
         private static int _upsCount;
         private static TimeSpan _upsElapsedTimeSpan;
 
-        private static float _accumulatedTime;
+		#region Fixed update parameters
 
-        /// <summary>
-        /// Compute the UPS counter
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public static void Update(GameTime gameTime)
+		internal static float accumulatedTime;
+        internal static float previousT = 0f;
+        internal static float accumulator = 0f;
+        internal static float maxFrameTime = 250f;
+        public static float FixedDeltaTime { get; set; } = 0f;
+        public static int FixedFPS { get; private set; } = 60;
+        internal static float alpha = 0f;
+
+		#endregion
+
+		/// <summary>
+		/// Compute the UPS counter
+		/// </summary>
+		/// <param name="gameTime"></param>
+		public static void Update(GameTime gameTime)
         {
             // Check the fixed time step
-            _accumulatedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (_accumulatedTime >= FixedDeltaTime)
+            if (previousT == 0f)
             {
-                IsFixedFrame = true;
-                _accumulatedTime -= FixedDeltaTime;
+                previousT = (float)gameTime.TotalGameTime.TotalMilliseconds;
             }
-            else
+
+            float now = (float)gameTime.TotalGameTime.TotalMilliseconds;
+			FixedDeltaTime = now - previousT;
+            if (FixedDeltaTime > maxFrameTime)
             {
-                IsFixedFrame = false;
+				FixedDeltaTime = maxFrameTime;
             }
+            previousT = now;
+            accumulator += FixedDeltaTime;
+
+            alpha = (accumulator / FixedDeltaTimeTarget);
 
             // Store the delta time of the previous frame
             PreviousDeltaTime = DeltaTime;

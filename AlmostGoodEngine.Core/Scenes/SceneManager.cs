@@ -72,7 +72,7 @@ namespace AlmostGoodEngine.Core.Scenes
 
             if (!CurrentScene.ContentLoaded)
             {
-                CurrentScene.LoadContent(GameManager.Game.Content);
+                CurrentScene.LoadContent(GameManager.Engine.Content);
             }
             CurrentScene.Start();
         }
@@ -161,6 +161,16 @@ namespace AlmostGoodEngine.Core.Scenes
         public void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
             CurrentScene?.DrawUI(gameTime, spriteBatch);
+        }
+
+        /// <summary>
+        /// Draw the debug UI
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
+        public void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            CurrentScene?.DrawDebug(gameTime, spriteBatch);
         }
     }
 }

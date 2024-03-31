@@ -127,6 +127,24 @@ namespace AlmostGoodEngine.Inputs
         }
 
         /// <summary>
+        /// return true if the user scroll up
+        /// </summary>
+        /// <returns></returns>
+        public bool IsWheelMovedUp()
+        {
+            return WheelDelta() > 0;
+        }
+
+        /// <summary>
+        /// return true if the user scroll down
+        /// </summary>
+        /// <returns></returns>
+        public bool IsWheelMovedDown()
+        {
+            return WheelDelta() < 0;
+        }
+
+        /// <summary>
         /// return true if the mouse moved between the current frame and the previous one
         /// </summary>
         /// <returns></returns>

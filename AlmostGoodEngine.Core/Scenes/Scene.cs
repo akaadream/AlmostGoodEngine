@@ -1,4 +1,6 @@
-﻿using AlmostGoodEngine.Core.Interfaces;
+﻿using AlmostGoodEngine.Core.ECS;
+using AlmostGoodEngine.Core.Interfaces;
+using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,9 +16,9 @@ namespace AlmostGoodEngine.Core.Scenes
         public Renderer Renderer { get; private set; }
 
         /// <summary>
-        /// Scene's game objects
+        /// Scene's entities
         /// </summary>
-        public List<IGameObject> GameObjects { get; private set; }
+        internal List<Entity> Entities { get; set; }
 
         /// <summary>
         /// If the scene's content has already been loaded
@@ -28,7 +30,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public Scene()
         {
-            GameObjects = new();
+            Entities = [];
             Renderer = new(this);
         }
 
@@ -37,9 +39,9 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public virtual void LoadContent(ContentManager content)
         {
-            foreach (var gameObject in GameObjects)
+            foreach (var entity in Entities)
             {
-                gameObject.LoadContent(content);
+				entity.LoadContent(content);
             }
 
             ContentLoaded = true;
@@ -51,10 +53,10 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void Start()
         {
             
-            Renderer.Camera?.Start();
-            foreach (var gameObject in GameObjects)
+            Renderer.Start();
+            foreach (var entity in Entities)
             {
-                gameObject.Start();
+				entity.Start();
             }
         }
 
@@ -63,10 +65,10 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public virtual void End()
         {
-            Renderer.Camera.End();
-            foreach (var gameObject in GameObjects)
+            Renderer.End();
+            foreach (var entity in Entities)
             {
-                gameObject.End();
+				entity.End();
             }
         }
         /// <summary>
@@ -83,10 +85,10 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public virtual void BeforeUpdate(GameTime gameTime)
         {
-            Renderer.Camera.BeforeUpdate(gameTime);
-            foreach (var gameObject in GameObjects)
+            Renderer.BeforeUpdate(gameTime);
+            foreach (var entity in Entities)
             {
-                gameObject.BeforeUpdate(gameTime);
+				entity.BeforeUpdate(gameTime);
             }
         }
 
@@ -96,10 +98,10 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
-            Renderer.Camera.Update(gameTime);
-            foreach (var gameObject in GameObjects)
+            Renderer.Update(gameTime);
+            foreach (var entity in Entities)
             {
-                gameObject.Update(gameTime);
+				entity.Update(gameTime);
             }
         }
 
@@ -109,10 +111,10 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public virtual void FixedUpdate(GameTime gameTime)
         {
-            Renderer.Camera.FixedUpdate(gameTime);
-            foreach (var gameObject in GameObjects)
+            Renderer.FixedUpdate(gameTime);
+            foreach (var entity in Entities)
             {
-                gameObject.FixedUpdate(gameTime);
+				entity.FixedUpdate(gameTime);
             }
         }
 
@@ -122,10 +124,10 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public virtual void AfterUpdate(GameTime gameTime)
         {
-            Renderer.Camera.AfterUpdate(gameTime);
-            foreach (var gameObject in GameObjects)
+            Renderer.AfterUpdate(gameTime);
+            foreach (var entity in Entities)
             {
-                gameObject.AfterUpdate(gameTime);
+				entity.AfterUpdate(gameTime);
             }
         }
 
@@ -146,5 +148,36 @@ namespace AlmostGoodEngine.Core.Scenes
         {
             Renderer.DrawUI(gameTime, spriteBatch);
         }
+
+        /// <summary>
+        /// Draw the scene's debug UI
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
+        public virtual void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            Renderer.DrawDebug(gameTime, spriteBatch);
+        }
+
+        public void AddEntity(Entity entity)
+        {
+            if (Entities.Contains(entity))
+            {
+                return;
+            }
+
+            entity.Scene = this;
+            Entities.Add(entity);
+        }
+
+        public Vector2 MousePosition()
+        {
+            return new(Input.Mouse.X, Input.Mouse.Y);
+        }
+
+        public Vector2 WorldMousePosition()
+        {
+            return GameManager.MainCamera().ScreenToWorld(MousePosition());
+		}
     }
 }
