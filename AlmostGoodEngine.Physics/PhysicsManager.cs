@@ -1,14 +1,10 @@
 ﻿using AlmostGoodEngine.Physics.Extends;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlmostGoodEngine.Physics
 {
-	public class Physics
+	public class PhysicsManager
 	{
 		internal static List<Collider> Colliders { get; private set; }
 
@@ -101,6 +97,35 @@ namespace AlmostGoodEngine.Physics
 
 			// Return the colliders pairs representing the detected collisions
 			return collisions;
+		}
+
+		/// <summary>
+		/// Check if the given position collide with one of the given colliders
+		/// </summary>
+		/// <param name="colliders"></param>
+		/// <param name="nextPosition"></param>
+		/// <returns></returns>
+		public static bool CollideAt(List<Collider> colliders, Vector2 nextPosition)
+		{
+			foreach (var collider in colliders)
+			{
+				if (!collider.Active)
+				{
+					continue;
+				}
+
+				if (collider.IsInside(nextPosition))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static bool OverlapCheck(Collider a, Collider b)
+		{
+			return a.Collide(b, false);
 		}
 
 	}

@@ -1,6 +1,9 @@
-﻿using AlmostGoodEngine.Core.ECS;
+﻿using AlmostGoodEngine.Core.Components.Physics;
+using AlmostGoodEngine.Core.ECS;
+using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Interfaces;
 using AlmostGoodEngine.Inputs;
+using AlmostGoodEngine.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -178,6 +181,53 @@ namespace AlmostGoodEngine.Core.Scenes
         public Vector2 WorldMousePosition()
         {
             return GameManager.MainCamera().ScreenToWorld(MousePosition());
+		}
+
+        public List<Collider> GetColliders()
+        {
+            List<Collider> colliders = [];
+            foreach (var entity in Entities)
+            {
+                if (entity is Solid2D solid)
+                {
+					if (solid.Collider == null)
+					{
+						continue;
+					}
+
+					colliders.Add(solid.Collider);
+				}
+            }
+
+            return colliders;
+        }
+
+        public List<Actor2D> GetActors()
+        {
+            List<Actor2D> actors = [];
+            foreach (var entity in Entities)
+            {
+                if (entity is Actor2D actor)
+                {
+                    actors.Add(actor);
+                }
+            }
+
+            return actors;
+        }
+
+        public List<Actor2D> GetAllRidingActors(Solid2D solid)
+        {
+			List<Actor2D> actors = [];
+			foreach (var entity in Entities)
+			{
+				if (entity is Actor2D actor && actor.IsRiding(solid))
+				{
+					actors.Add(actor);
+				}
+			}
+
+			return actors;
 		}
     }
 }

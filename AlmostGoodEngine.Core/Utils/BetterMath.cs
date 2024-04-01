@@ -13,10 +13,7 @@ namespace AlmostGoodEngine.Core.Utils
 		/// </summary>
 		/// <param name="x"></param>
 		/// <returns></returns>
-		public static float Exp2(float x)
-		{
-			return MathF.Pow(2, x);
-		}
+		public static float Exp2(float x) => MathF.Pow(2, x);
 
 		/// <summary>
 		/// A smooth lerp
@@ -26,20 +23,14 @@ namespace AlmostGoodEngine.Core.Utils
 		/// <param name="dt"></param>
 		/// <param name="h"></param>
 		/// <returns></returns>
-		public static float LerpSmooth(float a, float b, float dt, float h)
-		{
-			return b + (a - b) * Exp2(-dt / h);
-		}
+		public static float LerpSmooth(float a, float b, float dt, float h) => b + (a - b) * Exp2(-dt / h);
 
 		/// <summary>
 		/// Give the exp of n minus 1
 		/// </summary>
 		/// <param name="n"></param>
 		/// <returns></returns>
-		public static float Expm1(float n)
-		{
-			return MathF.Exp(n) - 1;
-		}
+		public static float Expm1(float n) => MathF.Exp(n) - 1;
 
 		/// <summary>
 		/// Return the positive difference between the given x and y
@@ -56,6 +47,10 @@ namespace AlmostGoodEngine.Core.Utils
 
 			return x - y;
 		}
+
+		public static int Roundi(double n) => (int)Math.Round(n);
+
+		public static int Roundi(float n) => (int)MathF.Round(n);
 
 		// Buggy
 		public static float Remainder(float n)
