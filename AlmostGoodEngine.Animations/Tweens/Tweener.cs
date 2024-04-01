@@ -135,7 +135,7 @@ namespace AlmostGoodEngine.Animations.Tweens
             }
             else
             {
-                Current = Easer.Ease(EaseType, T, Start, End);
+                Current = Easer.Ease(EaseType, T);
                 OnUpdate?.Invoke();
             }
         }

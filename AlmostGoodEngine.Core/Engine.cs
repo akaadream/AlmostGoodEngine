@@ -132,6 +132,8 @@ namespace AlmostGoodEngine.Core
 			GUIManager.Initialize(Content, GraphicsDevice, Graphics);
             // Scene starting
 			GameManager.Start();
+
+            BetterMath.Test();
         }
 
         protected override void Update(GameTime gameTime)
