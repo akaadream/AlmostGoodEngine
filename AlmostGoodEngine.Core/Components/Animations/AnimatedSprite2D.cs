@@ -29,6 +29,11 @@ namespace AlmostGoodEngine.Core.Components.Animations
 
 		public override Rectangle GetBounds()
 		{
+            if (SpriteSheet == null || SpriteSheet.Texture == null)
+            {
+                return Rectangle.Empty;
+            }
+
             return new(
                 (int)Owner.Position.X - (int)(SpriteSheet.FrameWidth / 2 * Owner.Scale.X), 
                 (int)Owner.Position.Y - (int)(SpriteSheet.FrameHeight / 2 * Owner.Scale.Y), 

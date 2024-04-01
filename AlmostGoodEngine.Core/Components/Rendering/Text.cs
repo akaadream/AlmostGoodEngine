@@ -10,6 +10,9 @@ namespace AlmostGoodEngine.Core.Components.Rendering
     public class Text : Component
     {
         public Vector2 Position { get; set; }
+
+        public Vector2 DisplayPosition { get => FinalPosition(); }
+
         public string Value { get; set; }
 
         public int FontSize { get; private set; }
@@ -49,7 +52,18 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             _font = GameManager.FontSystem.GetFont(FontSize);
         }
 
-        public override void Update(GameTime gameTime)
+		public override Rectangle GetBounds()
+		{
+            if (string.IsNullOrWhiteSpace(Value))
+            {
+                return Rectangle.Empty;
+            }
+
+            Vector2 textSize = _font.MeasureString(Value);
+            return new((int)DisplayPosition.X, (int)DisplayPosition.Y, (int)textSize.X, (int)textSize.Y);
+		}
+
+		public override void Update(GameTime gameTime)
         {
 #if DEBUG
             if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.F3))
@@ -57,6 +71,11 @@ namespace AlmostGoodEngine.Core.Components.Rendering
                 ShowDebug = !ShowDebug;
             }
 #endif
+
+            if (IsMouseHovering)
+            {
+                Logger.Log("Text hovered");
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

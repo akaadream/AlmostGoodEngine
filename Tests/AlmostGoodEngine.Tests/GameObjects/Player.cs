@@ -164,11 +164,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
                 if (Input.Mouse.WheelDelta() > 0)
                 {
-                    text.Position = new(text.Position.X + 15, text.Position.Y + 15);
+                    //text.Position = new(text.Position.X + 15, text.Position.Y + 15);
                 }
                 else if (Input.Mouse.WheelDelta() < 0)
                 {
-                    text.Position = new(text.Position.X - 15, text.Position.Y - 15);
+                    //text.Position = new(text.Position.X - 15, text.Position.Y - 15);
                 }
             }
 

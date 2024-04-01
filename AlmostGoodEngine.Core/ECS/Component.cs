@@ -29,11 +29,7 @@ namespace AlmostGoodEngine.Core.ECS
         
         public virtual Rectangle GetBounds()
         {
-            return new Rectangle(
-                (int)Owner.Position.X, 
-                (int)Owner.Position.Y, 
-                1, 
-                1);
+            return Rectangle.Empty;
         }
 
         public virtual void LoadContent(ContentManager content)
@@ -79,6 +75,12 @@ namespace AlmostGoodEngine.Core.ECS
 
             _worldMousePosition = Owner.Scene.WorldMousePosition();
             var bounds = GetBounds();
+
+            if (bounds.IsEmpty)
+            {
+                return;
+            }
+
 			IsMouseDown = false;
 			IsMouseHovering = false;
 

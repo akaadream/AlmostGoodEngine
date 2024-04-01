@@ -64,7 +64,7 @@ namespace AlmostGoodEngine.Tests.Scenes
                     Min = new(0, 0, 1),
                     Max = new(0, 0, 1)
 				});
-                //Renderer.Cameras[0].AddComponent(new CameraController());
+                Renderer.Cameras[0].AddComponent(new CameraController());
             }
 
             //var camera_two = new Camera2D(new Viewport(viewport.Width / 2, 0, viewport.Width / 2, viewport.Height / 2))

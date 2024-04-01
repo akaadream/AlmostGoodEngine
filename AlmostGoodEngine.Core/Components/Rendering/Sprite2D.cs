@@ -52,10 +52,20 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             }
         }
 
-        /// <summary>
-        /// Sprite's rotation
-        /// </summary>
-        public float Rotation { get; set; }
+		public override Rectangle GetBounds()
+		{
+            if (Texture == null)
+            {
+                return Rectangle.Empty;
+            }
+
+			return new((int)Owner.Position.X, (int)Owner.Position.Y, Texture.Width, Texture.Height);
+		}
+
+		/// <summary>
+		/// Sprite's rotation
+		/// </summary>
+		public float Rotation { get; set; }
 
         /// <summary>
         /// The origin position of the sprite
