@@ -56,9 +56,10 @@ namespace AlmostGoodEngine.Tests
 
             GameManager.SceneManager.Add("test", new TestScene());
             GameManager.SceneManager.Add("inputs", new InputScene());
+            GameManager.SceneManager.Add("procedural", new ProceduralScene());
             //GameManager.SceneManager.Add("gui", new GUIScene());
 
-            GameManager.SceneManager.Set("test");
+            GameManager.SceneManager.Set("procedural");
 
 			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
 			GUIManager.LoadStyle("styles/main");

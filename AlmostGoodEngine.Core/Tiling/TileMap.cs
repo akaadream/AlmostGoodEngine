@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlmostGoodEngine.Physics
+namespace AlmostGoodEngine.Core.Tiling
 {
-	internal class AABB
+	internal class TileMap
 	{
 	}
 }

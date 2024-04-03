@@ -8,12 +8,21 @@ namespace AlmostGoodEngine.Physics
 	{
 		public Rectangle Rectangle { get; set; }
 
+		public BoxCollider2D(Rectangle rect)
+		{
+			Rectangle = rect;
+		}
+
 		public override bool Collide(Collider other, bool response = true)
 		{
 			if (other is BoxCollider2D boxCollider2D)
 			{
-				ApplyCollisionResponse(boxCollider2D);
 				return true;
+			}
+
+			if (other is CircleCollider2D circleCollider2D)
+			{
+
 			}
 
 			return false;
@@ -60,53 +69,6 @@ namespace AlmostGoodEngine.Physics
 		public float GetDepth(CircleCollider2D other)
 		{
 			return 0f;
-		}
-
-		/// <summary>
-		/// Compute the impulse of the collision
-		/// </summary>
-		/// <param name="other"></param>
-		/// <param name="penetrationDepth"></param>
-		/// <returns></returns>
-		private Vector2 ComputeImpulse(BoxCollider2D other, float penetrationDepth)
-		{
-			// Compute objects mass
-			float mass1 = Rectangle.Width * Rectangle.Height;
-			float mass2 = other.Rectangle.Width * other.Rectangle.Height;
-
-			// Speed
-			Vector2 relativeVelocity = Velocity - other.Velocity;
-
-			// Compute the normalalized vector of the collision
-			Vector2 normal = Rectangle.GetPosition() - other.Rectangle.GetPosition();
-			normal.Normalize();
-
-			// Compute the impulse
-
-			// Elasticity of the collision
-			float e = 0.5f;
-			float j = -(1 + e) * Vector2.Dot(relativeVelocity, normal) / ((1 / mass1) + (1 / mass2));
-			return normal * j;
-		}
-
-		private void ApplyCollisionResponse(BoxCollider2D other)
-		{
-			float penetrationDepth = GetDepth(other);
-			Vector2 normal = Rectangle.GetPosition() - other.Rectangle.GetPosition();
-			normal.Normalize();
-
-			// Move rectangles to eliminate penetration
-			var offset = normal * penetrationDepth * (Rectangle.Width * Rectangle.Height) / (Rectangle.Width * Rectangle.Height + other.Rectangle.Width * other.Rectangle.Height);
-			var otherOffset = normal * penetrationDepth * (other.Rectangle.Width * other.Rectangle.Height) / (Rectangle.Width * Rectangle.Height + other.Rectangle.Width * other.Rectangle.Height);
-			Rectangle = new((int)(Rectangle.X - offset.X), (int)(Rectangle.Y - offset.Y), Rectangle.Width, Rectangle.Height);
-			other.Rectangle = new((int)(other.Rectangle.X + otherOffset.X), (int)(other.Rectangle.Y + otherOffset.Y), other.Rectangle.Width, other.Rectangle.Height);
-
-			// Get the result of the impulse computation
-			Vector2 impulse = ComputeImpulse(other, penetrationDepth);
-
-			// Apply the impulse
-			Velocity -= impulse / (Rectangle.Width * Rectangle.Height);
-			other.Velocity += impulse / (other.Rectangle.Width * other.Rectangle.Height);
 		}
 	}
 }

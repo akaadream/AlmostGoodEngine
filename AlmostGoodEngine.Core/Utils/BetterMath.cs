@@ -59,6 +59,17 @@ namespace AlmostGoodEngine.Core.Utils
 			return n - x;
 		}
 
+		public static float Smoothstep(float from, float to, float x)
+		{
+			x = Math.Clamp((x - from) / (to - from), 0.0f, 1.0f);
+			return x * x * (3.0f - 2.0f * x);
+		}
+
+		public static float InverseLerp(float a, float b, float v)
+		{
+			return (v - a) / (b - a);
+		}
+
 		public static void Test()
 		{
 			var result = Expm1(1);

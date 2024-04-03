@@ -6,6 +6,7 @@ using AlmostGoodEngine.Core.Components.Animations;
 using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.Components.Timing;
 using AlmostGoodEngine.Core.ECS;
+using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using AlmostGoodEngine.Inputs;
@@ -18,7 +19,7 @@ using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Tests.GameObjects
 {
-    internal class Player : Entity
+    internal class Player : Actor2D
     {
         Text timerText;
         Timer timer;
@@ -57,7 +58,12 @@ namespace AlmostGoodEngine.Tests.GameObjects
                     Logger.Log("Sprite clicked");
                 };
                 AddComponent(animatedSprite2D);
-            }
+
+                Collider = new Physics.BoxCollider2D(new Rectangle(-20, 12, 42, 22))
+                {
+                    Origin = Position.ToVector2()
+                };
+			}
 
             Hitbox hitbox = new(new Rectangle(-5, 4, 10, 5), false)
             {
@@ -87,7 +93,14 @@ namespace AlmostGoodEngine.Tests.GameObjects
             AddComponent(timerText);
         }
 
-        public override void Update(GameTime gameTime)
+		public override void BeforeUpdate(GameTime gameTime)
+		{
+            Collider.Origin = Position.ToVector2();
+
+			base.BeforeUpdate(gameTime);
+		}
+
+		public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
@@ -183,8 +196,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 			if (velocity.Length() > 0)
 			{
 				velocity.Normalize();
-				Position += velocity * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-				Position = Vector3.Clamp(Position, new(16, 16, 1), new(Renderer.Viewport.Width - 16, Renderer.Viewport.Height - 32, 1));
+                Move(velocity.X * speed * Time.DeltaTime, velocity.Y * speed * Time.DeltaTime);
             }
 		}
 
@@ -215,5 +227,12 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 }
             }
         }
-    }
+
+		public override void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			base.DrawDebug(gameTime, spriteBatch);
+
+            Debug.FillRectangle(spriteBatch, Collider.GetRectangle(), Color.Yellow * 0.5f);
+		}
+	}
 }

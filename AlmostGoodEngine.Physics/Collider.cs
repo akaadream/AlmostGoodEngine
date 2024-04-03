@@ -10,14 +10,9 @@ namespace AlmostGoodEngine.Physics
 		public Vector2 Origin { get; set; } = Vector2.Zero;
 
 		/// <summary>
-		/// The velocity of the collider
-		/// </summary>
-		public Vector2 Velocity { get; set; } = Vector2.Zero;
-
-		/// <summary>
 		/// If true, the collider is active and will check collisions whith other colliders
 		/// </summary>
-		public bool Active { get; set; }
+		public bool Active { get; set; } = true;
 
 		/// <summary>
 		/// Check if the given collider is colliding this collider
@@ -26,7 +21,7 @@ namespace AlmostGoodEngine.Physics
 		/// <returns></returns>
 		public virtual bool Collide(Collider other, bool response = true)
 		{
-			return false;
+			return Origin == other.Origin;
 		}
 
 		/// <summary>

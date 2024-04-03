@@ -12,9 +12,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\Physics\" />
-  </ItemGroup>
-  <ItemGroup>
     <EditorConfigFiles Remove="B:\lorte\Documents\Programmation\Visual Studio\Almost Good Engine\AlmostGoodEngine.Core\Interfaces\.editorconfig" />
   </ItemGroup>
   <ItemGroup>

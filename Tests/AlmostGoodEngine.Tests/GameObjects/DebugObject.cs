@@ -40,13 +40,12 @@ namespace AlmostGoodEngine.Tests.GameObjects
             string totalMemoryText = "Total memory usage: " + (GC.GetTotalMemory(false) / 1_048_576f).ToString("F") + " MB";
 
             spriteBatch.DrawString(font, "FPS:" + Time.FPS, new Vector2(15, 15), Color.White);
-            spriteBatch.DrawString(font, "Fixed FPS:" + (int)(Time.FixedDeltaTime * 10), new Vector2(15, 45), Color.White);
-            spriteBatch.DrawString(font, "UPS:" + Time.UPS, new Vector2(15, 75), Color.White);
+            spriteBatch.DrawString(font, "UPS:" + Time.UPS, new Vector2(15, 45), Color.White);
 
             Vector2 mousePosition = GameManager.MainCamera().ScreenToWorld(new(Input.Mouse.X, Input.Mouse.Y));
 
-            spriteBatch.DrawString(font, "Mouse position (X:" + Input.Mouse.X + ", Y: " + Input.Mouse.Y + ")", new Vector2(15, 105), Color.White);
-            spriteBatch.DrawString(font, "World mouse position (X:" + (int)mousePosition.X + ", Y: " + (int)mousePosition.Y + ")", new Vector2(15, 135), Color.White);
+            spriteBatch.DrawString(font, "Mouse position (X:" + Input.Mouse.X + ", Y: " + Input.Mouse.Y + ")", new Vector2(15, 75), Color.White);
+            spriteBatch.DrawString(font, "World mouse position (X:" + (int)mousePosition.X + ", Y: " + (int)mousePosition.Y + ")", new Vector2(15, 105), Color.White);
 
             Vector2 titleSize = font.MeasureString(GameManager.Engine.Settings.Name);
             Vector2 descriptionSize = font.MeasureString(scene);

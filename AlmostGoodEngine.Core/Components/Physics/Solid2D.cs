@@ -1,8 +1,10 @@
 ﻿using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Utils;
+using AlmostGoodEngine.Extended;
 using AlmostGoodEngine.Physics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Core.Components.Physics
@@ -84,6 +86,19 @@ namespace AlmostGoodEngine.Core.Components.Physics
 
 				Collidable = previouslyCollidable;
 			}
+		}
+
+		public override void BeforeUpdate(GameTime gameTime)
+		{
+			base.BeforeUpdate(gameTime);
+			Collider.Origin = Position.ToVector2();
+		}
+
+		public override void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
+		{
+			base.DrawDebug(gameTime, spriteBatch);
+
+			Debug.FillRectangle(spriteBatch, Collider.GetRectangle(), Color.Blue * 0.5f);
 		}
 	}
 }

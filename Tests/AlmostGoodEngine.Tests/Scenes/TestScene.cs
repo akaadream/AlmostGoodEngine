@@ -2,6 +2,7 @@
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Camera;
 using AlmostGoodEngine.Core.Components.Curves;
+using AlmostGoodEngine.Core.Components.Physics;
 using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Entities;
@@ -19,6 +20,7 @@ namespace AlmostGoodEngine.Tests.Scenes
     {
         readonly Player player;
         readonly Player player_two;
+        readonly Solid2D solid;
 
         Viewport viewport { get => GameManager.Engine.GraphicsDevice.Viewport; }
 
@@ -33,8 +35,18 @@ namespace AlmostGoodEngine.Tests.Scenes
 			AddEntity(entity);
             //GameObjects.Add(pathEntity);
 
+
+
             player = new();
 			AddEntity(player);
+
+            solid = new()
+            {
+                Position = new Vector3(200, 60, 1),
+                Collider = new Physics.BoxCollider2D(new Rectangle(0, 0, 64, 64)),
+                Collidable = true
+			};
+			AddEntity(solid);
 
             player_two = new();
             player_two.Position += Vector3.Left * 60;
