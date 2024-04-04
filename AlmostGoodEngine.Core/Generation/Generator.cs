@@ -1,9 +1,7 @@
 ﻿using AlmostGoodEngine.Core.Tiling;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Generation;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using static AlmostGoodEngine.Generation.FastNoiseLite;
 
@@ -95,6 +93,8 @@ namespace AlmostGoodEngine.Core.Generation
 		public float FallOffStart { get; set; }
 		public float FallOffEnd { get; set; }
 
+		public Dictionary<string, GenerationLayer> Layers { get; private set; }
+		public List<Biome> Biomes { get; private set; }
 
 		public Generator(Tileset tileset, int seed = 1337, int worldWidth = 256, int worldHeight = 256)
 		{
@@ -129,6 +129,8 @@ namespace AlmostGoodEngine.Core.Generation
 			Infinite = false;
 
 			Tiles = [];
+			Layers = [];
+			Biomes = [];
 		}
 
 		public void RegisterTile(Tile tile, float min = 0.0f, float max = 1.0f)
@@ -179,10 +181,23 @@ namespace AlmostGoodEngine.Core.Generation
 		}
 
 		/// <summary>
+		/// Process generation layers
+		/// </summary>
+		public void Process()
+		{
+			foreach (var layer in Layers.Values)
+			{
+				layer.Process();
+			}
+		}
+
+		/// <summary>
 		/// Generate the map
 		/// </summary>
-		public void Generate()
+		public virtual void Generate()
 		{
+			Process();
+
 			float min = 1f;
 			float max = -1f;
 			for (int y = 0; y < WorldHeight; y++)
@@ -190,94 +205,38 @@ namespace AlmostGoodEngine.Core.Generation
 				for (int x = 0; x < WorldWidth; x++)
 				{
 					int index = y * WorldWidth + x;
-
-					if (FractalType == FractalType.DomainWarpProgressive ||
-						FractalType == FractalType.DomainWarpIndependent)
-					{
-						float fx = 0;
-						float fy = 0;
-						_noise.DomainWarp(ref fx, ref fy);
-						
-						float noise = _noise.GetNoise(fx, fy);
-						if (FallOff)
-						{
-							noise = GetFalloffNoise(noise, x, y);
-						}
-						if (noise < min)
-                        {
-							min = noise;                            
-                        }
-						if (noise > max)
-						{
-							max = noise;
-						}
-						WorldData[index] = GetTile(noise);
-					}
-					else
-					{
-						float noise = _noise.GetNoise(x, y);
-						if (FallOff)
-						{
-							noise = GetFalloffNoise(noise, x, y);
-						}
-						if (noise < min)
-						{
-							min = noise;
-						}
-						if (noise > max)
-						{
-							max = noise;
-						}
-						WorldData[index] = GetTile(noise);
-					}
 				}
 			}
 
 			Logger.Log("Min: " + min + ", Max: " + max);
 		}
 
-		public float GetFalloffNoise(float noise, float x, float y)
+		/// <summary>
+		/// Retrieve a generation layer using the given name
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public GenerationLayer GetLayer(string name)
 		{
-			return ((noise + 1) * FalloffMapValue(x, y)) - 1.0f;
-		}
-
-		private float FalloffMapValue(float x, float y)
-		{
-			float i = x / WorldWidth * 2 - 1;
-			float j = y / WorldHeight * 2 - 1;
-
-			float value = MathF.Max(MathF.Abs(i), MathF.Abs(j));
-			if (value < FallOffStart)
+			if (Layers.TryGetValue(name, out GenerationLayer value))
 			{
-				return 1.0f;
-			}
-			if (value > FallOffEnd)
-			{
-				return 0.0f;
+				return value;
 			}
 
-			return BetterMath.Smoothstep(1.0f, 0.0f, BetterMath.InverseLerp(FallOffStart, FallOffEnd, value));
+			return default;
 		}
 
-		public int GetTile(float height)
-		{
-			foreach (var tile in Tiles)
-			{
-				if (height >= tile.Min && height < tile.Max)
-				{
-					return Tileset.IndexOf(tile.Tile);
-				}
-			}
-
-			return 0;
-		}
-
+		/// <summary>
+		/// Render the generated world
+		/// </summary>
+		/// <param name="spriteBatch"></param>
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			for (int y = 0; y < WorldHeight; y++)
 			{
 				for (int x = 0; x < WorldWidth; x++)
 				{
+					// Retrive the current biome
 					Tileset.DrawTile(spriteBatch, new(x * Tileset.TileSize, y * Tileset.TileSize), WorldData[y * WorldWidth + x]);
 				}
 			}

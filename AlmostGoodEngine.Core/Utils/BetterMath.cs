@@ -70,6 +70,16 @@ namespace AlmostGoodEngine.Core.Utils
 			return (v - a) / (b - a);
 		}
 
+		public static float To1(float min, float max, float value)
+		{
+			return 1 / (max - min) * (value + 1);
+		}
+
+		public static float ToIntervale(float a, float b, float c, float d, float value)
+		{
+			return c + ((d - c) / (b - a)) * (value - a);
+		}
+
 		public static void Test()
 		{
 			var result = Expm1(1);
