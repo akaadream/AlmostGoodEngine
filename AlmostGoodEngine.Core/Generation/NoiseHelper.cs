@@ -44,7 +44,12 @@ namespace AlmostGoodEngine.Core.Generation
 			return noise;
 		}
 
-		private static FastNoiseLite CreateCellular(
+		public static FastNoiseLite Classic()
+		{
+			return CreateNoise(Seed());
+		}
+
+		public static FastNoiseLite CreateCellular(
 			float frequency = 0.015f,
 			CellularDistanceFunction cellularDistance = CellularDistanceFunction.EuclideanSq,
 			CellularReturnType cellularReturn = CellularReturnType.Distance2Add,
@@ -57,7 +62,7 @@ namespace AlmostGoodEngine.Core.Generation
 			return noise;
 		}
 
-		private static FastNoiseLite CreateValue()
+		public static FastNoiseLite CreateValue()
 		{
 			var noise = CreateNoise(Seed(), NoiseType.Value, 0.015f, FractalType.None);
 			noise.SetDomainWarpType(DomainWarpType.BasicGrid);

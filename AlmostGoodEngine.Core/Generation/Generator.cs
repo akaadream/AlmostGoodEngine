@@ -1,89 +1,15 @@
 ﻿using AlmostGoodEngine.Core.Tiling;
 using AlmostGoodEngine.Core.Utils;
-using AlmostGoodEngine.Generation;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using static AlmostGoodEngine.Generation.FastNoiseLite;
 
 namespace AlmostGoodEngine.Core.Generation
 {
 	public class Generator
 	{
-		private int _seed = 1337;
-
-		private FastNoiseLite _noise { get; set; }
-
 		public Tileset Tileset { get; private set; }
 		public List<TileHeight> Tiles { get; private set; }
-		public int[] WorldData { get; private set; }
-
-		public NoiseType NoiseType
-		{
-			get => _noiseType;
-			set
-			{
-				_noiseType = value;
-				_noise?.SetNoiseType(value);
-			}
-		}
-		private NoiseType _noiseType = NoiseType.OpenSimplex2S;
-
-		public float Frequency
-		{
-			get => _frequency;
-			set
-			{
-				_frequency = value;
-				_noise?.SetFrequency(value);
-			}
-		}
-		private float _frequency = 0.01f;
-
-		#region Fractal
-		public FractalType FractalType
-		{
-			get => _fractalType;
-			set
-			{
-				_fractalType = value;
-				_noise?.SetFractalType(value);
-			}
-		}
-		private FractalType _fractalType = FractalType.FBm;
-
-		public int Octaves
-		{
-			get => _octaves;
-			set
-			{
-				_octaves = value;
-				_noise?.SetFractalOctaves(value);
-			}
-		}
-		private int _octaves = 8;
-
-		public int Lacunarity
-		{
-			get => _lacunarity;
-			set
-			{
-				_lacunarity = value;
-				_noise?.SetFractalLacunarity(value);
-			}
-		}
-		private int _lacunarity = 2;
-
-		public float Gain
-		{
-			get => _gain;
-			set
-			{
-				_gain = value;
-				_noise?.SetFractalGain(value);
-			}
-		}
-		private float _gain = 0.5f;
-		#endregion
+		public int[] WorldData { get; protected set; }
 
 		public int WorldWidth { get; set; }
 		public int WorldHeight { get; set; }
@@ -94,28 +20,17 @@ namespace AlmostGoodEngine.Core.Generation
 		public float FallOffEnd { get; set; }
 
 		public Dictionary<string, GenerationLayer> Layers { get; private set; }
-		public List<Biome> Biomes { get; private set; }
+		public Dictionary<string, Biome> Biomes { get; private set; }
 
 		public Generator(Tileset tileset, int seed = 1337, int worldWidth = 256, int worldHeight = 256)
 		{
-			_seed = seed;
-
 			Logger.Log("Seed " + seed.ToString());
 
 			Tileset = tileset;
-
-			_noise = new(seed);
-			_noise.SetFractalType(_fractalType);
-			_noise.SetNoiseType(_noiseType);
-			_noise.SetFrequency(_frequency);
-			_noise.SetFractalOctaves(_octaves);
-			_noise.SetFractalLacunarity(_lacunarity);
-			_noise.SetFractalGain(_gain);
-
-			_noise.SetDomainWarpType(DomainWarpType.BasicGrid);
-			_noise.SetDomainWarpAmp(50f);
-			_noise.SetCellularDistanceFunction(CellularDistanceFunction.EuclideanSq);
-			_noise.SetCellularReturnType(CellularReturnType.Distance);
+			if (Tileset != null)
+			{
+				Tileset.AutoGenerate();
+			}
 
 			WorldWidth = worldWidth;
 			WorldHeight = worldHeight;
@@ -148,6 +63,43 @@ namespace AlmostGoodEngine.Core.Generation
 			});
 		}
 
+		public void RegisterBiome(Biome biome)
+		{
+			if (Biomes.TryGetValue(biome.Name, out Biome b))
+			{
+				return;
+			}
+
+			Biomes.Add(biome.Name, biome);
+		}
+
+		public bool RemoveBiome(string name)
+		{
+			return Biomes.Remove(name);
+		}
+
+		public Biome FindBiome(float temperature, float humidity)
+		{
+			Biome defaultBiome = null;
+			foreach (var biome in Biomes.Values)
+			{
+				if (defaultBiome == null)
+				{
+					defaultBiome = biome;
+				}
+
+				if (temperature >= biome.Temperature.X &&
+					temperature < biome.Temperature.Y &&
+					humidity >= biome.Humidity.X &&
+					humidity < biome.Humidity.Y)
+				{
+					return biome;
+				}
+			}
+
+			return defaultBiome;
+		}
+
 		public bool Exists(Tile tile)
 		{
 			foreach (var tileHeight in Tiles)
@@ -163,21 +115,37 @@ namespace AlmostGoodEngine.Core.Generation
 		}
 
 		/// <summary>
-		/// Apply a new seed
-		/// </summary>
-		/// <param name="seed"></param>
-		public void SetSeed(int seed)
-		{
-			_noise.SetSeed(seed);
-		}
-
-		/// <summary>
 		/// Apply a new tileset
 		/// </summary>
 		/// <param name="tileset"></param>
 		public void SetTileset(Tileset tileset)
 		{
 			Tileset = tileset;
+		}
+
+		/// <summary>
+		/// Register a new layer
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="layer"></param>
+		public void RegisterLayer(string name, GenerationLayer layer)
+		{
+			if (Layers.TryGetValue(name, out GenerationLayer existing))
+			{
+				Layers[name] = layer;
+				return;
+			}
+
+			Layers.Add(name, layer);
+		}
+
+		/// <summary>
+		/// Remove an existing layer
+		/// </summary>
+		/// <param name="name"></param>
+		public void RemoveLayer(string name)
+		{
+			Layers.Remove(name);
 		}
 
 		/// <summary>
@@ -197,18 +165,6 @@ namespace AlmostGoodEngine.Core.Generation
 		public virtual void Generate()
 		{
 			Process();
-
-			float min = 1f;
-			float max = -1f;
-			for (int y = 0; y < WorldHeight; y++)
-			{
-				for (int x = 0; x < WorldWidth; x++)
-				{
-					int index = y * WorldWidth + x;
-				}
-			}
-
-			Logger.Log("Min: " + min + ", Max: " + max);
 		}
 
 		/// <summary>
@@ -230,16 +186,9 @@ namespace AlmostGoodEngine.Core.Generation
 		/// Render the generated world
 		/// </summary>
 		/// <param name="spriteBatch"></param>
-		public void Draw(SpriteBatch spriteBatch)
+		public virtual void Draw(SpriteBatch spriteBatch)
 		{
-			for (int y = 0; y < WorldHeight; y++)
-			{
-				for (int x = 0; x < WorldWidth; x++)
-				{
-					// Retrive the current biome
-					Tileset.DrawTile(spriteBatch, new(x * Tileset.TileSize, y * Tileset.TileSize), WorldData[y * WorldWidth + x]);
-				}
-			}
+			
 		}
 	}
 }

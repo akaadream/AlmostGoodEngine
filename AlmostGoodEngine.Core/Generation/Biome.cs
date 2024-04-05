@@ -22,6 +22,9 @@ namespace AlmostGoodEngine.Core.Generation
 
 		public List<TileHeight> Tiles { get; set; } = [];
 
+		public bool TilesetVariation { get; set; } = false;
+		public string TilesetVariationName { get; set; } = "";
+
 		public void RegisterTile(Tile tile, float min = 0.0f, float max = 1.0f)
 		{
 			if (Exists(tile))
@@ -31,8 +34,8 @@ namespace AlmostGoodEngine.Core.Generation
 
 			Tiles.Add(new()
 			{
-				Min = Math.Max(0f, min),
-				Max = Math.Min(max, 1f),
+				Min = min,
+				Max = max,
 				Tile = tile,
 			});
 		}
@@ -44,18 +47,24 @@ namespace AlmostGoodEngine.Core.Generation
 		/// <param name="min"></param>
 		/// <param name="max"></param>
 		/// <returns></returns>
-		public Tile GetTile(float height, float min, float max)
+		public Tile GetTile(float height, float min = -1f, float max = 1f)
 		{
 			float h = BetterMath.To1(min, max, height);
+			//float h = height;
 			foreach (var tileHeight in Tiles)
 			{
-				if (tileHeight.Min >= h && tileHeight.Max < h)
+				if (h >= tileHeight.Min && h <= tileHeight.Max)
 				{
 					return tileHeight.Tile;
 				}
 			}
 
-			return default;
+			//if (Tiles.Count > 0)
+			//{
+			//	return Tiles[0].Tile;
+			//}
+
+			return Tile.Null;
 		}
 
 		private bool Exists(Tile tile)

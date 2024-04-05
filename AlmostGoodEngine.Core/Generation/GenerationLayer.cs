@@ -69,6 +69,8 @@ namespace AlmostGoodEngine.Core.Generation
 					}
 				}
 			}
+
+			Logger.Log("Layer (min: " + Min + ", max: " + Max + ")");
 		}
 
 		public float GetFalloffNoise(float noise, float x, float y)

@@ -109,6 +109,12 @@ namespace AlmostGoodEngine.Core.Entities
             ComputeMatrixes();
         }
 
+        public void SetZoom(float zoom)
+        {
+            Zoom = zoom;
+            ComputeMatrixes();
+        }
+
         public void ZoomIn(float amount)
         {
             Zoom += amount;

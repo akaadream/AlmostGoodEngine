@@ -34,11 +34,14 @@ namespace AlmostGoodEngine.Core.Tiling
 		// The filename of the tileset texture
 		private string _filename;
 
+		public Dictionary<string, Texture2D> Variations { get; set; }
+
 		public Tileset(string filename)
 		{
 			Texture = GameManager.Engine.Content.Load<Texture2D>(filename);
 			_filename = filename;
 			Tiles = [];
+			Variations = [];
 		}
 
 		/// <summary>
@@ -72,22 +75,45 @@ namespace AlmostGoodEngine.Core.Tiling
 
 		public int IndexOf(Tile tile)
 		{
-			return Tiles.IndexOf(tile);
+			for (int i = 0; i < Tiles.Count; i++)
+			{
+				if (Tiles[i] == tile)
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
-		public void DrawTile(SpriteBatch spriteBatch, Vector2 position, Tile tile)
+		public Tile GetTile(int index)
+		{
+			return Tiles[index];
+		}
+
+		public void DrawTile(SpriteBatch spriteBatch, Vector2 position, Tile tile, string variation = "")
 		{
 			if (Texture == null)
 			{
 				return;
 			}
 
+			if (Variations.TryGetValue(variation, out Texture2D texture))
+			{
+				spriteBatch.Draw(texture, position, tile.Source, Color.White);
+				return;
+			}
 			spriteBatch.Draw(Texture, position, tile.Source, Color.White);
 		}
 
-		public void DrawTile(SpriteBatch spriteBatch, Vector2 position, int index)
+		public void DrawTile(SpriteBatch spriteBatch, Vector2 position, int index, string variation = "")
 		{
-			DrawTile(spriteBatch, position, Tiles[index]);
+			if (index < 0)
+			{
+				return;
+			}
+
+			DrawTile(spriteBatch, position, Tiles[index], variation);
 		}
 	}
 }
