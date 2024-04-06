@@ -1,4 +1,5 @@
 ﻿using AlmostGoodEngine.Core;
+using AlmostGoodEngine.Core.Generation;
 using AlmostGoodEngine.Core.Scenes;
 using AlmostGoodEngine.Core.Tiling;
 using AlmostGoodEngine.Inputs;
@@ -51,6 +52,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 
 			if (Input.Keyboard.IsPressed(Keys.P))
 			{
+				Generator.Seed = NoiseHelper.Seed();
 				Generator.Initialize();
 				Generator.Generate();
 			}

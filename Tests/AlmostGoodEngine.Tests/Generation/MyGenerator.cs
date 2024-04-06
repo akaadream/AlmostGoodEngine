@@ -10,37 +10,43 @@ namespace AlmostGoodEngine.Tests.Generation
 {
 	public class MyGenerator : Generator
 	{
+		private const int BiomeSize = 4;
+
 		public MyGenerator(): base(new Tileset("Sprites/tileset"), NoiseHelper.Seed(), 256, 256)
 		{
 			Tileset.Variations.Add("tileset_2", GameManager.Engine.Content.Load<Texture2D>("Sprites/tileset_2"));
 
 			// Plain fielk
-			Biome field = new("field", new Vector2(-0.2f, 0.3f), new Vector2(-0.3f, 0.2f), new Vector2(0f), new Vector2(0f), new Vector2(0f));
-			field.RegisterTile(Tileset.GetTile(7), 0f, 0.3f);
-			field.RegisterTile(Tileset.GetTile(6), 0.3f, 0.4f);
-			field.RegisterTile(Tileset.GetTile(1), 0.4f, 0.7f);
-			field.RegisterTile(Tileset.GetTile(0), 0.7f, 0.85f);
-			field.RegisterTile(Tileset.GetTile(3), 0.85f, 1.3f);
+			Biome field = new("field", new Vector2(0.1f, 0.2f), new Vector2(-0.3f, 0.2f), new Vector2(0f), new Vector2(0f), new Vector2(0f));
+			field.RegisterTile(Tileset.GetTile(7), 0f, 0.1f);
+			field.RegisterTile(Tileset.GetTile(6), 0.1f, 0.2f);
+			field.RegisterTile(Tileset.GetTile(10), 0.2f, 0.24f);
+			field.RegisterTile(Tileset.GetTile(1), 0.24f, 0.56f);
+			field.RegisterTile(Tileset.GetTile(0), 0.56f, 0.75f);
+			field.RegisterTile(Tileset.GetTile(3), 0.75f, 0.87f);
+			field.RegisterTile(Tileset.GetTile(2), 0.87f, 0.94f);
+			field.RegisterTile(Tileset.GetTile(4), 0.94f, 1f);
 
 			// Dark forest
-			Biome darkForest = new("dark_forest", new(-0.6f, -0.2f), new(0.2f, 0.6f), new(0f), new(0f), new(0f))
+			Biome darkForest = new("dark_forest", new(-0.4f, 0.1f), new(0.1f, 0.7f), new(0f), new(0f), new(0f))
 			{
 				TilesetVariation = true,
 				TilesetVariationName = "tileset_2"
 			};
-			darkForest.RegisterTile(Tileset.GetTile(6), 0f, 0.1f);
-			darkForest.RegisterTile(Tileset.GetTile(1), 0.1f, 0.4f);
+			darkForest.RegisterTile(Tileset.GetTile(6), 0f, 0.2f);
+			darkForest.RegisterTile(Tileset.GetTile(10), 0.2f, 0.24f);
+			darkForest.RegisterTile(Tileset.GetTile(1), 0.24f, 0.4f);
 			darkForest.RegisterTile(Tileset.GetTile(0), 0.4f, 0.6f);
 			darkForest.RegisterTile(Tileset.GetTile(3), 0.6f, 0.75f);
 			darkForest.RegisterTile(Tileset.GetTile(2), 0.75f, 0.92f);
-			darkForest.RegisterTile(Tileset.GetTile(4), 0.92f, 1.3f);
+			darkForest.RegisterTile(Tileset.GetTile(4), 0.92f, 1.0f);
 
-			Biome ocean = new("ocean", new(-0.2f, 0.4f), new(0.9f, 1f), new(0f), new(0f), new(0f));
+			Biome ocean = new("ocean", new(-0.4f, 0.4f), new(0.5f, 1f), new(0f), new(0f), new(0f));
 			ocean.RegisterTile(Tileset.GetTile(7), -1f, 0.9f);
 			ocean.RegisterTile(Tileset.GetTile(6), 0.9f, 1.1f);
 
 			// Snow
-			Biome snow = new("snow", new(-1f, -0.6f), new(0.4f, 0.8f), new(), new(), new())
+			Biome snow = new("snow", new(-1.2f, -0.2f), new(0.2f, 1.2f), new(), new(), new())
 			{
 				TilesetVariation = true,
 				TilesetVariationName = "tileset_2"
@@ -48,12 +54,23 @@ namespace AlmostGoodEngine.Tests.Generation
 			snow.RegisterTile(Tileset.GetTile(3), 0f, 0.1f);
 			snow.RegisterTile(Tileset.GetTile(2), 0.1f, 0.5f);
 			snow.RegisterTile(Tileset.GetTile(4), 0.5f, 0.8f);
-			snow.RegisterTile(Tileset.GetTile(5), 0.8f, 1.3f);
+			snow.RegisterTile(Tileset.GetTile(5), 0.8f, 1.0f);
+
+			Biome desert = new("desert", new(0.2f, 1.2f), new(-1.2f, -0.2f), new(), new(), new())
+			{
+				TilesetVariation = true,
+				TilesetVariationName = "tileset_2"
+			};
+			desert.RegisterTile(Tileset.GetTile(7), 0f, 0.1f);
+			desert.RegisterTile(Tileset.GetTile(6), 0.1f, 0.2f);
+			desert.RegisterTile(Tileset.GetTile(10), 0.2f, 0.8f);
+			desert.RegisterTile(Tileset.GetTile(3), 0.8f, 1f);
 
 			RegisterBiome(field);
 			RegisterBiome(darkForest);
 			RegisterBiome(ocean);
 			RegisterBiome(snow);
+			RegisterBiome(desert);
 
 			WorldData = new int[WorldWidth * WorldHeight];
 
@@ -62,18 +79,16 @@ namespace AlmostGoodEngine.Tests.Generation
 
 		public void Initialize()
 		{
-			FastNoiseLite temperatureNoise = NoiseHelper.CreateCellular();
-			//temperatureNoise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-			//temperatureNoise.SetFractalGain(0.9f);
-			//temperatureNoise.SetFractalLacunarity(10f);
-			//temperatureNoise.SetFractalOctaves(1);
-			FastNoiseLite humidityNoise = NoiseHelper.CreateCellular();
-			//humidityNoise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-			//humidityNoise.SetFractalGain(0.9f);
-			//humidityNoise.SetFractalLacunarity(10f);
-			//humidityNoise.SetFractalOctaves(1);
+			FastNoiseLite defaultNoise = NoiseHelper.Classic();
+			defaultNoise.SetSeed(Seed);
 
-			RegisterLayer("default", new GenerationLayer(256, 256, NoiseHelper.Classic()));
+			FastNoiseLite temperatureNoise = NoiseHelper.CreateCellular();
+			temperatureNoise.SetSeed(Seed);
+
+			FastNoiseLite humidityNoise = NoiseHelper.CreateCellular();
+			humidityNoise.SetSeed(Seed);
+
+			RegisterLayer("default", new GenerationLayer(256, 256, defaultNoise));
 			RegisterLayer("temperatures", new GenerationLayer(256, 256, temperatureNoise));
 			RegisterLayer("humidity", new GenerationLayer(256, 256, humidityNoise));
 		}
@@ -102,13 +117,11 @@ namespace AlmostGoodEngine.Tests.Generation
 				for (int x = 0; x < WorldWidth; x++)
 				{
 					int index = y * WorldWidth + x;
-					int reductedIndex = (y / 64 * 64) * WorldWidth + (x / 64 * 64);
+					int cellX = x / BiomeSize * BiomeSize;
+					int cellY = y / BiomeSize * BiomeSize;
+					int cellIndex = cellY * WorldWidth + cellX;
 
-					// Retrive the current biome
-					var temperature = BetterMath.To1(temperaturesLayer.Min, temperaturesLayer.Max, temperaturesLayer.Data[reductedIndex]);
-					var humidity = BetterMath.To1(humidityLayer.Min, humidityLayer.Max, humidityLayer.Data[reductedIndex]);
-
-					var biome = FindBiome(temperature, humidity);
+					var biome = FindBiome(temperaturesLayer.Data[cellIndex], humidityLayer.Data[cellIndex]);
 					//Logger.Log("biome: " + biome.Name + " (index: " + reductedIndex + ", temperature: " + temperature + ", humidity: " + humidity + ")");
 
 					if (biome == null)
@@ -119,7 +132,7 @@ namespace AlmostGoodEngine.Tests.Generation
 					if (biome.Name != lastBiome)
 					{
 						lastBiome = biome.Name;
-						Logger.Log("New biome: " + biome.Name + " (temperature: " + temperature + ", humidity: " + humidity + ")");
+						Logger.Log("New biome: " + biome.Name + " (temperature: " + temperaturesLayer.Data[cellIndex] + ", humidity: " + humidityLayer.Data[cellIndex] + ")");
 					}
 
 					if (index < defaultLayer.Data.Length)
@@ -156,10 +169,12 @@ namespace AlmostGoodEngine.Tests.Generation
 				for (int x = 0; x < WorldWidth; x++)
 				{
 					int index = y * WorldWidth + x;
-					int reductedIndex = (y / 64 * 64) * WorldWidth + (x / 64 * 64);
+					int cellX = x / BiomeSize * BiomeSize;
+					int cellY = y / BiomeSize * BiomeSize;
+					int cellIndex = cellY * WorldWidth + cellX;
 
 					// Retrive the current biome
-					var biome = FindBiome(temperaturesLayer.Data[reductedIndex], humidityLayer.Data[reductedIndex]);
+					var biome = FindBiome(temperaturesLayer.Data[cellIndex], humidityLayer.Data[cellIndex]);
 
 					// Draw the tileset
 					Tileset.DrawTile(spriteBatch, new(x * Tileset.TileSize, y * Tileset.TileSize), WorldData[index], biome.TilesetVariationName);

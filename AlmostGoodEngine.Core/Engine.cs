@@ -133,8 +133,8 @@ namespace AlmostGoodEngine.Core
             // Scene starting
 			GameManager.Start();
 
-            //BetterMath.Test();
-            Helper.Test();
+            BetterMath.Test();
+            //Helper.Test();
         }
 
         protected override void Update(GameTime gameTime)

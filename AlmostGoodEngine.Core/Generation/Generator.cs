@@ -7,6 +7,8 @@ namespace AlmostGoodEngine.Core.Generation
 {
 	public class Generator
 	{
+		public int Seed { get; set; }
+
 		public Tileset Tileset { get; private set; }
 		public List<TileHeight> Tiles { get; private set; }
 		public int[] WorldData { get; protected set; }
@@ -24,7 +26,7 @@ namespace AlmostGoodEngine.Core.Generation
 
 		public Generator(Tileset tileset, int seed = 1337, int worldWidth = 256, int worldHeight = 256)
 		{
-			Logger.Log("Seed " + seed.ToString());
+			Seed = seed;
 
 			Tileset = tileset;
 			if (Tileset != null)

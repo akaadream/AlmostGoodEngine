@@ -72,22 +72,17 @@ namespace AlmostGoodEngine.Core.Utils
 
 		public static float To1(float min, float max, float value)
 		{
-			return 1 / (max - min) * (value + 1);
+			return ToIntervale(min, max, 0f, 1f, value);
 		}
 
-		public static float ToIntervale(float a, float b, float c, float d, float value)
+		public static float ToIntervale(float fromMin, float fromMax, float toMin, float toMax, float value)
 		{
-			return c + ((d - c) / (b - a)) * (value - a);
+			return (value - fromMin) * (toMax - toMin) / (fromMax - fromMin) + toMin;
 		}
 
 		public static void Test()
 		{
-			var result = Expm1(1);
-			var result2 = Exp2(5);
-			var result3 = Remainder(4.6f);
-			Logger.Log("Expm1: " + result, "MATH");
-			Logger.Log("Exp2: " + result2, "MATH");
-			Logger.Log("Remainder: " + result3, "MATH");
+			Logger.Log("min: -0.5f, max: 0.5f, value: 0.3, value_to_1: " + ToIntervale(-0.5f, 0.5f, -1f, 1f, 0.3f));
 		}
 	}
 }

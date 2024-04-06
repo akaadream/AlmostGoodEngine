@@ -1,6 +1,7 @@
 ﻿using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Generation;
 using System;
+using System.Runtime.ExceptionServices;
 
 namespace AlmostGoodEngine.Core.Generation
 {
@@ -70,7 +71,22 @@ namespace AlmostGoodEngine.Core.Generation
 				}
 			}
 
-			Logger.Log("Layer (min: " + Min + ", max: " + Max + ")");
+			Logger.Log("Layer (before_min: " + Min + ", brefore_max: " + Max + ")");
+
+			for (int i = 0; i < Width * Height; i++)
+			{
+				Data[i] = BetterMath.ToIntervale(Min, Max, -1f, 1f, Data[i]);
+				if (Data[i] > Max)
+				{
+					Max = Data[i];
+				}
+				if (Data[i] < Min)
+				{
+					Min = Data[i];
+				}
+			}
+
+			Logger.Log("Layer (after_min: " + Min + ", after_max: " + Max + ")");
 		}
 
 		public float GetFalloffNoise(float noise, float x, float y)

@@ -50,7 +50,6 @@ namespace AlmostGoodEngine.Core.Generation
 		public Tile GetTile(float height, float min = -1f, float max = 1f)
 		{
 			float h = BetterMath.To1(min, max, height);
-			//float h = height;
 			foreach (var tileHeight in Tiles)
 			{
 				if (h >= tileHeight.Min && h <= tileHeight.Max)
