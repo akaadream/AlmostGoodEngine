@@ -1,3 +1,3 @@
 ﻿
-using var game = new AlmostGoodEngine.DesktopGL.Game1();
+using var game = new AlmostGoodEngine.DesktopGL.AlmostGoodGame();
 game.Run();

@@ -35,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGameEngine.CssContent
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.CSS", "AlmostGoodEngine.CSS\AlmostGoodEngine.CSS.csproj", "{9346C318-CD71-4F8C-B430-C0E82EA7F38D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGoodEngine.Editor", "AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj", "{823546FC-D888-4918-B5AB-90BC3CAFEDCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.Editor", "AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj", "{823546FC-D888-4918-B5AB-90BC3CAFEDCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGameEngine.GameLibrary", "AlmostGameEngine.GameLibrary\AlmostGameEngine.GameLibrary.csproj", "{46081711-9008-456B-A3D6-C0D1A78C5285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +117,10 @@ Global
 		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{823546FC-D888-4918-B5AB-90BC3CAFEDCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46081711-9008-456B-A3D6-C0D1A78C5285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46081711-9008-456B-A3D6-C0D1A78C5285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46081711-9008-456B-A3D6-C0D1A78C5285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46081711-9008-456B-A3D6-C0D1A78C5285}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

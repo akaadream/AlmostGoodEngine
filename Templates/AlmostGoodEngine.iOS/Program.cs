@@ -7,11 +7,11 @@ namespace AlmostGoodEngine.iOS
     [Register("AppDelegate")]
     internal class Program : UIApplicationDelegate
     {
-        private static Game1 game;
+        private static AlmostGoodGame game;
 
         internal static void RunGame()
         {
-            game = new Game1();
+            game = new AlmostGoodGame();
             game.Run();
         }
 

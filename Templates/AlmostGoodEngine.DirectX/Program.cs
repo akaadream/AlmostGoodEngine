@@ -1,3 +1,3 @@
 ﻿
-using var game = new AlmostGoodEngine.DirectX.Game1();
+using var game = new AlmostGoodEngine.DirectX.AlmostGoodGame();
 game.Run();
