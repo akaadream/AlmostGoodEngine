@@ -3,6 +3,7 @@ using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace AlmostGoodEngine.Core.Entities
 {
@@ -85,6 +86,9 @@ namespace AlmostGoodEngine.Core.Entities
 
         public Color BackgroundColor { get; set; } = Color.Transparent;
 
+        private BoundingFrustum _boundingFrustum;
+        private Rectangle _viewRect = Rectangle.Empty;
+
         public Camera2D(int width, int height)
         {
             Viewport = new((int)Position.X, (int)Position.Y, width, height);
@@ -154,7 +158,7 @@ namespace AlmostGoodEngine.Core.Entities
 
         public Matrix ScreenMatrix()
         {
-            return Matrix.CreateScale(Viewport.Width / Viewport.Width);
+            return Engine.ScreenScaleMatrix;
         }
 
         /// <summary>
@@ -173,6 +177,8 @@ namespace AlmostGoodEngine.Core.Entities
         {
             View = ViewMatrix();
             Projection = ProjectionMatrix();
+            _boundingFrustum = GetBoundingFrustum();
+            _viewRect = GetViewRect();
         }
 
         /// <summary>
@@ -203,12 +209,27 @@ namespace AlmostGoodEngine.Core.Entities
                 return;
             }
 
-            Debug.FillRectangle(spriteBatch, Viewport.Bounds, BackgroundColor);
+            spriteBatch.GraphicsDevice.Clear(BackgroundColor);
 		}
+
+        public Rectangle GetViewRect()
+        {
+            return new Rectangle((int)Position.X, (int)Position.Y, (int)(Width / Zoom), (int)(Height / Zoom));
+		}
+
+        public BoundingFrustum GetBoundingFrustum()
+        {
+            return new(View * ScreenMatrix());
+        }
 
         public bool CanSee(Rectangle bounds)
         {
-            return Viewport.Bounds.Intersects(bounds);
+            if (_viewRect.IsEmpty)
+            {
+                return false;
+            }
+
+            return _viewRect.Intersects(bounds);
         }
 	}
 }

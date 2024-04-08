@@ -30,7 +30,7 @@ namespace AlmostGoodEngine.Core
         /// <summary>
         /// Used to manage the window resize calculations
         /// </summary>
-        private bool _resizing = true;
+        private bool _resizing = false;
 
         /// <summary>
         /// The previous width of the game
@@ -51,6 +51,16 @@ namespace AlmostGoodEngine.Core
         /// True if the game is in fullscreen mode
         /// </summary>
         private bool _isFullscreen = false;
+
+        /// <summary>
+        /// The game viewport
+        /// </summary>
+        public static Viewport GameViewport { get; private set; }
+
+        /// <summary>
+        /// The screen's scale matrix
+        /// </summary>
+        public static Matrix ScreenScaleMatrix { get; private set; } = Matrix.Identity;
 
         public Engine()
         {
@@ -116,6 +126,9 @@ namespace AlmostGoodEngine.Core
 
             // Load the application's settings
             LoadSettings();
+
+            // Compute the default viewport
+            UpdateScreenScaleMatrix();
 
             base.Initialize();
         }
@@ -183,6 +196,9 @@ namespace AlmostGoodEngine.Core
             // Clear the screen
             GraphicsDevice.Clear(Settings.ClearColor);
 
+            // Update the graphics device viewport
+            GraphicsDevice.Viewport = GameViewport;
+
             // Capture the draw calls rate
             Time.Draw(gameTime);
 
@@ -237,20 +253,29 @@ namespace AlmostGoodEngine.Core
             // Capture the current position of the window
             Point windowPosition = Window.Position;
 
-            if (Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0 && _resizing)
+            if (Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
             {
-                Graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                Graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                Graphics.ApplyChanges();
+                if (_resizing)
+                {
+					Graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+					Graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+					Graphics.ApplyChanges();
 
-                Window.Position = windowPosition;
+					Window.Position = windowPosition;
+				}
+                else
+                {
+                    _resizing = true;
 
-                GameManager.Resize(new Viewport(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight));
+                    // Update the screen's scale matrix
+                    UpdateScreenScaleMatrix();
+					GameManager.Resize(GameViewport);
+
+					Logger.Log("Viewport resized.");
+
+					_resizing = false;
+                }
             }
-
-            _resizing = true;
-
-            Logger.Log("Window size changed.");
         }
 
         internal void ToggleFullscreen()
@@ -338,5 +363,40 @@ namespace AlmostGoodEngine.Core
         {
             Window.AllowUserResizing = !Window.AllowUserResizing;
         }
+
+        /// <summary>
+        /// Update the screen's scale matrix
+        /// </summary>
+        internal void UpdateScreenScaleMatrix()
+        {
+			float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+			float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+
+			int virtualWidth = (int)screenWidth;
+			int virtualHeight = (int)screenHeight;
+
+			if (screenWidth / Settings.Width > screenHeight / Settings.Height)
+			{
+				float aspect = screenHeight / Settings.Height;
+				virtualWidth = (int)(aspect * Settings.Width);
+			}
+			else
+			{
+				float aspect = screenWidth / Settings.Width;
+				virtualHeight = (int)(aspect * Settings.Height);
+			}
+
+            ScreenScaleMatrix = Matrix.CreateScale(virtualWidth / (float)Settings.Width);
+
+			GameViewport = new()
+			{
+				X = (int)(screenWidth / 2 - virtualWidth / 2),
+				Y = (int)(screenHeight / 2 - virtualHeight / 2),
+				Width = virtualWidth,
+				Height = virtualHeight,
+				MinDepth = 0,
+				MaxDepth = 1
+			};
+		}
     }
 }

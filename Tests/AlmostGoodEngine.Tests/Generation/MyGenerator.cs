@@ -169,15 +169,22 @@ namespace AlmostGoodEngine.Tests.Generation
 				for (int x = 0; x < WorldWidth; x++)
 				{
 					int index = y * WorldWidth + x;
+					int targetX = x * Tileset.TileSize;
+					int targetY = y * Tileset.TileSize;
 					int cellX = x / BiomeSize * BiomeSize;
 					int cellY = y / BiomeSize * BiomeSize;
 					int cellIndex = cellY * WorldWidth + cellX;
+
+					if (!GameManager.MainCamera().CanSee(new Rectangle(targetX, targetY, Tileset.TileSize, Tileset.TileSize)))
+					{
+						continue;
+					}
 
 					// Retrive the current biome
 					var biome = FindBiome(temperaturesLayer.Data[cellIndex], humidityLayer.Data[cellIndex]);
 
 					// Draw the tileset
-					Tileset.DrawTile(spriteBatch, new(x * Tileset.TileSize, y * Tileset.TileSize), WorldData[index], biome.TilesetVariationName);
+					Tileset.DrawTile(spriteBatch, new(targetX, targetY), WorldData[index], biome.TilesetVariationName);
 				}
 			}
 		}
@@ -193,10 +200,18 @@ namespace AlmostGoodEngine.Tests.Generation
 			{
 				for (int x = 0; x < layer.Width; x++)
 				{
+					int targetX = x * Tileset.TileSize;
+					int targetY = y * Tileset.TileSize;
+
+					if (!GameManager.MainCamera().CanSee(new Rectangle(targetX, targetY, Tileset.TileSize, Tileset.TileSize)))
+					{
+						continue;
+					}
+
 					int index = y * WorldWidth + x;
 					float to1 = BetterMath.To1(layer.Min, layer.Max, layer.Data[index]);
 					Color color = Color.Lerp(color1, color2, to1);
-					Debug.FillRectangle(spriteBatch, new Rectangle(x * Tileset.TileSize, y * Tileset.TileSize, Tileset.TileSize, Tileset.TileSize), color);
+					Debug.FillRectangle(spriteBatch, new Rectangle(targetX, targetY, Tileset.TileSize, Tileset.TileSize), color);
 				}
 			}
 		}

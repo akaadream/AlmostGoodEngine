@@ -209,6 +209,11 @@ namespace AlmostGoodEngine.Core.Utils
             return Intersect(this, other);
         }
 
+        public bool Intersect(Rectangle other)
+        {
+            return Intersect(this, new RectangleF(other.X, other.Y, other.Width, other.Height)) != Empty;
+        }
+
         /// <summary>
         /// Get the intersection between two rectangles
         /// </summary>

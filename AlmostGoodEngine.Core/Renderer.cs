@@ -21,15 +21,16 @@ namespace AlmostGoodEngine.Core
 		/// <summary>
 		/// Game main viewport shortcut
 		/// </summary>
-		public static Viewport Viewport { get => GameManager.Engine.GraphicsDevice.Viewport; }
+		public static Viewport Viewport { get; set; }
 
         public Renderer(Scene scene)
         {
             Scene = scene;
+			Viewport = Engine.GameViewport;
 
             Cameras = [];
-            Cameras.Add(new (Viewport)
-            {
+			Cameras.Add(new(Viewport)
+			{
                 SamplerState = SamplerState.PointClamp
             });
         }
@@ -59,7 +60,6 @@ namespace AlmostGoodEngine.Core
             foreach (var camera in Cameras)
             {
 				camera.Viewport = viewport;
-				camera.ComputeMatrixes();
 			}
         }
 
@@ -113,7 +113,7 @@ namespace AlmostGoodEngine.Core
 				{
 					ScissorTestEnable = true,
 				};
-				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)camera.Viewport.X, (int)camera.Viewport.Y, camera.Width, camera.Height);
+				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(camera.Viewport.X, camera.Viewport.Y, camera.Width, camera.Height);
 				spriteBatch.Begin(SpriteSortMode.Deferred, null, camera.SamplerState, null, rasterizerState, null, camera.GetTransform());
 
 				// Draw scene objects
@@ -162,17 +162,6 @@ namespace AlmostGoodEngine.Core
 		public void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
 		{
 			spriteBatch.Begin();
-			foreach (var camera in Cameras)
-			{
-				Debug.Rectangle(
-					spriteBatch,
-					new Rectangle(
-						camera.Viewport.X + 1,
-						camera.Viewport.Y + 1,
-						camera.Viewport.Width - 3,
-						camera.Viewport.Height - 3), 
-					Color.Red);
-			}
 
 			// Draw scene objects
 			foreach (var entity in Scene.Entities)
@@ -183,6 +172,7 @@ namespace AlmostGoodEngine.Core
 				}
 				entity.DrawDebug(gameTime, spriteBatch);
 			}
+
 			spriteBatch.End();
 		}
     }
