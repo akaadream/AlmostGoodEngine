@@ -45,6 +45,16 @@ namespace AlmostGoodEngine.Core.ECS
         /// </summary>
         public Scene Scene { get; internal set; }
 
+        /// <summary>
+        /// If true, then this entity will be paused when you set the game paused
+        /// </summary>
+        public bool Pausable { get; set; }
+
+        /// <summary>
+        /// If true, this entity will be disabled (not drawn and not updated)
+        /// </summary>
+        public bool Enabled { get; set; }
+
         public Entity()
         {
             Children = [];
@@ -54,6 +64,37 @@ namespace AlmostGoodEngine.Core.ECS
             Position = Vector3.Zero;
 
             Tags = [];
+        }
+
+        public virtual Rectangle GetBounds()
+        {
+            int minLeft = 0;
+            int minTop = 0;
+            int maxRight = 0;
+            int maxBottom = 0;
+
+            foreach (var component in Components)
+            {
+                var rect = component.GetBounds();
+                if (rect.Left < minLeft)
+                {
+                    minLeft = rect.Left;
+                }
+                if (rect.Top < minTop)
+                {
+                    minTop = rect.Top;
+                }
+                if (rect.Right > maxRight)
+                {
+                    maxRight = rect.Right;
+                }
+                if (rect.Bottom > maxBottom)
+                {
+                    maxBottom = rect.Bottom;
+                }
+            }
+
+            return new Rectangle(minLeft, minTop, maxRight - minLeft, maxBottom - minTop);
         }
 
         /// <summary>

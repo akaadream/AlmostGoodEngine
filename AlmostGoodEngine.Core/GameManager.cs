@@ -31,6 +31,12 @@ namespace AlmostGoodEngine.Core
         public static SpriteBatch SpriteBatch { get => Engine.SpriteBatch; }
 
         /// <summary>
+        /// If the game should be paused
+        /// </summary>
+        public static bool Paused { get; set; }
+
+
+        /// <summary>
         /// Game initialization
         /// </summary>
         /// <param name="game"></param>

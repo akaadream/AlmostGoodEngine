@@ -91,6 +91,14 @@ namespace AlmostGoodEngine.Core.Scenes
             Renderer.BeforeUpdate(gameTime);
             foreach (var entity in Entities)
             {
+                if (GameManager.Paused && entity.Pausable)
+                {
+                    continue;
+                }
+				if (!entity.Enabled)
+				{
+					continue;
+				}
 				entity.BeforeUpdate(gameTime);
             }
         }
@@ -104,6 +112,14 @@ namespace AlmostGoodEngine.Core.Scenes
             Renderer.Update(gameTime);
             foreach (var entity in Entities)
             {
+				if (GameManager.Paused && entity.Pausable)
+				{
+					continue;
+				}
+				if (!entity.Enabled)
+				{
+					continue;
+				}
 				entity.Update(gameTime);
             }
         }
@@ -117,6 +133,14 @@ namespace AlmostGoodEngine.Core.Scenes
             Renderer.FixedUpdate(gameTime);
             foreach (var entity in Entities)
             {
+				if (GameManager.Paused && entity.Pausable)
+				{
+					continue;
+				}
+				if (!entity.Enabled)
+				{
+					continue;
+				}
 				entity.FixedUpdate(gameTime);
             }
         }
@@ -130,6 +154,14 @@ namespace AlmostGoodEngine.Core.Scenes
             Renderer.AfterUpdate(gameTime);
             foreach (var entity in Entities)
             {
+				if (GameManager.Paused && entity.Pausable)
+				{
+					continue;
+				}
+                if (!entity.Enabled)
+                {
+                    continue;
+                }
 				entity.AfterUpdate(gameTime);
             }
         }

@@ -119,7 +119,16 @@ namespace AlmostGoodEngine.Core
 				// Draw scene objects
 				foreach (var entity in Scene.Entities)
 				{
-					// TODO: Check if the game object bounds is visible within the camera, else do not render it
+					if (!entity.Enabled)
+					{
+						continue;
+					}
+
+					if (!camera.CanSee(entity.GetBounds()))
+					{
+						continue;
+					}
+
 					entity.Draw(gameTime, spriteBatch);
 				}
 
@@ -139,6 +148,10 @@ namespace AlmostGoodEngine.Core
 				// Draw scene objects
 				foreach (var entity in Scene.Entities)
 				{
+					if (!entity.Enabled)
+					{
+						continue;
+					}
 					entity.DrawUI(gameTime, spriteBatch);
 				}
 
@@ -164,6 +177,10 @@ namespace AlmostGoodEngine.Core
 			// Draw scene objects
 			foreach (var entity in Scene.Entities)
 			{
+				if (!entity.Enabled)
+				{
+					continue;
+				}
 				entity.DrawDebug(gameTime, spriteBatch);
 			}
 			spriteBatch.End();

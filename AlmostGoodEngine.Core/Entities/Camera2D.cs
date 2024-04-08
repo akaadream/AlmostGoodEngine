@@ -205,5 +205,10 @@ namespace AlmostGoodEngine.Core.Entities
 
             Debug.FillRectangle(spriteBatch, Viewport.Bounds, BackgroundColor);
 		}
+
+        public bool CanSee(Rectangle bounds)
+        {
+            return Viewport.Bounds.Intersects(bounds);
+        }
 	}
 }
