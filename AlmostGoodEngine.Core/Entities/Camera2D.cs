@@ -3,7 +3,6 @@ using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace AlmostGoodEngine.Core.Entities
 {
@@ -212,17 +211,17 @@ namespace AlmostGoodEngine.Core.Entities
             spriteBatch.GraphicsDevice.Clear(BackgroundColor);
 		}
 
-        public Rectangle GetViewRect()
-        {
-            return new Rectangle((int)Position.X, (int)Position.Y, (int)(Width / Zoom), (int)(Height / Zoom));
-		}
-
         public BoundingFrustum GetBoundingFrustum()
         {
             return new(View * ScreenMatrix());
         }
 
-        public bool CanSee(Rectangle bounds)
+		public Rectangle GetViewRect()
+		{
+			return new Rectangle((int)Position.X, (int)Position.Y, (int)(Width / Zoom), (int)(Height / Zoom));
+		}
+
+		public bool CanSee(Rectangle bounds)
         {
             if (_viewRect.IsEmpty)
             {

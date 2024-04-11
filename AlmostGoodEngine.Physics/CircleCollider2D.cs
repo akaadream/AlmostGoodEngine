@@ -5,25 +5,31 @@ namespace AlmostGoodEngine.Physics
 	public class CircleCollider2D : Collider
 	{
 		public float Radius { get; set; }
+		public override float Width { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+		public override float Height { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+		public override float Top { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+		public override float Left { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+		public override float Right { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+		public override float Bottom { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
 		public CircleCollider2D()
 		{
 
 		}
 
-		public override bool Collide(Collider other, bool response = false)
+		public override bool Collide(Rectangle rectangle)
 		{
-			return base.Collide(other);
+			throw new System.NotImplementedException();
 		}
 
-		public override bool IsInside(Vector2 position)
+		public override bool Collide(Vector2 position)
 		{
-			return Vector2.Distance(Origin, position) < Radius;
+			throw new System.NotImplementedException();
 		}
 
-		public override Rectangle GetRectangle()
+		public override bool Collide(Point position)
 		{
-			return new((int)(Origin.X - Radius), (int)(Origin.Y - Radius), (int)(Origin.X + Radius), (int)(Origin.Y + Radius));
+			throw new System.NotImplementedException();
 		}
 	}
 }

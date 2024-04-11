@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -80,9 +81,110 @@ namespace AlmostGoodEngine.Core.Utils
 			return (value - fromMin) * (toMax - toMin) / (fromMax - fromMin) + toMin;
 		}
 
+		public static float ManhattanDistance(Vector2 point1, Vector2 point2)
+		{
+			return Math.Abs(point2.X - point1.X) + Math.Abs(point2.Y - point1.Y);
+		}
+
+		public static float SquaredEuclidianDistance(Vector2 point1, Vector2 point2)
+		{
+			return MathF.Pow(point2.X - point1.X, 2) + MathF.Pow(point2.Y - point1.Y, 2);
+		}
+
+		public static float EuclidianDistance(Vector2 point1, Vector2 point2)
+		{
+			return MathF.Sqrt(SquaredEuclidianDistance(point1, point2));
+		}
+
+		public static int DiscreteDistance(Vector2 point1, Vector2 point2)
+		{
+			if (point1 == point2)
+			{
+				return 0;
+			}
+
+			return 1;
+		}
+
+		public static int DamerauLevenshteinDistance(string str1, string str2)
+		{
+			if (string.IsNullOrEmpty(str1) && string.IsNullOrEmpty(str2))
+			{
+				return 0;
+			}
+
+			if (string.IsNullOrEmpty(str1))
+			{
+				return str2.Length;
+			}
+
+			if (string.IsNullOrEmpty(str2))
+			{
+				return str1.Length;
+			}
+
+			var distances = new int[str1.Length + 1, str2.Length + 1];
+
+			for (int i = 0; i <= str1.Length; distances[i, 0] = i++) ;
+			for (int j = 0; j <= str2.Length; distances[0, j] = j++) ;
+
+			for (int i = 1; i <= str1.Length; i++)
+			{
+				for (int j = 1; j <= str2.Length; j++)
+				{
+					int cost = str2[j - 1] == str1[i - 1] ? 0 : 1;
+					distances[i, j] = Min(distances[i - 1, j] + 1, distances[i, j - 1] + 1, distances[i - 1, j - 1] + cost);
+				}
+			}
+
+			return distances[str1.Length, str2.Length];
+		}
+
+		public static T Min<T>(params T[] values) where T : IComparable<T>
+		{
+			if (values.Length == 0)
+			{
+				return default;
+			}
+
+			T min = values[0];
+
+			for (int i = 1; i < values.Length; i++)
+			{
+				if (values[i].CompareTo(min) < 0)
+				{
+					min = values[i];
+				}
+			}
+
+			return min;
+		}
+
+		public static T Max<T>(params T[] values) where T : IComparable<T>
+		{
+			if (values.Length == 0)
+			{
+				return default;
+			}
+
+			T max = values[0];
+
+			for (int i = 1; i < values.Length; i++)
+			{
+				if (values[i].CompareTo(max) > 0)
+				{
+					max = values[i];
+				}
+			}
+
+			return max;
+		}
+
 		public static void Test()
 		{
-			Logger.Log("min: -0.5f, max: 0.5f, value: 0.3, value_to_1: " + ToIntervale(-0.5f, 0.5f, -1f, 1f, 0.3f));
+			Logger.Log("Distance damerau levenshtein: " + DamerauLevenshteinDistance("Bonjour", "Bonsoir"));
+			Logger.Log("Distance damerau levenshtein: " + DamerauLevenshteinDistance("Début", "Fin"));
+			Logger.Log("Distance damerau levenshtein: " + DamerauLevenshteinDistance("Dunkerque", "Perpignan"));
 		}
 	}
 }

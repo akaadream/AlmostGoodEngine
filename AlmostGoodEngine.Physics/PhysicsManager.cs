@@ -1,5 +1,4 @@
-﻿using AlmostGoodEngine.Physics.Extends;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Physics
@@ -23,12 +22,7 @@ namespace AlmostGoodEngine.Physics
 		{
 			foreach (var collider in colliders)
 			{
-				if (!collider.Active)
-				{
-					continue;
-				}
-
-				if (collider.IsInside(nextPosition))
+				if (collider.Collide(nextPosition))
 				{
 					return true;
 				}
@@ -39,7 +33,7 @@ namespace AlmostGoodEngine.Physics
 
 		public static bool OverlapCheck(Collider a, Collider b)
 		{
-			return a.Collide(b, false);
+			return a.Collide(b);
 		}
 
 	}
