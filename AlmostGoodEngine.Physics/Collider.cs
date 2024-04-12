@@ -19,12 +19,37 @@ namespace AlmostGoodEngine.Physics
 
 		public bool Collide(Collider other)
 		{
-			return false;
+			if (other is BoxCollider2D boxCollider2D)
+			{
+				return Collide(boxCollider2D);
+			}
+
+			if (other is Grid grid)
+			{
+				return Collide(grid);
+			}
+
+			if (other is Colliders colliders)
+			{
+				return Collide(colliders);
+			}
+
+			if (other is CircleCollider2D circleCollider2D)
+			{
+				return Collide(circleCollider2D);
+			}
+
+			throw new System.Exception("The given collider type is not implemented!");
 		}
 
 		public abstract bool Collide(Rectangle rectangle);
 		public abstract bool Collide(Vector2 position);
 		public abstract bool Collide(Point position);
+
+		public abstract bool Collide(BoxCollider2D box);
+		public abstract bool Collide(Grid grid);
+		public abstract bool Collide(CircleCollider2D circle);
+		public abstract bool Collide(Colliders colliders);
 
 		public void CenterOrigin()
 		{
