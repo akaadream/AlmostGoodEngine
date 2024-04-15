@@ -41,12 +41,12 @@ namespace AlmostGoodEngine.Core.Components.Physics
 							if (moveX > 0)
 							{
 								// Push the actor right
-								actor.MoveX(Collider.GetRectangle().Right - actor.Collider.GetRectangle().Left, actor.Squish);
+								actor.MoveX(Collider.Right - actor.Collider.Left, actor.Squish);
 							}
 							else
 							{
 								// Push the actor left
-								actor.MoveX(Collider.GetRectangle().Left - actor.Collider.GetRectangle().Right, actor.Squish);
+								actor.MoveX(Collider.Left - actor.Collider.Right, actor.Squish);
 							}
 						}
 						else if (riding.Contains(actor))
@@ -68,12 +68,12 @@ namespace AlmostGoodEngine.Core.Components.Physics
 							if (moveY < 0)
 							{
 								// Push the actor up
-								actor.MoveY(Collider.GetRectangle().Top - actor.Collider.GetRectangle().Bottom, actor.Squish);
+								actor.MoveY(Collider.Top - actor.Collider.Bottom, actor.Squish);
 							}
 							else
 							{
 								// Push the actor down
-								actor.MoveY(Collider.GetRectangle().Bottom - actor.Collider.GetRectangle().Top, actor.Squish);
+								actor.MoveY(Collider.Bottom - actor.Collider.Top, actor.Squish);
 							}
 						}
 						else if (riding.Contains(actor))
@@ -91,14 +91,14 @@ namespace AlmostGoodEngine.Core.Components.Physics
 		public override void BeforeUpdate(GameTime gameTime)
 		{
 			base.BeforeUpdate(gameTime);
-			Collider.Origin = Position.ToVector2();
+			Collider.Position = Position.ToVector2();
 		}
 
 		public override void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
 		{
 			base.DrawDebug(gameTime, spriteBatch);
 
-			Debug.FillRectangle(spriteBatch, Collider.GetRectangle(), Color.Blue * 0.5f);
+			Debug.FillRectangle(spriteBatch, Collider.Bounds, Color.Blue * 0.5f);
 		}
 	}
 }

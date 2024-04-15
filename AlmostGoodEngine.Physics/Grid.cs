@@ -71,6 +71,26 @@ namespace AlmostGoodEngine.Physics
 			throw new NotImplementedException();
 		}
 
+		public override bool Collide(BoxCollider2D box)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override bool Collide(Grid grid)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override bool Collide(CircleCollider2D circle)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override bool Collide(Colliders colliders)
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool IsEmpty
 		{
 			get

@@ -22,7 +22,7 @@ namespace AlmostGoodEngine.Core.Entities
 		{
 			get
 			{
-				return (int)(Position.X - Collider.GetRectangle().Left);
+				return (int)(Position.X - Collider.Left);
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace AlmostGoodEngine.Core.Entities
 		{
 			get
 			{
-				return (int)(Position.X - Collider.GetRectangle().Left + Collider.GetRectangle().Width);
+				return (int)(Position.X - Collider.Left + Collider.Width);
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace AlmostGoodEngine.Core.Entities
 		{
 			get
 			{
-				return (int)(Position.Y - Collider.GetRectangle().Top);
+				return (int)(Position.Y - Collider.Top);
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace AlmostGoodEngine.Core.Entities
 		{
 			get
 			{
-				return (int)(Position.Y - Collider.GetRectangle().Top + Collider.GetRectangle().Height);
+				return (int)(Position.Y - Collider.Top + Collider.Height);
 			}
 		}
 

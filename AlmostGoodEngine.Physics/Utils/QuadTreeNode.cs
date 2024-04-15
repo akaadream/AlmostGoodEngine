@@ -42,7 +42,7 @@ namespace AlmostGoodEngine.Physics.Utils
 		public void Insert(Collider collider)
 		{
 			// If there is no intersection between the tree bounds and the collider bounds, do not insert it
-			if (!Bounds.Intersects(collider.GetRectangle()))
+			if (!Bounds.Intersects(collider.Bounds))
 			{
 				return;
 			}
@@ -61,7 +61,7 @@ namespace AlmostGoodEngine.Physics.Utils
 			{
 				for (int i = Objects.Count - 1; i >= 0; i--)
 				{
-					if (child.Bounds.Intersects(Objects[i].GetRectangle()))
+					if (child.Bounds.Intersects(Objects[i].Bounds))
 					{
 						child.Insert(Objects[i]);
 						Objects.RemoveAt(i);

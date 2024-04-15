@@ -59,9 +59,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 };
                 AddComponent(animatedSprite2D);
 
-                Collider = new Physics.BoxCollider2D(new Rectangle(-20, 12, 42, 22))
+                Collider = new Physics.BoxCollider2D(-20, 12, 42, 22)
                 {
-                    Origin = Position.ToVector2()
+                    Position = Position.ToVector2()
                 };
 			}
 
@@ -95,7 +95,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
 		public override void BeforeUpdate(GameTime gameTime)
 		{
-            Collider.Origin = Position.ToVector2();
+            Collider.Position = Position.ToVector2();
 
 			base.BeforeUpdate(gameTime);
 		}
@@ -232,7 +232,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 		{
 			base.DrawDebug(gameTime, spriteBatch);
 
-            Debug.FillRectangle(spriteBatch, Collider.GetRectangle(), Color.Yellow * 0.5f);
+            Debug.FillRectangle(spriteBatch, Collider.Bounds, Color.Yellow * 0.5f);
 		}
 	}
 }

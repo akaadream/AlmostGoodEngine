@@ -43,7 +43,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             solid = new()
             {
                 Position = new Vector3(200, 60, 1),
-                Collider = new Physics.BoxCollider2D(new Rectangle(0, 0, 64, 64)),
+                Collider = new Physics.BoxCollider2D(0, 0, 64, 64),
                 Collidable = true
 			};
 			AddEntity(solid);
