@@ -8,17 +8,22 @@ namespace AlmostGoodEngine.Particles
 		/// <summary>
 		/// Life of the particle
 		/// </summary>
-		public int Life { get; set; }
+		public float Life { get; set; }
 
 		/// <summary>
-		/// The duration of the particle
+		/// The lifetime of the particle
 		/// </summary>
-		public int Duration { get; set; }
+		public float Lifetime { get; set; }
 
 		/// <summary>
 		/// The current position of the particle
 		/// </summary>
 		public Vector3 Position { get; set; }
+
+		/// <summary>
+		/// The current velocity of the particle
+		/// </summary>
+		public Vector3 Velocity { get; set; }
 
 		/// <summary>
 		/// The texture used as the particle. White pixel if we asign nothing to this instance
@@ -31,26 +36,41 @@ namespace AlmostGoodEngine.Particles
 		public Color Tint { get; set; } = Color.White;
 
 		/// <summary>
+		/// The sprite batch used to draw this particle
+		/// </summary>
+		private readonly SpriteBatch _spriteBatch;
+
+		/// <summary>
 		/// Default constructor of the particle. Using a white pixel as texture by default
 		/// </summary>
-		public Particle()
+		public Particle(SpriteBatch spriteBatch, Texture2D texture = null)
 		{
+			_spriteBatch = spriteBatch;
 
+			if (texture == null)
+			{
+				Texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+				Texture.SetData(new[] { Color.White });
+			}
+			else
+			{
+				Texture = texture;
+			}
 		}
 
-		public void Update(Vector3 finalForce)
+		public void Update(float delta, Vector3 finalForce)
 		{
-			Position += finalForce;
+			Position += Velocity * finalForce * delta;
 		}
 
-		public void Draw(SpriteBatch spriteBatch)
+		public void Draw()
 		{
-			if (Texture == null)
+			if (Texture == null || _spriteBatch == null)
 			{
 				return;
 			}
 
-			spriteBatch.Draw(Texture, new Vector2((int)Position.X, (int)Position.Y), Tint);
+			_spriteBatch.Draw(Texture, new Vector2((int)Position.X, (int)Position.Y), Tint);
 		}
 	}
 }

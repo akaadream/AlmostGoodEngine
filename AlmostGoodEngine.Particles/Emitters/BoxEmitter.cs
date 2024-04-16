@@ -61,6 +61,11 @@ namespace AlmostGoodEngine.Particles.Emitters
 			return new(x, y, z);
 		}
 
+		public override Rectangle Bounds()
+		{
+			return new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
+		}
+
 		/// <summary>
 		/// Get a random float between the min/max
 		/// </summary>

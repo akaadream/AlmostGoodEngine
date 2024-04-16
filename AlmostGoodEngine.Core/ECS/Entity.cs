@@ -51,7 +51,7 @@ namespace AlmostGoodEngine.Core.ECS
         public bool Pausable { get; set; }
 
         /// <summary>
-        /// If true, this entity will be disabled (not drawn and not updated)
+        /// If false, this entity will be disabled (not drawn and not updated)
         /// </summary>
         public bool Enabled { get; set; }
 
@@ -62,6 +62,7 @@ namespace AlmostGoodEngine.Core.ECS
 
             Scale = new(1f);
             Position = Vector3.Zero;
+            Enabled = true;
 
             Tags = [];
         }

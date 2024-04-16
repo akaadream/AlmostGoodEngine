@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.CSS", "Alm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.Editor", "AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj", "{823546FC-D888-4918-B5AB-90BC3CAFEDCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGameEngine.GameLibrary", "AlmostGameEngine.GameLibrary\AlmostGameEngine.GameLibrary.csproj", "{46081711-9008-456B-A3D6-C0D1A78C5285}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGameEngine.GameLibrary", "AlmostGameEngine.GameLibrary\AlmostGameEngine.GameLibrary.csproj", "{46081711-9008-456B-A3D6-C0D1A78C5285}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmostGoodEngine.Particles", "AlmostGoodEngine.Particles\AlmostGoodEngine.Particles.csproj", "{D1374EAF-B740-4DD2-B676-5A8482F036C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,10 @@ Global
 		{46081711-9008-456B-A3D6-C0D1A78C5285}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46081711-9008-456B-A3D6-C0D1A78C5285}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46081711-9008-456B-A3D6-C0D1A78C5285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

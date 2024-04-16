@@ -29,6 +29,11 @@ namespace AlmostGoodEngine.Core.Scenes
         public bool ContentLoaded { get; private set; }
 
         /// <summary>
+        /// Get the number of entities registered inside the scene
+        /// </summary>
+        public int EntitiesCount { get => Entities.Count; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public Scene()
