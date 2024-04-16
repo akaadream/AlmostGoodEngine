@@ -7,7 +7,7 @@ using System;
 
 namespace AlmostGoodEngine.Core.ECS
 {
-    public class Component : IComponent
+    public abstract class Component : IComponent
     {
         public Entity Owner { get; internal set; }
 
