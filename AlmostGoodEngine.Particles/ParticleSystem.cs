@@ -1,6 +1,7 @@
 ﻿using AlmostGoodEngine.Particles.Emitters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Particles
@@ -15,7 +16,7 @@ namespace AlmostGoodEngine.Particles
 		/// <summary>
 		/// The list of currently living entities
 		/// </summary>
-		public List<Particle> Particles { get; set; } = [];
+		internal List<Particle> Particles { get; set; } = [];
 
 		/// <summary>
 		/// Based on the initial direction
@@ -25,34 +26,40 @@ namespace AlmostGoodEngine.Particles
 		/// <summary>
 		/// The gravity
 		/// </summary>
-		public Vector3 Gravity { get; set; }
+		public Vector2 Gravity { get; set; }
 
 		/// <summary>
 		/// The velocity of the particle when it spawn
 		/// </summary>
-		public Vector3 InitialVelocity { get; set; }
+		public Vector2 InitialVelocity { get; set; }
 
 		/// <summary>
 		/// The spin velocity of the particle
 		/// </summary>
-		public Vector3 SpinVelocity { get; set; }
+		public Vector2 SpinVelocity { get; set; }
 
 		/// <summary>
 		/// The orbit velocity
 		/// </summary>
-		public Vector3 OrbitVelocity { get; set; }
+		public Vector2 OrbitVelocity { get; set; }
 
 		/// <summary>
 		/// The acceleration of the particle
 		/// </summary>
-		public Vector3 LinearAcceleration { get; set; }
+		public Vector2 LinearAcceleration { get; set; }
 
 		/// <summary>
-		/// The amount of particles living at the same time
+		/// The target amount of particles generated per cycle
 		/// </summary>
 		public int Amount { get; set; }
 
+		/// <summary>
+		/// Retrieve the number of living particles
+		/// </summary>
+		public int Count { get =>  Particles.Count; }
+
 		#region New particles parameters
+
 		/// <summary>
 		/// Lifetime of new particles
 		/// </summary>
@@ -61,14 +68,73 @@ namespace AlmostGoodEngine.Particles
 		/// <summary>
 		/// The texture of new particles
 		/// </summary>
-		public Texture2D Texture { get; set; }
+		public Texture2D Texture
+		{
+			get => _texture;
+			set
+			{
+				_texture = value;
+				ComputeCenter();
+			}
+		}
+		private Texture2D _texture;
+
+		/// <summary>
+		/// The tint of the new particle
+		/// </summary>
+		public Color Tint { get; set; } = Color.White;
+
+		/// <summary>
+		/// The tint at the end of the particle life
+		/// </summary>
+		public Color TintOut { get; set; } = Color.Transparent;
+
+		/// <summary>
+		/// The scaling of the new particle
+		/// </summary>
+		public Vector2 Scale { get; set; }
+
+		/// <summary>
+		/// The scaling of the particle at the end of its lifetime
+		/// </summary>
+		public Vector2 ScaleOut { get; set; } = Vector2.One;
+
+		/// <summary>
+		/// If the particle should fade in
+		/// </summary>
+		public bool FadeIn { get; set; }
+
+		/// <summary>
+		/// If the particle should fade out
+		/// </summary>
+		public bool FadeOut { get; set; }
+
+		/// <summary>
+		/// If the fade out of the particle should be late
+		/// </summary>
+		public bool LateFade { get; set; }
 
 		#endregion
+
+		private float lastTimeSpawn = 0f;
+		private float particleStep { get => 1f / (Amount / Lifetime); }
 
 		/// <summary>
 		/// The sprite which will be used to render particles
 		/// </summary>
 		private readonly SpriteBatch _spriteBatch = spriteBatch;
+
+		/// <summary>
+		/// Random instance
+		/// </summary>
+		private readonly Random _random = new();
+
+		private void WhitePixel()
+		{
+			Texture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+			Texture.SetData(new[] { Color.White });
+			ComputeCenter();
+		}
 
 		public void Update(float delta)
 		{
@@ -76,52 +142,115 @@ namespace AlmostGoodEngine.Particles
 			{
 				var particle = Particles[i];
 				particle.Life += delta;
-				if (particle.Life > particle.Lifetime)
+				
+				if (particle.Life > Lifetime)
 				{
 					Particles.RemoveAt(i);
 					continue;
 				}
 
-				particle.Update(delta, GetForce());
+				particle.Position += particle.Velocity * delta;
+				particle.Rotation += SpinVelocity.X * delta;
+				particle.Velocity += LinearAcceleration * Gravity * delta;
+
+				var t = particle.Life / Lifetime;
+				if (FadeIn && t <= 0.1f)
+				{
+					particle.Opacity = MathHelper.Lerp(0f, 1f, t / 0.1f);
+				}
+				else if (FadeOut && t >= 0.9f)
+				{
+					particle.Opacity = MathHelper.Lerp(1f, 0f, (t - 0.9f) / 0.1f);
+				}
+				else
+				{
+					particle.Opacity = 1f;
+				}
 			}
 
-			if (Particles.Count >= Amount)
+			if (lastTimeSpawn >= particleStep)
 			{
-				return;
-			}
-
-			// If there is not enough particles inside the world, spawn new particles
-			for (int i = 0; i < Amount - Particles.Count; i++)
-			{
+				lastTimeSpawn -= particleStep;
 				SpawnParticle();
+			}
+			else
+			{
+				lastTimeSpawn += delta;
 			}
 		}
 
 		private void SpawnParticle()
 		{
-			Particle particle = new(_spriteBatch, Texture)
+			Particle particle = new()
 			{
-				Lifetime = Lifetime,
 				Velocity = InitialVelocity,
-				Position = Emitter.Next()
+				Position = Emitter.Next(),
+				Spin = RandomVec2(-SpinVelocity, SpinVelocity)
 			};
+			if (FadeIn)
+			{
+				particle.Opacity = 0f;
+			}
+			else
+			{
+				particle.Opacity = 1f;
+			}
+
 			Particles.Add(particle);
 		}
 
-		private Vector3 GetForce()
+		public Vector2 TextureCenter
 		{
-			return Gravity * LinearAcceleration;
+			get
+			{
+				return _textureCenter;
+			}
+			private set
+			{
+				_textureCenter = value;
+			}
+		}
+		private Vector2 _textureCenter;
+
+		private void ComputeCenter()
+		{
+			if (Texture == null)
+			{
+				TextureCenter = Vector2.Zero;
+			}
+
+			TextureCenter = new(Texture.Width / 2, Texture.Height / 2);
+		}
+
+		private Vector2 RandomVec2(Vector2 min, Vector2 max)
+		{
+			return new(RandomFloat(min.X, max.X), RandomFloat(min.Y, max.Y));
+		}
+
+		private float RandomFloat(float min, float max)
+		{
+			return (float)_random.NextDouble() * (max - min) + min;
 		}
 
 		/// <summary>
-		/// Draw all the particles
+		/// Draw the particle system. The sprite batch should already been opened.
 		/// </summary>
-		/// <param name="transformMatrix"></param>
-		public void Draw(Matrix transformMatrix)
+		public void Draw()
 		{
+			if (Texture == null)
+			{
+				WhitePixel();
+			}
+
 			foreach (var particle in Particles)
 			{
-				particle.Draw();
+				var position = new Vector2((int)particle.Position.X, (int)particle.Position.Y);
+				var t = particle.Life / Lifetime;
+
+				var finalScale = Vector2.Lerp(Scale, ScaleOut, t);
+				var finalTint = Color.Lerp(Tint, TintOut, t);
+
+				_spriteBatch.Draw(Texture, position, null, finalTint, particle.Rotation, TextureCenter, finalScale.X, SpriteEffects.None, 1f);
 			}
 		}
 	}

@@ -12,13 +12,20 @@ namespace AlmostGoodEngine.Tests.Scenes
 	{
 		public ParticlesScene()
 		{
-			var boxEmitter = new BoxEmitter(Vector3.Zero, new Vector3(300, 200, 1));
+			var boxEmitter = new PointEmitter(new Vector2(200, 200));
 			var particleSystem = new ParticleSystem(boxEmitter, GameManager.SpriteBatch)
 			{
 				Lifetime = 4f,
-				InitialVelocity = new Vector3(0, 1, 0),
-				LinearAcceleration = new Vector3(0, 1, 0),
-				Amount = 50
+				InitialVelocity = new Vector2(0f, 50f),
+				LinearAcceleration = new Vector2(0f, 1.4f),
+				SpinVelocity = new Vector2(32f, 0),
+				Gravity = new Vector2(0f, 1f),
+				Scale = new Vector2(8, 8),
+				Amount = 40,
+				Tint = Color.Red,
+				TintOut = Color.Green,
+				FadeIn = true,
+				FadeOut = true,
 			};
 
 			Entity entity = new();

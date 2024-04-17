@@ -25,7 +25,7 @@ namespace AlmostGoodEngine.Core.Components.Particles
 		{
 			base.Draw(gameTime, spriteBatch);
 
-			ParticleSystem.Draw(Owner.Scene.Renderer.Cameras[0].GetTransform());
+			ParticleSystem.Draw();
 		}
 	}
 }

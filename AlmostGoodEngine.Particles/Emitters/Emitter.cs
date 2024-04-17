@@ -9,9 +9,9 @@ namespace AlmostGoodEngine.Particles.Emitters
 			return Rectangle.Empty;
 		}
 
-		public virtual Vector3 Next()
+		public virtual Vector2 Next()
 		{
-			return Vector3.Zero;
+			return Vector2.Zero;
 		}
 	}
 }
