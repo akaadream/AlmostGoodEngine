@@ -1,6 +1,8 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
+using AlmostGoodEngine.Core.Scenes;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
+using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
@@ -130,7 +132,9 @@ namespace AlmostGoodEngine.Core
             // Compute the default viewport
             UpdateScreenScaleMatrix();
 
-            base.Initialize();
+			Editor.Editor.Initialize(this);
+
+			base.Initialize();
         }
 
         protected override void LoadContent()
@@ -143,12 +147,17 @@ namespace AlmostGoodEngine.Core
 			GameManager.LoadContent();
             // Initialize the GUI library
 			GUIManager.Initialize(Content, GraphicsDevice, Graphics);
+
+            GameManager.SceneManager.EngineStarted = true;
+            GameManager.SceneManager.LoadAtStart = Settings.StartingScene;
+
             // Scene starting
 			GameManager.Start();
 
             BetterMath.Test();
-            //Helper.Test();
-        }
+			//Helper.Test();
+			Editor.Editor.LoadContent();
+		}
 
         protected override void Update(GameTime gameTime)
         {
@@ -213,6 +222,7 @@ namespace AlmostGoodEngine.Core
             GUIManager.Draw(gameTime, SpriteBatch);
 
             AlmostGoodConsole.Draw(SpriteBatch);
+            Editor.Editor.Draw(gameTime);
 
             base.Draw(gameTime);
         }

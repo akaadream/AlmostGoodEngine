@@ -104,7 +104,7 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         internal static void Start()
         {
-            SceneManager?.Start();
+			SceneManager?.Start();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="gameTime"></param>
         internal static void BeforeUpdate(GameTime gameTime)
         {
-            SceneManager?.CurrentScene?.BeforeUpdate(gameTime);
+            SceneManager?.BeforeUpdate(gameTime);
         }
 
         /// <summary>
@@ -131,12 +131,12 @@ namespace AlmostGoodEngine.Core
         /// <param name="gameTime"></param>
         internal static void Update(GameTime gameTime)
         {
-            SceneManager?.CurrentScene?.Update(gameTime);
+            SceneManager?.Update(gameTime);
         }
 
         internal static void FixedUpdate(GameTime gameTime)
         {
-            SceneManager?.CurrentScene?.FixedUpdate(gameTime);
+            SceneManager?.FixedUpdate(gameTime);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="gameTime"></param>
         internal static void AfterUpdate(GameTime gameTime)
         {
-            SceneManager?.CurrentScene?.AfterUpdate(gameTime);
+            SceneManager?.AfterUpdate(gameTime);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="gameTime"></param>
         internal static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SceneManager?.CurrentScene?.Draw(gameTime, spriteBatch);
+            SceneManager?.Draw(gameTime, spriteBatch);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="gameTime"></param>
         internal static void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SceneManager?.CurrentScene?.DrawUI(gameTime, spriteBatch);
+            SceneManager?.DrawUI(gameTime, spriteBatch);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace AlmostGoodEngine.Core
         /// <param name="spriteBatch"></param>
         internal static void DrawDebug(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SceneManager?.CurrentScene?.DrawDebug(gameTime, spriteBatch);
+            SceneManager?.DrawDebug(gameTime, spriteBatch);
         }
 
         /// <summary>

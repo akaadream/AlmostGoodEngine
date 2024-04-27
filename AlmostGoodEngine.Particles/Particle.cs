@@ -33,5 +33,10 @@ namespace AlmostGoodEngine.Particles
 		/// The current opacity of the particle
 		/// </summary>
 		public float Opacity;
+
+		/// <summary>
+		/// The tint of the particle
+		/// </summary>
+		public Color Tint;
 	}
 }

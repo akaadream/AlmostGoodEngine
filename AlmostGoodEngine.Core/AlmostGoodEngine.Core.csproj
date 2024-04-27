@@ -22,6 +22,7 @@
     <ProjectReference Include="..\AlmostGoodEngine.AI\AlmostGoodEngine.AI.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Animations\AlmostGoodEngine.Animations.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Audio\AlmostGoodEngine.Audio.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Extended\AlmostGoodEngine.Extended.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.GUI\AlmostGoodEngine.GUI.csproj" />
     <ProjectReference Include="..\AlmostGoodEngine.Inputs\AlmostGoodEngine.Inputs.csproj" />

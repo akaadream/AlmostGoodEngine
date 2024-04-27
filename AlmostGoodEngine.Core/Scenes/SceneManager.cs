@@ -11,11 +11,16 @@ namespace AlmostGoodEngine.Core.Scenes
         public Dictionary<string, Scene> Scenes { get; private set; }
         public Scene CurrentScene { get; private set; }
 
+        public string LoadAtStart { get; internal set; }
+
         public bool LoadEverythingOnStartup { get; set; }
+        public bool EngineStarted { get; internal set; }
+
+        private bool _startLoaded = false;
 
         public SceneManager()
         {
-            Scenes = new();
+            Scenes = [];
             LoadEverythingOnStartup = true;
         }
 
@@ -25,15 +30,18 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         /// <param name="name"></param>
         /// <param name="scene"></param>
-        public void Add(string name, Scene scene, bool setAsCurrent = true)
+        public void Add(string name, Scene scene, bool setAsCurrent = false)
         {
-            // The scene is already contained inside the scenes dictionary
-            if (Scenes.ContainsKey(name))
+			// The scene is already contained inside the scenes dictionary
+			if (Scenes.TryGetValue(name, out _))
             {
                 return;
             }
 
+            // Add the scene inside the scenes collection
             Scenes.Add(name, scene);
+
+            // If the scene may be defined as the current scene
             if (setAsCurrent)
             {
                 Set(scene);
@@ -45,36 +53,42 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         /// <param name="name"></param>
         public void Set(string name)
-        {
-            // Scene does not exists
-            if (!Scenes.ContainsKey(name))
-            {
-                return;
-            }
+		{
+			// Scene does not exists
+			if (Scenes.TryGetValue(name, out Scene value))
+			{
+				Set(value);
+			}
+		}
 
-            Set(Scenes[name]);
-        }
-
-        /// <summary>
-        /// Select a new current scene from a scene instance
-        /// </summary>
-        /// <param name="scene"></param>
-        private void Set(Scene scene)
+		/// <summary>
+		/// Select a new current scene from a scene instance
+		/// </summary>
+		/// <param name="scene"></param>
+		private void Set(Scene scene)
         {
             if (scene == null)
             {
                 return;
             }
 
-            CurrentScene?.End();
+            if (EngineStarted)
+            {
+				CurrentScene?.End();
+			}
 
+            // Update the current scene
             CurrentScene = scene;
 
             if (!CurrentScene.ContentLoaded)
             {
                 CurrentScene.LoadContent(GameManager.Engine.Content);
             }
-            CurrentScene.Start();
+
+            if (EngineStarted)
+            {
+				CurrentScene.Start();
+			}
         }
 
         /// <summary>
@@ -119,7 +133,17 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public void BeforeUpdate(GameTime gameTime)
         {
+            if (!_startLoaded)
+            {
+                if (Scenes.TryGetValue(LoadAtStart, out Scene scene))
+                {
+                    Set(scene);
+                    _startLoaded = true;
+                    return;
+                }
+            }
 
+            CurrentScene?.BeforeUpdate(gameTime);
         }
 
         /// <summary>
@@ -142,7 +166,7 @@ namespace AlmostGoodEngine.Core.Scenes
         /// <param name="gameTime"></param>
         public void AfterUpdate(GameTime gameTime)
         {
-
+            CurrentScene?.AfterUpdate(gameTime);
         }
 
         /// <summary>

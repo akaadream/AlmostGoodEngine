@@ -22,6 +22,11 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// The name of the starting scene
+        /// </summary>
+        public string StartingScene { get; set; }
+
         #endregion
 
         #region Window

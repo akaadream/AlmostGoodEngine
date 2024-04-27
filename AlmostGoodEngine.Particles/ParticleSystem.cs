@@ -26,7 +26,7 @@ namespace AlmostGoodEngine.Particles
 		/// <summary>
 		/// The gravity
 		/// </summary>
-		public Vector2 Gravity { get; set; }
+		public Vector2 Gravity { get; set; } = new Vector2(0f, 98f);
 
 		/// <summary>
 		/// The velocity of the particle when it spawn
@@ -154,17 +154,22 @@ namespace AlmostGoodEngine.Particles
 				particle.Velocity += LinearAcceleration * Gravity * delta;
 
 				var t = particle.Life / Lifetime;
-				if (FadeIn && t <= 0.1f)
+				if (FadeIn && t <= 0.2f)
 				{
-					particle.Opacity = MathHelper.Lerp(0f, 1f, t / 0.1f);
+					particle.Opacity = MathHelper.Lerp(0f, 1f, t / 0.2f);
 				}
-				else if (FadeOut && t >= 0.9f)
+				else if (FadeOut && t >= 0.8f)
 				{
-					particle.Opacity = MathHelper.Lerp(1f, 0f, (t - 0.9f) / 0.1f);
+					particle.Opacity = MathHelper.Lerp(1f, 0f, (t - 0.8f) / 0.1f);
 				}
 				else
 				{
 					particle.Opacity = 1f;
+				}
+
+				if (TintOut != Color.Transparent)
+				{
+					particle.Tint = Color.Lerp(Tint, TintOut, t);
 				}
 			}
 
@@ -185,7 +190,8 @@ namespace AlmostGoodEngine.Particles
 			{
 				Velocity = InitialVelocity,
 				Position = Emitter.Next(),
-				Spin = RandomVec2(-SpinVelocity, SpinVelocity)
+				Spin = RandomVec2(-SpinVelocity, SpinVelocity),
+				Tint = Tint,
 			};
 			if (FadeIn)
 			{
@@ -219,7 +225,7 @@ namespace AlmostGoodEngine.Particles
 				TextureCenter = Vector2.Zero;
 			}
 
-			TextureCenter = new(Texture.Width / 2, Texture.Height / 2);
+			TextureCenter = new Vector2(Texture.Width, Texture.Height) * 0.5f;
 		}
 
 		private Vector2 RandomVec2(Vector2 min, Vector2 max)
@@ -248,9 +254,8 @@ namespace AlmostGoodEngine.Particles
 				var t = particle.Life / Lifetime;
 
 				var finalScale = Vector2.Lerp(Scale, ScaleOut, t);
-				var finalTint = Color.Lerp(Tint, TintOut, t);
 
-				_spriteBatch.Draw(Texture, position, null, finalTint, particle.Rotation, TextureCenter, finalScale.X, SpriteEffects.None, 1f);
+				_spriteBatch.Draw(Texture, position, null, particle.Tint, particle.Rotation, TextureCenter, finalScale.X, SpriteEffects.None, 1f);
 			}
 		}
 	}

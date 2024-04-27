@@ -17,13 +17,14 @@ namespace AlmostGoodEngine.Tests.Scenes
 			{
 				Lifetime = 4f,
 				InitialVelocity = new Vector2(0f, 50f),
-				LinearAcceleration = new Vector2(0f, 1.4f),
-				SpinVelocity = new Vector2(32f, 0),
-				Gravity = new Vector2(0f, 1f),
+				LinearAcceleration = new Vector2(5f, 0f),
+				SpinVelocity = new Vector2(10f, 0),
 				Scale = new Vector2(8, 8),
+				ScaleOut = new Vector2(16, 16),
+				Gravity = new Vector2(98f, 0),
 				Amount = 40,
 				Tint = Color.Red,
-				TintOut = Color.Green,
+				TintOut = Color.Blue,
 				FadeIn = true,
 				FadeOut = true,
 			};

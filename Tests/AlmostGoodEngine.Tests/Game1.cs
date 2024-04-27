@@ -16,6 +16,7 @@ namespace AlmostGoodEngine.Tests
             Settings.Name = "Almost Good Engine - Test";
             Settings.Description = "The project to test everything";
             Settings.OriginCentered = true;
+            Settings.StartingScene = "particles";
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -43,24 +44,22 @@ namespace AlmostGoodEngine.Tests
 
         private void StyleUpdated(object sender, FileSystemEventArgs args)
         {
-            if (!AssetsManager.DataFiles.ContainsKey("styles/main"))
+            if (!AssetsManager.DataFiles.TryGetValue("styles/main", out string value))
             {
                 return;
             }
-            GUIManager.LoadPlainCss(AssetsManager.DataFiles["styles/main"]);
+            GUIManager.LoadPlainCss(value);
         }
 
 		protected override void LoadContent()
         {
-            base.LoadContent();
+			base.LoadContent();
 
-            GameManager.SceneManager.Add("test", new TestScene());
-            GameManager.SceneManager.Add("inputs", new InputScene());
-            GameManager.SceneManager.Add("procedural", new ProceduralScene());
-            GameManager.SceneManager.Add("particles", new ParticlesScene());
-            //GameManager.SceneManager.Add("gui", new GUIScene());
-
-            GameManager.SceneManager.Set("particles");
+			GameManager.SceneManager.Add("test", new TestScene());
+			GameManager.SceneManager.Add("inputs", new InputScene());
+			GameManager.SceneManager.Add("procedural", new ProceduralScene());
+			GameManager.SceneManager.Add("particles", new ParticlesScene());
+			//GameManager.SceneManager.Add("gui", new GUIScene());
 
 			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
 			GUIManager.LoadStyle("styles/main");
