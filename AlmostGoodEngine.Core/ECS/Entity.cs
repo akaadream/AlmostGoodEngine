@@ -1,5 +1,6 @@
 ﻿using AlmostGoodEngine.Core.Interfaces;
 using AlmostGoodEngine.Core.Scenes;
+using AlmostGoodEngine.Core.Utils.Attributes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,19 +11,27 @@ namespace AlmostGoodEngine.Core.ECS
 {
     public class Entity : IGameObject
     {
+		/// <summary>
+		/// Entity's tag
+		/// </summary>
+		[Editable]
+		public List<string> Tags { get; set; }
+
         /// <summary>
-        /// Entity's tag
+        /// The name of the entity
         /// </summary>
-        public List<string> Tags { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The position of the entity inside the world
         /// </summary>
+        [Editable]
         public Vector3 Position { get; set; }
 
         /// <summary>
         /// The scaling of the entity
         /// </summary>
+        [Editable]
         public Vector3 Scale { get; set; }
 
         /// <summary>
@@ -65,6 +74,7 @@ namespace AlmostGoodEngine.Core.ECS
             Enabled = true;
 
             Tags = [];
+            Name = "";
         }
 
         public virtual Rectangle GetBounds()

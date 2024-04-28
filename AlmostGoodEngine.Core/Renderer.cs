@@ -105,7 +105,9 @@ namespace AlmostGoodEngine.Core
             {
 				// Camera draw
 				spriteBatch.Begin();
+
 				camera.Draw(gameTime, spriteBatch);
+
 				spriteBatch.End();
 
 				//spriteBatch.GraphicsDevice.Viewport = camera.Viewport;

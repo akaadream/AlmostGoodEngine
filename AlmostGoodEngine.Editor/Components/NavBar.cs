@@ -51,7 +51,20 @@ namespace AlmostGoodEngine.Editor.Components
 			edit.Children.Add(new MenuSeparator());
 			edit.Children.Add(new MenuItem("Select all", "Ctrl+A"));
 
-			tools.Children.Add(new MenuItem("Theme"));
+			var themesMenu = new Menu("Themes");
+			themesMenu.Children.Add(new MenuItem("Default", "", true, () =>
+			{
+				MainEditor.ApplyTheme("default");
+			}));
+			themesMenu.Children.Add(new MenuItem("Dracula", "", true, () =>
+			{
+				MainEditor.ApplyTheme("dracula");
+			}));
+			themesMenu.Children.Add(new MenuItem("Cherry", "", true, () =>
+			{
+				MainEditor.ApplyTheme("cherry");
+			}));
+			tools.Children.Add(themesMenu);
 			tools.Children.Add(new MenuItem("Command line"));
 			tools.Children.Add(new MenuItem("Import / Export settings"));
 			tools.Children.Add(new MenuItem("Customize..."));

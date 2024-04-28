@@ -4,7 +4,6 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using System.Transactions;
 
 namespace AlmostGoodEngine.Core
 {
@@ -35,6 +34,21 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static bool Paused { get; set; }
 
+        /// <summary>
+        /// The render target used to create the game texture
+        /// </summary>
+        public static RenderTarget2D RenderTarget { get; set; }
+
+        /// <summary>
+        /// The texture each frames
+        /// </summary>
+        public static Texture2D FrameTexture { get; set; } = null;
+
+        /// <summary>
+        /// Colors array of the frame texture
+        /// </summary>
+        private static Color[] _frameTextureColors;
+
 
         /// <summary>
         /// Game initialization
@@ -46,6 +60,8 @@ namespace AlmostGoodEngine.Core
             SceneManager = new SceneManager();
             FontSystem = new FontSystem();
             FontSystem.AddFont(File.ReadAllBytes(@"Fonts/Signika.ttf"));
+
+            UpdateRenderTarget(800, 600);
         }
 
         /// <summary>
@@ -89,6 +105,64 @@ namespace AlmostGoodEngine.Core
             }
 
             return null;
+        }
+
+        public static RenderTarget2D CreateRenderTarget(int width, int height)
+        {
+            if (width <= 0 || height <= 0)
+            {
+                return null;
+            }
+
+            return new(
+                Engine.GraphicsDevice,
+                width, height,
+                false,
+                Engine.GraphicsDevice.PresentationParameters.BackBufferFormat,
+                DepthFormat.Depth24,
+                0,
+                RenderTargetUsage.PreserveContents);
+        }
+
+        public static void UpdateRenderTarget(int width, int height)
+        {
+            RenderTarget = CreateRenderTarget(width, height);
+            FrameTexture = new(Engine.GraphicsDevice, width, height);
+            _frameTextureColors = new Color[width * height];
+        }
+
+        public static Texture2D ScreenTexture(GameTime gameTime)
+        {
+            // Get the main camera
+            var camera = MainCamera();
+            if (camera == null)
+            {
+                return null;
+            }
+
+            // Create a render target
+            if (RenderTarget == null)
+            {
+                return null;
+            }
+
+            // Graphics device settings
+            Engine.GraphicsDevice.Clear(Color.Transparent);
+            Engine.GraphicsDevice.SetRenderTarget(RenderTarget);
+
+            // Draw the scene
+            Draw(gameTime, SpriteBatch);
+            DrawUI(gameTime, SpriteBatch);
+
+            // Create the final texture and release the render target
+			RenderTarget.GetData(_frameTextureColors);
+			FrameTexture.SetData(_frameTextureColors);
+
+			// Clear the screen
+			Engine.GraphicsDevice.Clear(Color.Transparent);
+			Engine.GraphicsDevice.SetRenderTargets(null);
+
+            return FrameTexture;
         }
 
         /// <summary>

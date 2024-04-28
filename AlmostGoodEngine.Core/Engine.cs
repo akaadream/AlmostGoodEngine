@@ -2,7 +2,6 @@
 using AlmostGoodEngine.Core.Scenes;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
-using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
@@ -53,6 +52,11 @@ namespace AlmostGoodEngine.Core
         /// True if the game is in fullscreen mode
         /// </summary>
         private bool _isFullscreen = false;
+
+        /// <summary>
+        /// If the engine may not do the rendering itself
+        /// </summary>
+        public bool CustomRendering { get; set; } = false;
 
         /// <summary>
         /// The game viewport
@@ -132,8 +136,6 @@ namespace AlmostGoodEngine.Core
             // Compute the default viewport
             UpdateScreenScaleMatrix();
 
-			Editor.Editor.Initialize(this);
-
 			base.Initialize();
         }
 
@@ -156,7 +158,6 @@ namespace AlmostGoodEngine.Core
 
             BetterMath.Test();
 			//Helper.Test();
-			Editor.Editor.LoadContent();
 		}
 
         protected override void Update(GameTime gameTime)
@@ -211,8 +212,15 @@ namespace AlmostGoodEngine.Core
             // Capture the draw calls rate
             Time.Draw(gameTime);
 
-            GameManager.Draw(gameTime, SpriteBatch);
-            GameManager.DrawUI(gameTime, SpriteBatch);
+            if (!CustomRendering)
+            {
+				GameManager.Draw(gameTime, SpriteBatch);
+				GameManager.DrawUI(gameTime, SpriteBatch);
+			}
+            else
+            {
+
+            }
 
 #if DEBUG
             GameManager.DrawDebug(gameTime, SpriteBatch);
@@ -222,7 +230,6 @@ namespace AlmostGoodEngine.Core
             GUIManager.Draw(gameTime, SpriteBatch);
 
             AlmostGoodConsole.Draw(SpriteBatch);
-            Editor.Editor.Draw(gameTime);
 
             base.Draw(gameTime);
         }

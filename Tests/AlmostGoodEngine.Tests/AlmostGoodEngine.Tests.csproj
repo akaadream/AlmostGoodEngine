@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AlmostGoodEngine.Core\AlmostGoodEngine.Core.csproj" />
+    <ProjectReference Include="..\..\AlmostGoodEngine.Editor\AlmostGoodEngine.Editor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

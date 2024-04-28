@@ -1,6 +1,10 @@
 ﻿using AlmostGoodEngine.Core;
+using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Tests.Scenes;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Aseprite;
 using MonoGameReload.Assets;
 using MonoGameReload.Files;
 using System.IO;
@@ -16,10 +20,12 @@ namespace AlmostGoodEngine.Tests
             Settings.Name = "Almost Good Engine - Test";
             Settings.Description = "The project to test everything";
             Settings.OriginCentered = true;
-            Settings.StartingScene = "particles";
+            Settings.StartingScene = "test";
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            CustomRendering = true;
         }
 
 		protected override void Initialize()
@@ -63,6 +69,16 @@ namespace AlmostGoodEngine.Tests
 
 			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
 			GUIManager.LoadStyle("styles/main");
+
+			MainEditor.Initialize(this);
+			MainEditor.LoadContent();
         }
-    }
+
+		protected override void Draw(GameTime gameTime)
+		{
+			base.Draw(gameTime);
+
+            MainEditor.Draw(gameTime);
+        }
+	}
 }

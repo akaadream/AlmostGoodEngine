@@ -14,6 +14,11 @@ namespace AlmostGoodEngine.Core.Scenes
     public class Scene : IGameObject
     {
         /// <summary>
+        /// The name of the scene
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// The renderer used to draw the scene
         /// </summary>
         public Renderer Renderer { get; private set; }
@@ -207,7 +212,20 @@ namespace AlmostGoodEngine.Core.Scenes
             }
 
             entity.Scene = this;
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                entity.Name = "Entity";
+            }
             Entities.Add(entity);
+        }
+
+        /// <summary>
+        /// Get all entities
+        /// </summary>
+        /// <returns></returns>
+        public List<Entity> GetEntities()
+        {
+            return Entities;
         }
 
         public Vector2 MousePosition()

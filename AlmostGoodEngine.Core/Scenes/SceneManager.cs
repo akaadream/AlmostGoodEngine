@@ -38,6 +38,8 @@ namespace AlmostGoodEngine.Core.Scenes
                 return;
             }
 
+            scene.Name = name;
+
             // Add the scene inside the scenes collection
             Scenes.Add(name, scene);
 

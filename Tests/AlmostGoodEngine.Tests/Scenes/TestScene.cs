@@ -69,6 +69,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             // First player camera
             if (Renderer.Cameras.Count > 0)
             {
+                Renderer.Cameras[0].BackgroundColor = Color.PeachPuff;
                 //Renderer.Cameras[0].Viewport = new Viewport(0, 0, viewport.Width / 2, viewport.Height / 2);
                 Renderer.Cameras[0].AddComponent(new FollowTarget(Renderer.Cameras[0], player)
                 {
@@ -149,6 +150,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             if (camera != null)
             {
 				spriteBatch.Begin(transformMatrix: camera.GetTransform());
+
 				// Draw the grid
 				// x
 				for (int y = 0; y <= camera.Height; y += tileSize)
@@ -168,6 +170,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 						new Vector2(x, camera.Height),
 						Color.White * 0.25f, 4f);
 				}
+
 				spriteBatch.End();
 			}
 
