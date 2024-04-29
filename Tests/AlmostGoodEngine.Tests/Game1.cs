@@ -48,7 +48,17 @@ namespace AlmostGoodEngine.Tests
             }
 		}
 
-        private void StyleUpdated(object sender, FileSystemEventArgs args)
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
+            if (disposing)
+            {
+                MainEditor.Dispose();
+            }
+		}
+
+		private void StyleUpdated(object sender, FileSystemEventArgs args)
         {
             if (!AssetsManager.DataFiles.TryGetValue("styles/main", out string value))
             {
@@ -71,7 +81,6 @@ namespace AlmostGoodEngine.Tests
 			GUIManager.LoadStyle("styles/main");
 
 			MainEditor.Initialize(this);
-			MainEditor.LoadContent();
         }
 
 		protected override void Draw(GameTime gameTime)

@@ -1,6 +1,6 @@
 ﻿using ImGuiNET;
 
-namespace AlmostGoodEngine.Editor
+namespace AlmostGoodEngine.Editor.Utils
 {
 	public static class Fonts
 	{

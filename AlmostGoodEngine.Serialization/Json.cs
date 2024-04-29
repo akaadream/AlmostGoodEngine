@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AlmostGoodEngine.Serialization
@@ -14,15 +14,15 @@ namespace AlmostGoodEngine.Serialization
         /// <param name="filename"></param>
         internal static async Task Write<T>(T instance, string filename)
         {
-            JsonSerializerSettings serializerSettings = new();
-            serializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
+            JsonSerializerOptions serializerOptions = new();
 
 #if DEBUG
-            serializerSettings.Formatting = Formatting.Indented;
+			serializerOptions.WriteIndented = true;
 #else
-            serializerSettings.Formatting = Formatting.None;
+            serializerOptions.WriteIntended = false;
 #endif
-            string json = JsonConvert.SerializeObject(instance, serializerSettings);
+			string json = JsonSerializer.Serialize(instance, serializerOptions);
             using var streamWriter = new StreamWriter(filename);
             await streamWriter.WriteAsync(json);
         }
@@ -31,7 +31,7 @@ namespace AlmostGoodEngine.Serialization
         {
             using StreamReader reader = new(filename);
             string json = await reader.ReadToEndAsync();
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonSerializer.Deserialize<T>(json);
         }
     }
 }

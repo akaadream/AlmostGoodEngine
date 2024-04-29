@@ -1,16 +1,13 @@
 ﻿using AlmostGoodEngine.Core;
-using AlmostGoodEngine.Core.Scenes;
-using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Editor.Components;
 using AlmostGoodEngine.Editor.Themes;
+using AlmostGoodEngine.Editor.Utils;
 using AlmostGoodEngine.Inputs;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.ImGuiNet;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace AlmostGoodEngine.Editor
 {
@@ -42,6 +39,8 @@ namespace AlmostGoodEngine.Editor
 
 		private static System.Numerics.Vector2 _previousWindowSize;
 
+		private static IntPtr _sceneTextureId;
+
 		/// <summary>
 		/// Initialize the ImGUI renderer
 		/// </summary>
@@ -49,6 +48,7 @@ namespace AlmostGoodEngine.Editor
 		public static void Initialize(Game game)
 		{
 			GUIRenderer = new ImGuiRenderer(game);
+
 			Components = [];
 			Themes = [];
 
@@ -64,45 +64,13 @@ namespace AlmostGoodEngine.Editor
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 
 			ImGui.LoadIniSettingsFromDisk("settings.ini");
+
+			_sceneTextureId = GUIRenderer.GetNextIntPtr();
 		}
 
-		static void AddFonts()
+		public static void Dispose()
 		{
-			var io = ImGui.GetIO();
-			unsafe
-			{
-				var config = ImGuiNative.ImFontConfig_ImFontConfig();
-				config->MergeMode = 1;
-				config->GlyphMinAdvanceX = 14;
-
-				io.Fonts.AddFontDefault(config);
-				var ranges = new ushort[] { Fonts.FontAwesomeIconRangeStart, Fonts.FontAwesomeIconRangeEnd, 0 };
-
-				fixed (ushort* rangePtr = ranges)
-				{
-					static ImFontPtr? AddFont(string fontName, float size, ImFontConfigPtr configPtr, IntPtr r)
-					{
-						string path = Path.Join("fonts", fontName);
-						if (!File.Exists(path))
-						{
-							Logger.Log($"The file {path} is unreachable!");
-							return null;
-						}
-						Logger.Log($"The file {path} is loaded!");
-
-						return ImGui.GetIO().Fonts.AddFontFromFileTTF(path, size, configPtr, r);
-					}
-
-					AddFont("fa-regular-400.otf", 12, config, (IntPtr)rangePtr);
-					AddFont("fa-solid-400.otf", 12, config, (IntPtr)rangePtr);
-					Fonts.LargeIcons = AddFont("fa-solid-400.otf", 18, IntPtr.Zero, (IntPtr)rangePtr)!.Value;
-					Fonts.TitleFont = AddFont("fa-regular-400.otf", 14, IntPtr.Zero, io.Fonts.GetGlyphRangesDefault())!.Value;
-				}
-
-				ImGuiNative.ImFontConfig_destroy(config);
-			}
-
-			io.Fonts.Build();
+			GUIRenderer.Dispose();
 		}
 
 		private static void BuildComponents()
@@ -131,15 +99,6 @@ namespace AlmostGoodEngine.Editor
 				CurrentTheme = themeName;
 				theme.Apply();
 			}
-		}
-
-		/// <summary>
-		/// Load the content
-		/// </summary>
-		public static void LoadContent()
-		{
-			GUIRenderer.RebuildFontAtlas();
-			AddFonts();
 		}
 
 		/// <summary>
@@ -197,7 +156,7 @@ namespace AlmostGoodEngine.Editor
 			Texture2D texture = GameManager.ScreenTexture(gameTime);
 			if (texture != null)
 			{
-				nint bindedTexture = GUIRenderer.BindTexture(texture);
+				nint bindedTexture = GUIRenderer.BindTexture(_sceneTextureId, texture, false);
 				ImGui.Image(bindedTexture, new System.Numerics.Vector2(texture.Width, texture.Height));
 			}
 			ImGui.PopStyleVar(1);
@@ -228,6 +187,14 @@ namespace AlmostGoodEngine.Editor
 			ImGui.End();
 
 			ImGui.Begin("Scene 2");
+			//imnodes.BeginNodeEditor();
+			//const int hardCodedNodeId = 1;
+			//imnodes.BeginNode(hardCodedNodeId);
+			//ImGui.Dummy(new System.Numerics.Vector2(80f, 45f));
+			//imnodes.BeginOutputAttribute(hardCodedNodeId);
+			//ImGui.Text("output");
+			//imnodes.EndNode();
+			//imnodes.EndNodeEditor();
 			ImGui.End();
 
 			ImGui.Begin("Files");

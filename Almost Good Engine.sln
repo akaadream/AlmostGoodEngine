@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGameEngine.GameLibrar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmostGoodEngine.Particles", "AlmostGoodEngine.Particles\AlmostGoodEngine.Particles.csproj", "{D1374EAF-B740-4DD2-B676-5A8482F036C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monogame.ImGuiNet", "MonoGame.ImGuiNet-main\MonoGame.ImGuiNet-main\MonoGame.ImGuiNet\Monogame.ImGuiNet.csproj", "{EFF0DD8B-3970-444B-8AE4-8542512D17D2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,10 +127,6 @@ Global
 		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1374EAF-B740-4DD2-B676-5A8482F036C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFF0DD8B-3970-444B-8AE4-8542512D17D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFF0DD8B-3970-444B-8AE4-8542512D17D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFF0DD8B-3970-444B-8AE4-8542512D17D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFF0DD8B-3970-444B-8AE4-8542512D17D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

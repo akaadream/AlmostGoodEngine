@@ -30,7 +30,7 @@ namespace AlmostGoodEngine.Editor.Components
 				{
 					foreach (var entity in scene.GetEntities())
 					{
-						if (ImGui.TreeNodeEx("#\uf07b " + entity.Name))
+						if (ImGui.TreeNodeEx(" " + entity.Name))
 						{
 							
 						}
