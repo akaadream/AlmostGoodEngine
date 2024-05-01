@@ -342,6 +342,18 @@ namespace AlmostGoodEngine.Core.ECS
         }
 
         /// <summary>
+        /// Get the list of this entity children
+        /// </summary>
+        /// <returns></returns>
+        public List<Entity> GetChildren() => Children;
+
+        /// <summary>
+        /// Get the number of children of this entity
+        /// </summary>
+        /// <returns></returns>
+        public int GetChildrenCount() => Children.Count;
+
+        /// <summary>
         /// Find the firt component of the type T
         /// </summary>
         /// <typeparam name="T"></typeparam>

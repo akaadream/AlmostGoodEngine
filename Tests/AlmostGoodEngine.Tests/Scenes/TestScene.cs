@@ -1,11 +1,9 @@
 ﻿using AlmostGoodEngine.Core;
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Camera;
-using AlmostGoodEngine.Core.Components.Curves;
 using AlmostGoodEngine.Core.Components.Physics;
 using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.ECS;
-using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Scenes;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Inputs;
@@ -27,6 +25,7 @@ namespace AlmostGoodEngine.Tests.Scenes
         public TestScene() : base()
         {
             Entity entity = new();
+            entity.Name = "Debug";
             entity.AddComponent(new DebugObject());
 
             Entity pathEntity = new();
@@ -38,10 +37,18 @@ namespace AlmostGoodEngine.Tests.Scenes
 
 
             player = new();
+            player.Name = "Player";
 			AddEntity(player);
+
+            Entity testEntity = new()
+            {
+                Name = "Test entity",
+            };
+            player.AddChild(testEntity);
 
             solid = new()
             {
+                Name = "Solid",
                 Position = new Vector3(200, 60, 1),
                 Collider = new Physics.BoxCollider2D(0, 0, 64, 64),
                 Collidable = true
@@ -61,6 +68,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             hitbox.OnEntityExit += Hitbox_OnEntityExit;
 
             hitBoxEntity.AddComponent(hitbox);
+            hitBoxEntity.Name = "Hitbox";
             AddEntity(hitBoxEntity);
 
 

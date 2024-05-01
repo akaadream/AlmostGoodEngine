@@ -101,8 +101,8 @@ namespace AlmostGoodEngine.Editor.Utils
 						return ImGui.GetIO().Fonts.AddFontFromFileTTF(path, size, configPtr, r);
 					}
 
-					AddFont("fa-regular-400.otf", 12, config, (IntPtr)rangePtr);
 					AddFont("fa-solid-400.otf", 12, config, (IntPtr)rangePtr);
+					AddFont("fa-regular-400.otf", 12, config, (IntPtr)rangePtr);
 					Fonts.LargeIcons = AddFont("fa-solid-400.otf", 18, IntPtr.Zero, (IntPtr)rangePtr)!.Value;
 					Fonts.TitleFont = AddFont("fa-regular-400.otf", 14, IntPtr.Zero, io.Fonts.GetGlyphRangesDefault())!.Value;
 				}

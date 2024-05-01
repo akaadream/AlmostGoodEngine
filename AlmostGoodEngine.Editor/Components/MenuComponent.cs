@@ -2,5 +2,6 @@
 {
 	public abstract class MenuComponent : Component
 	{
+		public abstract string Text { get; }
 	}
 }

@@ -27,7 +27,7 @@ namespace AlmostGoodEngine.Editor.Themes
 			style.FrameBorderSize = 0.0f;
 			style.ItemSpacing = new Vector2(4.0f, 4.0f);
 			style.ItemInnerSpacing = new Vector2(4.0f, 4.0f);
-			style.CellPadding = new Vector2(4.0f, 2.0f);
+			style.CellPadding = new Vector2(13.0f, 9.0f);
 			style.IndentSpacing = 21.0f;
 			style.ColumnsMinSpacing = 6.0f;
 			style.ScrollbarSize = 14.0f;
