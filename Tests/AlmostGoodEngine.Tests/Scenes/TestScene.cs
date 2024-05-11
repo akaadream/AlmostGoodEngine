@@ -24,17 +24,17 @@ namespace AlmostGoodEngine.Tests.Scenes
 
         public TestScene() : base()
         {
-            Entity entity = new();
-            entity.Name = "Debug";
-            entity.AddComponent(new DebugObject());
+			Entity entity = new()
+			{
+				Name = "Debug"
+			};
+			entity.AddComponent(new DebugObject());
 
             Entity pathEntity = new();
 			//entity.AddComponent(new DrawPath());
 
 			AddEntity(entity);
             //GameObjects.Add(pathEntity);
-
-
 
             player = new();
             player.Name = "Player";
@@ -85,7 +85,7 @@ namespace AlmostGoodEngine.Tests.Scenes
                     Min = new(0, 0, 1),
                     Max = new(0, 0, 1)
 				});
-                Renderer.Cameras[0].AddComponent(new CameraController());
+                //Renderer.Cameras[0].AddComponent(new CameraController());
             }
 
             //var camera_two = new Camera2D(new Viewport(viewport.Width / 2, 0, viewport.Width / 2, viewport.Height / 2))
@@ -135,7 +135,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             Text text = player.GetComponent<Text>();
             if (text != null)
             {
-                text.Color = Color.White;
+                //text.Color = Color.White;
             }
             Logger.Log("The entity " + e.Entity.Tags.ToString() + " entered the hitbox");
         }
@@ -145,7 +145,7 @@ namespace AlmostGoodEngine.Tests.Scenes
             Text text = player.GetComponent<Text>();
             if (text != null)
             {
-                text.Color = Color.Transparent;
+                //text.Color = Color.Transparent;
             }
             Logger.Log("The entity " + e.Entity.Tags.ToString() + " exited the hitbox");
         }

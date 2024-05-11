@@ -23,7 +23,7 @@ namespace AlmostGoodEngine.Editor.Components
 			Elements = [];
 		}
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			base.Draw();
 
@@ -75,6 +75,8 @@ namespace AlmostGoodEngine.Editor.Components
 				
 				ImGui.TreePop();
 			}
+
+			return Vector2.Zero;
 		}
 
 		public void DrawChildren(Entity entity)

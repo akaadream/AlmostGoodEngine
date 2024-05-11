@@ -40,11 +40,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
         {
             TestText = new("This is a test text", 32)
             {
-                Position = new Vector2(350, 380),
+                Position = new Vector2(100, 100),
                 Anchor = Anchor.MiddleCentered,
                 TextAnchor = Anchor.MiddleCentered,
-                DisplayInsideWorld = true,
-                Color = Color.Transparent
+                DisplayInsideWorld = false,
+                Color = Color.White
             };
             AddComponent(TestText);
 
@@ -177,11 +177,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
                 if (Input.Mouse.WheelDelta() > 0)
                 {
-                    //text.Position = new(text.Position.X + 15, text.Position.Y + 15);
+                    text.Position = new(text.Position.X + 15, text.Position.Y + 15);
                 }
                 else if (Input.Mouse.WheelDelta() < 0)
                 {
-                    //text.Position = new(text.Position.X - 15, text.Position.Y - 15);
+                    text.Position = new(text.Position.X - 15, text.Position.Y - 15);
                 }
             }
 

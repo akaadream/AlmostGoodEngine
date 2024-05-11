@@ -59,9 +59,14 @@ namespace AlmostGoodEngine.Core
         public bool CustomRendering { get; set; } = false;
 
         /// <summary>
-        /// The game viewport
+        /// The game's viewport
         /// </summary>
         public static Viewport GameViewport { get; private set; }
+
+        /// <summary>
+        /// The window's viewport
+        /// </summary>
+        public static Viewport WindowViewport { get; private set; }
 
         /// <summary>
         /// The screen's scale matrix
@@ -157,8 +162,12 @@ namespace AlmostGoodEngine.Core
 			GameManager.Start();
 
             BetterMath.Test();
-			//Helper.Test();
-		}
+            //Helper.Test();
+
+#if DEBUG
+            Logger.Log(GameViewport.ToString());
+#endif
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -288,7 +297,7 @@ namespace AlmostGoodEngine.Core
                     UpdateScreenScaleMatrix();
 					GameManager.Resize(GameViewport);
 
-					Logger.Log("Viewport resized.");
+					Logger.Log("Viewport resized. New size: " + WindowViewport.ToString());
 
 					_resizing = false;
                 }
@@ -414,6 +423,16 @@ namespace AlmostGoodEngine.Core
 				MinDepth = 0,
 				MaxDepth = 1
 			};
+
+            WindowViewport = new()
+            {
+                X = 0,
+                Y = 0,
+                Width = (int)screenWidth,
+                Height = (int)screenHeight,
+                MinDepth = 0,
+                MaxDepth = 1
+            };
 		}
     }
 }

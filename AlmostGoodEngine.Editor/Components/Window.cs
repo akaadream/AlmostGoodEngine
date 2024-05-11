@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace AlmostGoodEngine.Editor.Components
 {
@@ -15,7 +16,7 @@ namespace AlmostGoodEngine.Editor.Components
 			Children = [];
 		}
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			ImGui.Begin(Label);
 
@@ -25,6 +26,8 @@ namespace AlmostGoodEngine.Editor.Components
 			}
 
 			ImGui.End();
+
+			return Vector2.Zero;
 		}
 	}
 }

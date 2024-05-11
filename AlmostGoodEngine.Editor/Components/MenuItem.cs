@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using System;
+using System.Numerics;
 
 namespace AlmostGoodEngine.Editor.Components
 {
@@ -36,7 +37,7 @@ namespace AlmostGoodEngine.Editor.Components
 			Selected = selected;
 		}
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			base.Draw();
 			if (ImGui.MenuItem(Text, Shortcut, Selected, Enabled))
@@ -47,6 +48,8 @@ namespace AlmostGoodEngine.Editor.Components
 					Selected = !Selected;
 				}
 			}
+
+			return Vector2.Zero;
 		}
 	}
 }

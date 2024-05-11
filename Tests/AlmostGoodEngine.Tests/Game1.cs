@@ -3,8 +3,6 @@ using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Tests.Scenes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Aseprite;
 using MonoGameReload.Assets;
 using MonoGameReload.Files;
 using System.IO;
@@ -25,7 +23,7 @@ namespace AlmostGoodEngine.Tests
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            CustomRendering = true;
+            CustomRendering = false;
         }
 
 		protected override void Initialize()
@@ -87,7 +85,12 @@ namespace AlmostGoodEngine.Tests
 		{
 			base.Draw(gameTime);
 
-            MainEditor.Draw(gameTime);
+#if DEBUG
+            if (CustomRendering)
+            {
+				MainEditor.Draw(gameTime);
+			}
+#endif
         }
 	}
 }

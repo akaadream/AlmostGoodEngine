@@ -51,13 +51,13 @@ namespace AlmostGoodEngine.Tests.GameObjects
             Vector2 descriptionSize = font.MeasureString(scene);
             Vector2 totalMemoryTextSize = font.MeasureString(totalMemoryText);
 
-            spriteBatch.DrawString(font, GameManager.Engine.Settings.Name, new Vector2(GameManager.Engine.Graphics.PreferredBackBufferWidth - titleSize.X - 15, 15), Color.White);
-            spriteBatch.DrawString(font, scene, new Vector2(GameManager.Engine.Graphics.PreferredBackBufferWidth - descriptionSize.X - 15, 45), Color.White);
-            spriteBatch.DrawString(font, totalMemoryText, new Vector2(GameManager.Engine.Graphics.PreferredBackBufferWidth - totalMemoryTextSize.X - 15, 75), Color.White);
+            spriteBatch.DrawString(font, GameManager.Engine.Settings.Name, new Vector2(Owner.Scene.Renderer.Cameras[0].Viewport.Width - titleSize.X - 15, 15), Color.White);
+            spriteBatch.DrawString(font, scene, new Vector2(Owner.Scene.Renderer.Cameras[0].Viewport.Width - descriptionSize.X - 15, 45), Color.White);
+            spriteBatch.DrawString(font, totalMemoryText, new Vector2(Owner.Scene.Renderer.Cameras[0].Viewport.Width - totalMemoryTextSize.X - 15, 75), Color.White);
 
             string zoomText = "Zoom: " + (int)(GameManager.MainCamera()?.Zoom * 100) + "%";
             Vector2 zoomTextSize = font.MeasureString(zoomText);
-			spriteBatch.DrawString(font, zoomText, new Vector2(15, GameManager.Engine.Graphics.PreferredBackBufferHeight - zoomTextSize.Y - 15), Color.White);
+			spriteBatch.DrawString(font, zoomText, new Vector2(15, Owner.Scene.Renderer.Cameras[0].Viewport.Height - zoomTextSize.Y - 15), Color.White);
 		}
     }
 }

@@ -71,8 +71,6 @@ namespace AlmostGoodEngine.Core.Generation
 				}
 			}
 
-			Logger.Log("Layer (before_min: " + Min + ", brefore_max: " + Max + ")");
-
 			for (int i = 0; i < Width * Height; i++)
 			{
 				Data[i] = BetterMath.ToIntervale(Min, Max, -1f, 1f, Data[i]);
@@ -85,8 +83,6 @@ namespace AlmostGoodEngine.Core.Generation
 					Min = Data[i];
 				}
 			}
-
-			Logger.Log("Layer (after_min: " + Min + ", after_max: " + Max + ")");
 		}
 
 		public float GetFalloffNoise(float noise, float x, float y)

@@ -1,6 +1,5 @@
 ﻿using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Scenes;
-using AlmostGoodEngine.Core.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -21,12 +20,11 @@ namespace AlmostGoodEngine.Core
 		/// <summary>
 		/// Game main viewport shortcut
 		/// </summary>
-		public static Viewport Viewport { get; set; }
+		public static Viewport Viewport { get => Engine.GameViewport; }
 
         public Renderer(Scene scene)
         {
             Scene = scene;
-			Viewport = Engine.GameViewport;
 
             Cameras = [];
 			Cameras.Add(new(Viewport)

@@ -9,26 +9,64 @@ namespace AlmostGoodEngine.Core.Components.Rendering
 {
     public class Text : Component
     {
+        /// <summary>
+        /// The position of the text
+        /// </summary>
         public Vector2 Position { get; set; }
 
-        public Vector2 DisplayPosition { get => FinalPosition(); }
-
+        /// <summary>
+        /// The value of the text label
+        /// </summary>
         public string Value { get; set; }
 
+        /// <summary>
+        /// The size of the text
+        /// </summary>
         public int FontSize { get; private set; }
 
+        /// <summary>
+        /// The global anchor
+        /// </summary>
         public Anchor Anchor { get; set; }
 
+        /// <summary>
+        /// The text anchor
+        /// </summary>
         public Anchor TextAnchor { get; set; }
+
+        /// <summary>
+        /// The font used to draw the text
+        /// </summary>
 
         private SpriteFontBase _font;
 
+        /// <summary>
+        /// If true, the debug lines will be rendered
+        /// </summary>
         public bool ShowDebug { get; set; }
 
+        /// <summary>
+        /// True if the text should be displayed inside the world
+        /// </summary>
         public bool DisplayInsideWorld { get; set; }
 
-        public Color Color { get; set; }
+        /// <summary>
+        /// The position where the text is displayed
+        /// If the text may be drawn inside the world, it takes the position only,
+        /// If the text is drawn on the screen, it takes consideration of the anchors
+        /// </summary>
+		public Vector2 DisplayPosition { get => DisplayInsideWorld ? Position : FinalPosition(); }
 
+        /// <summary>
+        /// The color of the text
+        /// </summary>
+		public Color Color { get; set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="fontSize"></param>
         public Text(string value, int fontSize)
         {
             Value = value;
@@ -41,6 +79,10 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             SetSize(fontSize);
         }
 
+        /// <summary>
+        /// Define a new size for the text
+        /// </summary>
+        /// <param name="fontSize"></param>
         public void SetSize(int fontSize)
         {
             if (FontSize == fontSize)
@@ -52,6 +94,10 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             _font = GameManager.FontSystem.GetFont(FontSize);
         }
 
+        /// <summary>
+        /// Get the bounds rectangle of the text
+        /// </summary>
+        /// <returns></returns>
 		public override Rectangle GetBounds()
 		{
             if (string.IsNullOrWhiteSpace(Value))
@@ -63,6 +109,10 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             return new((int)DisplayPosition.X, (int)DisplayPosition.Y, (int)textSize.X, (int)textSize.Y);
 		}
 
+        /// <summary>
+        /// Update (used only for the debug)
+        /// </summary>
+        /// <param name="gameTime"></param>
 		public override void Update(GameTime gameTime)
         {
 #if DEBUG
@@ -78,6 +128,11 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             }
         }
 
+        /// <summary>
+        /// Draw (if the text is drawn inside the world)
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (DisplayInsideWorld)
@@ -87,6 +142,11 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             }
         }
 
+        /// <summary>
+        /// Draw UI (if the text is drawn on the screen)
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
         public override void DrawUI(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (!DisplayInsideWorld)
@@ -96,11 +156,19 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             }
         }
 
+        /// <summary>
+        /// Display the text on the screen
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         private void DrawText(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(_font, Value, FinalPosition(), Color);
+            spriteBatch.DrawString(_font, Value, DisplayPosition, Color);
         }
 
+        /// <summary>
+        /// Draw debug
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         private void DrawDebug(SpriteBatch spriteBatch)
         {
             if (!ShowDebug)
@@ -130,25 +198,33 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             Debug.Line(spriteBatch, new Vector2(finalPosition.X, finalPosition.Y + textSize.Y), new Vector2(finalPosition.X + textSize.X, finalPosition.Y + textSize.Y), Color.Blue);
         }
 
+        /// <summary>
+        /// Get the position of the global anchor
+        /// </summary>
+        /// <returns></returns>
         private Vector2 AnchorPosition()
         {
-            int width = Renderer.Viewport.Width;
-            int height = Renderer.Viewport.Height;
+            int width = Owner.Scene.Renderer.Cameras[0].Viewport.Width;
+            int height = Owner.Scene.Renderer.Cameras[0].Viewport.Height;
 
-            return Anchor switch
+			return Anchor switch
             {
-                Anchor.TopCentered => new(width / 2 + 0, 0),
-                Anchor.TopRight => new(width + 0, 0),
-                Anchor.MiddleLeft => new(0, height / 2 + 0),
-                Anchor.MiddleCentered => new(width / 2 + 0, height / 2 + 0),
-                Anchor.MiddleRight => new(width + 0, height / 2 + 0),
-                Anchor.BottomLeft => new(0, height + 0),
-                Anchor.BottomCentered => new(width / 2 + 0, height + 0),
-                Anchor.BottomRight => new(width + 0, height + 0),
+                Anchor.TopCentered => new(width / 2, 0),
+                Anchor.TopRight => new(width, 0),
+                Anchor.MiddleLeft => new(0, height / 2),
+                Anchor.MiddleCentered => new(width / 2, height / 2),
+                Anchor.MiddleRight => new(width, height / 2),
+                Anchor.BottomLeft => new(0, height),
+                Anchor.BottomCentered => new(width / 2, height),
+                Anchor.BottomRight => new(width, height),
                 _ => Position,
             };
         }
 
+        /// <summary>
+        /// Get the final position based on the text anchors
+        /// </summary>
+        /// <returns></returns>
         private Vector2 FinalPosition()
         {
             Vector2 anchorPosition = AnchorPosition();
@@ -156,29 +232,21 @@ namespace AlmostGoodEngine.Core.Components.Rendering
             {
                 anchorPosition = new(Position.X, Position.Y);
             }
+
             Vector2 textSize = _font.MeasureString(Value);
 
-            switch (TextAnchor)
-            {
-                case Anchor.TopCentered:
-                    return new(anchorPosition.X - textSize.X / 2, anchorPosition.Y + Position.Y);
-                case Anchor.TopRight:
-                    return new(anchorPosition.X - textSize.X - Position.X, anchorPosition.Y + Position.Y);
-                case Anchor.MiddleLeft:
-                    return new(anchorPosition.X + Position.X, anchorPosition.Y - textSize.Y / 2);
-                case Anchor.MiddleCentered:
-                    return new(anchorPosition.X - textSize.X / 2, anchorPosition.Y - textSize.Y / 2);
-                case Anchor.MiddleRight:
-                    return new(anchorPosition.X - Position.X - textSize.X, anchorPosition.Y - textSize.Y / 2);
-                case Anchor.BottomLeft:
-                    return new(anchorPosition.X + Position.X, anchorPosition.Y - Position.Y - textSize.Y);
-                case Anchor.BottomCentered:
-                    return new(anchorPosition.X - textSize.X / 2, anchorPosition.Y - Position.Y - textSize.Y);
-                case Anchor.BottomRight:
-                    return new(anchorPosition.X - Position.X - textSize.X, anchorPosition.Y - Position.Y - textSize.Y);
-            }
-
-            return anchorPosition;
-        }
+			return TextAnchor switch
+			{
+				Anchor.TopCentered => new(anchorPosition.X - textSize.X / 2, anchorPosition.Y + Position.Y),
+				Anchor.TopRight => new(anchorPosition.X - textSize.X - Position.X, anchorPosition.Y + Position.Y),
+				Anchor.MiddleLeft => new(anchorPosition.X + Position.X, anchorPosition.Y - textSize.Y / 2),
+				Anchor.MiddleCentered => new(anchorPosition.X - textSize.X / 2, anchorPosition.Y - textSize.Y / 2),
+				Anchor.MiddleRight => new(anchorPosition.X - Position.X - textSize.X, anchorPosition.Y - textSize.Y / 2),
+				Anchor.BottomLeft => new(anchorPosition.X + Position.X, anchorPosition.Y - Position.Y - textSize.Y),
+				Anchor.BottomCentered => new(anchorPosition.X - textSize.X / 2, anchorPosition.Y - Position.Y - textSize.Y),
+				Anchor.BottomRight => new(anchorPosition.X - Position.X - textSize.X, anchorPosition.Y - Position.Y - textSize.Y),
+				_ => anchorPosition,
+			};
+		}
     }
 }

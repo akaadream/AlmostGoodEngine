@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,11 +15,13 @@ namespace AlmostGoodEngine.Editor.Components
 
 		}
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			base.Draw();
 
 			ImGui.TreeNode("");
+
+			return Vector2.Zero;
 		}
 	}
 }

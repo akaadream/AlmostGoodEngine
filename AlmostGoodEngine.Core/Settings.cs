@@ -86,7 +86,7 @@ namespace AlmostGoodEngine.Core
             Width = 1600;
             Height = 900;
 
-            ClearColor = Color.BurlyWood;
+            ClearColor = Color.Black;
 
             Resizable = true;
             Borderless = false;

@@ -10,10 +10,10 @@ namespace AlmostGoodEngine.Core.Utils
 	{
 		#region Private fields
 
-		private static readonly Vector2I vectorZero = new Vector2I(0, 0);
-		private static readonly Vector2I vectorUnit = new Vector2I(1, 1);
-		private static readonly Vector2I vectorUnitX = new Vector2I(1, 0);
-		private static readonly Vector2I vectorUnitY = new Vector2I(0, 1);
+		private static readonly Vector2I vectorZero = new(0, 0);
+		private static readonly Vector2I vectorUnit = new(1, 1);
+		private static readonly Vector2I vectorUnitX = new(1, 0);
+		private static readonly Vector2I vectorUnitY = new(0, 1);
 
 		#endregion
 

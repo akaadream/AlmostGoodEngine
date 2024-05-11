@@ -155,11 +155,6 @@ namespace AlmostGoodEngine.Core.Entities
             return Matrix.CreateOrthographicOffCenter(0, Viewport.Width, Viewport.Height, 0, ZNearPlane, ZFarPlane);
         }
 
-        public Matrix ScreenMatrix()
-        {
-            return Engine.ScreenScaleMatrix;
-        }
-
         /// <summary>
         /// Get the transformation matrix used to display content
         /// </summary>
@@ -208,12 +203,12 @@ namespace AlmostGoodEngine.Core.Entities
                 return;
             }
 
-            spriteBatch.GraphicsDevice.Clear(BackgroundColor);
-		}
+            Debug.FillRectangle(spriteBatch, GetViewRect(), BackgroundColor);
+        }
 
         public BoundingFrustum GetBoundingFrustum()
         {
-            return new(View * ScreenMatrix());
+            return new(View * Engine.ScreenScaleMatrix);
         }
 
 		public Rectangle GetViewRect()

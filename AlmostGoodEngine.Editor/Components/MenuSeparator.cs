@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using System.Numerics;
 
 namespace AlmostGoodEngine.Editor.Components
 {
@@ -6,11 +7,13 @@ namespace AlmostGoodEngine.Editor.Components
 	{
 		public override string Text => "";
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			base.Draw();
 
 			ImGui.Separator();
+
+			return Vector2.Zero;
 		}
 	}
 }

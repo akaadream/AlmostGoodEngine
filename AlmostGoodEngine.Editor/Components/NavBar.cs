@@ -116,7 +116,7 @@ namespace AlmostGoodEngine.Editor.Components
 			Menus.Add(help);
 		}
 
-		public override void Draw()
+		public override Vector2 Draw()
 		{
 			base.Draw();
 
@@ -154,6 +154,8 @@ namespace AlmostGoodEngine.Editor.Components
 				ImGui.PopStyleVar(1);
 			}
 			ImGui.PopStyleVar(1);
+
+			return Vector2.Zero;
 		}
 	}
 }
