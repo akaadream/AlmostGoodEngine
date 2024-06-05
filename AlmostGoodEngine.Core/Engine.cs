@@ -1,5 +1,5 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
-using AlmostGoodEngine.Core.Scenes;
+using AlmostGoodEngine.Audio;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
 using AlmostGoodEngine.GUI;
@@ -132,6 +132,8 @@ namespace AlmostGoodEngine.Core
             Draw2D.Initialize(GraphicsDevice);
             // Inputs
             Input.Initialize();
+            // Audio
+            Mixer.Initialize(Content);
             // In-engine console
             AlmostGoodConsole.Initialize();
 

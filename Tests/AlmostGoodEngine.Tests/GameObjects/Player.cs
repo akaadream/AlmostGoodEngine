@@ -1,16 +1,17 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
 using AlmostGoodEngine.Animations.Utils;
+using AlmostGoodEngine.Audio;
 using AlmostGoodEngine.Core;
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Animations;
 using AlmostGoodEngine.Core.Components.Rendering;
 using AlmostGoodEngine.Core.Components.Timing;
-using AlmostGoodEngine.Core.ECS;
 using AlmostGoodEngine.Core.Entities;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Extended;
 using AlmostGoodEngine.Inputs;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,6 +24,8 @@ namespace AlmostGoodEngine.Tests.GameObjects
     {
         Text timerText;
         Timer timer;
+        Music music;
+        Sound sound;
 
         Vector3 velocity = Vector3.Zero;
         float speed = 390f;
@@ -71,6 +74,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
             };
             AddComponent(hitbox);
 
+            music = new(content.Load<SoundEffect>("Sounds/titlescreen"));
+            sound = new(content.Load<SoundEffect>("Sounds/key_owned"));
+
             //Sprite2D sprite2D = new(content.Load<Texture2D>("Sprites/character"))
             //{
             //    Source = new(0, 0, 16, 24),
@@ -117,6 +123,28 @@ namespace AlmostGoodEngine.Tests.GameObjects
             {
                 Logger.Log(Position.ToVector2().ToString());
             }
+
+            music.Update(Time.DeltaTime);
+            sound.Update();
+            if (Input.Keyboard.IsPressed(Keys.P))
+            {
+				music.Play(true);
+            }
+            if (Input.Keyboard.IsPressed(Keys.O))
+            {
+                sound.Play();
+            }
+            if (Input.Keyboard.IsPressed(Keys.M))
+            {
+                if (Input.Keyboard.IsDown(Keys.LeftShift))
+                {
+					music.NextVolume = 1f;
+				}
+                else
+                {
+					music.NextVolume = 0f;
+				}
+            } 
 
             Text text = GetComponent<Text>();
             if (text != null)

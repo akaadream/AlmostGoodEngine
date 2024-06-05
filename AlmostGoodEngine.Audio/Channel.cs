@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Audio
 {
@@ -12,7 +11,24 @@ namespace AlmostGoodEngine.Audio
 		/// <summary>
 		/// The volume of the channel. The value should be between 0 and 1
 		/// </summary>
-		public float Volume { get; set; } = 1.0f;
+		public float Volume
+		{
+			get
+			{
+				if (Parent != null)
+				{
+					return _volume * Parent.Volume;
+				}
+
+				return _volume;
+			}
+
+			set
+			{
+				_volume = value;
+			}
+		}
+		private float _volume = 1f;
 
 		/// <summary>
 		/// List of the effects we want to apply to this channel
@@ -20,50 +36,8 @@ namespace AlmostGoodEngine.Audio
 		public List<ChannelEffect> Effects { get; set; } = [];
 
 		/// <summary>
-		/// Sounds dictionary
-		/// </summary>
-		private Dictionary<string, Sound> sounds { get; set; } = [];
-
-		/// <summary>
 		/// The parent channel used to merge the parent's volume on this channel's volume
 		/// </summary>
 		public Channel Parent { get; internal set; } = parent;
-
-		/// <summary>
-		/// Play a sounds using its name
-		/// </summary>
-		/// <param name="name"></param>
-		public void Play(string name)
-		{
-			if (sounds.ContainsKey(name))
-			{
-				PlayExisting(name);
-				return;
-			}
-
-			if (Audio.ContentManager == null)
-			{
-				return;
-			}
-
-			sounds.Add(name, new Sound(Audio.ContentManager.Load<SoundEffect>(name)));
-			PlayExisting(name);
-		}
-
-		public void PlayExisting(string name)
-		{
-			if (!sounds.ContainsKey(name))
-			{
-				return;
-			}
-
-			var sound = sounds[name];
-			var volume = Volume;
-			if (Parent != null)
-			{
-				volume *= Parent.Volume;
-			}
-			sound.Play(volume);
-		}
 	}
 }

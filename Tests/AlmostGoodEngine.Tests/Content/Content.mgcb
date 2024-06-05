@@ -24,6 +24,18 @@
 #begin Fonts/Signika-Bold.ttf
 /copy:Fonts/Signika-Bold.ttf
 
+#begin Sounds/key_owned.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/key_owned.wav
+
+#begin Sounds/titlescreen.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/titlescreen.wav
+
 #begin Sprites/character.png
 /importer:TextureImporter
 /processor:TextureProcessor

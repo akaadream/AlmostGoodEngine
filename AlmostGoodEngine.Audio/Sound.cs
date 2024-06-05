@@ -4,17 +4,27 @@ using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Audio
 {
-    public class Sound
-    {
-        /// <summary>
-        /// The sound effect ressource
-        /// </summary>
-        public SoundEffect Effect { get; private set; }
+    public class Sound(SoundEffect soundEffect) : ISound
+	{
+		/// <summary>
+		/// The sound effect ressource
+		/// </summary>
+		public SoundEffect Effect { get; private set; } = soundEffect;
 
         /// <summary>
-        /// The maximum number of occurences of this sounds at the same time
+        /// The channel on which this sound should play
         /// </summary>
-        public int MaxInstance { get; set; } = 1;
+        public string Channel { get; set; } = "master";
+
+		/// <summary>
+		/// The maximum number of occurences of this sounds at the same time
+		/// </summary>
+		public int MaxInstance { get; set; } = 1;
+
+        /// <summary>
+        /// If true, a new call of the play function will replace the first instance
+        /// </summary>
+        public bool ReplaceMax { get; set; } = true;
 
         /// <summary>
         /// The duration of the sound
@@ -31,31 +41,56 @@ namespace AlmostGoodEngine.Audio
         /// </summary>
         public bool IsDisposed { get => Effect.IsDisposed; }
 
+		/// <summary>
+		/// The list of all the instances currently played
+		/// </summary>
+		private readonly List<SoundEffectInstance> instances = [];
+
         /// <summary>
-        /// The list of all the instances currently played
+        /// Fired when an instance of the the sound is finished
+        /// This event is not called if the instance has been canceled
         /// </summary>
-        List<SoundEffectInstance> instances;
+		public event EventHandler<EventArgs> OnFinished;
 
-
-        public Sound(SoundEffect soundEffect)
-        {
-            
-            Effect = soundEffect;
-            instances = [];
-        }
-
-        public void Dispose()
+		public void Dispose()
         {
             Effect?.Dispose();
             Effect = null;
         }
 
+        /// <summary>
+        /// Play the sound
+        /// </summary>
+        /// <param name="volume"></param>
+        /// <param name="loop"></param>
         public void Play(float volume = 1f, bool loop = false)
         {
+            if (instances.Count > 0 && instances.Count >= MaxInstance)
+            {
+                if (ReplaceMax)
+                {
+					instances[0].Stop();
+					instances.RemoveAt(0);
+				}
+                else
+                {
+                    return;
+                }
+            }
+
             var instance = Effect.CreateInstance();
-            instance.Volume = volume;
+            if (Mixer.Channels.TryGetValue(Channel, out var channel))
+            {
+				instance.Volume = volume * channel.Volume;
+			}
+            else
+            {
+				instance.Volume = volume;
+			}
+            
             instance.IsLooped = loop;
             instance.Play();
+            instances.Add(instance);
         }
 
         /// <summary>
@@ -68,12 +103,13 @@ namespace AlmostGoodEngine.Audio
                 if (instances[i] == null)
                 {
                     instances.RemoveAt(i);
-                    continue;
+					continue;
                 }
 
                 if (instances[i].State == SoundState.Stopped ||
                     instances[i].IsDisposed)
                 {
+                    OnFinished?.Invoke(this, new EventArgs());
                     instances.RemoveAt(i);
                     continue;
                 }
@@ -118,7 +154,7 @@ namespace AlmostGoodEngine.Audio
                 return null;
             }
 
-            return instances[instances.Count - 1];
+            return instances[^1];
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AlmostGoodEngine.Core;
+﻿using AlmostGoodEngine.Audio;
+using AlmostGoodEngine.Core;
 using AlmostGoodEngine.Core.Components;
 using AlmostGoodEngine.Core.Components.Camera;
 using AlmostGoodEngine.Core.Components.Physics;
@@ -24,6 +25,11 @@ namespace AlmostGoodEngine.Tests.Scenes
 
         public TestScene() : base()
         {
+            if (Mixer.Channels.TryGetValue("master", out var channel))
+            {
+                channel.Volume = 0.1f;
+            }
+
 			Entity entity = new()
 			{
 				Name = "Debug"
