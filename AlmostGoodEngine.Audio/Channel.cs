@@ -31,11 +31,6 @@ namespace AlmostGoodEngine.Audio
 		private float _volume = 1f;
 
 		/// <summary>
-		/// List of the effects we want to apply to this channel
-		/// </summary>
-		public List<ChannelEffect> Effects { get; set; } = [];
-
-		/// <summary>
 		/// The parent channel used to merge the parent's volume on this channel's volume
 		/// </summary>
 		public Channel Parent { get; internal set; } = parent;

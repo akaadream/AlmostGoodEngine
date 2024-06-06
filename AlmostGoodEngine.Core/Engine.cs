@@ -133,7 +133,7 @@ namespace AlmostGoodEngine.Core
             // Inputs
             Input.Initialize();
             // Audio
-            Mixer.Initialize(Content);
+            Mixer.Initialize();
             // In-engine console
             AlmostGoodConsole.Initialize();
 

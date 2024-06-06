@@ -10,19 +10,13 @@ namespace AlmostGoodEngine.Audio
 		/// </summary>
 		public static Dictionary<string, Channel> Channels { get; set; }
 
-		/// <summary>
-		/// The content manager used to load sounds
-		/// </summary>
-		public static ContentManager ContentManager { get; set; }
-
 
 		/// <summary>
 		/// Initialize the audio engine
 		/// </summary>
-		public static void Initialize(ContentManager contentManager)
+		public static void Initialize()
 		{
 			Channels = [];
-			ContentManager = contentManager;
 
 			// Create default channels
 			var master = Register("master");
