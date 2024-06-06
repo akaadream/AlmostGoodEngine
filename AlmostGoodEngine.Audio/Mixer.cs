@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Content;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Audio
 {

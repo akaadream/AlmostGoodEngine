@@ -27,7 +27,7 @@ namespace AlmostGoodEngine.Tests.Scenes
         {
             if (Mixer.Channels.TryGetValue("master", out var channel))
             {
-                channel.Volume = 0.1f;
+                channel.Volume = 0.6f;
             }
 
 			Entity entity = new()

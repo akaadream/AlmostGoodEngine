@@ -26,9 +26,9 @@ This package comes with classes which will helps you manage inputs in your game.
 You are tired of the Song issues? Our Audio system will help you implements your sounds and musics and help you to loop or pitch your sounds without the issues of the Song class.  
 - [X] Audio channels  
 - [X] Audio listener  
-- [ ] Max sound instances  
-- [ ] Audio effects
-- [ ] Spacial sounds
+- [X] Max sound instances  
+- Audio effects (planned feature)
+- [X] Spacial sounds
 
 ### AlmostGoodEngine.Animations
 The animations packages is your best friend to animate everything you want.
@@ -37,7 +37,7 @@ It contains a Tweener, a Animation state engine and a Coroutine system.
 - [X] Spritesheet animation  
 - [X] Coroutine engine  
 - [ ] Tweens animations  
-- [ ] Bones animations  
+- [ ] Bones animations (planned feature)
 
 ### AlmostGoodEngine.GUI
 Do you want a fresh alternative of ImGUI? Our GUI library allow you to create complex interfaces using a simple API.  
@@ -46,9 +46,9 @@ Do you want a fresh alternative of ImGUI? Our GUI library allow you to create co
 - [ ] Predefined elements (menu, buttons, user inputs, ...)
 
 ### AlmostGoodEngine.Physics
-Don't waste time to reimplement a physics engine. Our engine will cover all the usage you need.  
-- [ ] Collision detection
-- [ ] Rigidbody
+The physics package of the Almost Good Engine is not a real physics library. It only gaves you the keys to works on simple tiles based physics or AABB physics. 
+- [ ] AABB
+- [ ] Tiled based physics
 
 ### AlmostGoodEngine.Core
 A great place to start with, the core package contains all the Almost Good Engine packages and will help you create your game using an intuitive ECS architecture and a lot of components to start with.  
@@ -67,8 +67,21 @@ The serialization package will give you all the keys to help you save and load f
 - [X] Json serialization/deserialization
 - [X] XML serialization/deserialization
 
+### AlmostGoodEngine.Network
+The networking package of the Almost Good Engine will help you synchronize your game between all the connected clients.
+The goal of this package is to bring you a `[Sync]` decoration that you can use on a class property and all the instances of the class will be shared with other clients.
+This package is planned for a later version than the v1.0.
+If you want to work on it on your own, please read the contribution guide.
+- [ ] Server instantiation
+- [ ] Clients connections/disconnections
+- [ ] SyncAttribute class
+- [ ] Load all the sync properties inside classes
+- [ ] Synchronize these properties with all the connected clients
+
 ### AlmostGoodEngine.Editor
 The editor bring you and easy to learn interface helping you using the engine features.
+The Almost Good Editor is not planned for the v1.0 and I'll not continue to work on it before the core of all packages are ready.
+If you want to work on it on your own, please read the contribution guide.
 - [ ] User Interface
 - [ ] Component inspector
 - [ ] Custom properties

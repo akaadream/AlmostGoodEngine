@@ -75,7 +75,13 @@ namespace AlmostGoodEngine.Tests.GameObjects
             AddComponent(hitbox);
 
             music = new(content.Load<SoundEffect>("Sounds/titlescreen"));
-            sound = new(content.Load<SoundEffect>("Sounds/key_owned"));
+            sound = new(content.Load<SoundEffect>("Sounds/test_sound"))
+            {
+                IsSpatial = true,
+                RandomPitch = true,
+                MinPitch = -0.2f,
+                MaxPitch = 0.2f
+            };
 
             //Sprite2D sprite2D = new(content.Load<Texture2D>("Sprites/character"))
             //{
@@ -114,26 +120,22 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
 			timerText.Value = "Remaining time: " + timer.ToString() + "s";
 
+            // Fade out coroutine
             if (Input.Keyboard.IsPressed(Keys.C))
             {
                 Coroutines.StartCoroutine(FadeOut());
             }
 
-            if (Input.Keyboard.IsPressed(Keys.D))
-            {
-                Logger.Log(Position.ToVector2().ToString());
-            }
-
             music.Update(Time.DeltaTime);
             sound.Update();
+
+            // Play the music
             if (Input.Keyboard.IsPressed(Keys.P))
             {
 				music.Play(true);
             }
-            if (Input.Keyboard.IsPressed(Keys.O))
-            {
-                sound.Play();
-            }
+
+            // Music volume management
             if (Input.Keyboard.IsPressed(Keys.M))
             {
                 if (Input.Keyboard.IsDown(Keys.LeftShift))
@@ -144,8 +146,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 {
 					music.NextVolume = 0f;
 				}
-            } 
+            }
 
+            // Text position management
             Text text = GetComponent<Text>();
             if (text != null)
             {

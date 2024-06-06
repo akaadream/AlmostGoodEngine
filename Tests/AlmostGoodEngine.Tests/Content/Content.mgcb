@@ -30,6 +30,12 @@
 /processorParam:Quality=Best
 /build:Sounds/key_owned.wav
 
+#begin Sounds/test_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/test_sound.wav
+
 #begin Sounds/titlescreen.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

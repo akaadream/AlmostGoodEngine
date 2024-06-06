@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,15 @@ namespace AlmostGoodEngine.Audio
 		/// The sound effect ressource
 		/// </summary>
 		public SoundEffect Effect { get; private set; } = soundEffect;
+
+        /// <summary>
+        /// If the sound should be eared inside the environnement
+        /// </summary>
+        public bool IsSpatial { get; set; } = false;
+
+        // Listener and emitter for spatial sound
+        private AudioListener _listener = new();
+        private AudioEmitter _emitter = new();
 
         /// <summary>
         /// The channel on which this sound should play
@@ -52,6 +62,36 @@ namespace AlmostGoodEngine.Audio
         /// </summary>
 		public event EventHandler<EventArgs> OnFinished;
 
+        /// <summary>
+        /// If true, a random pitch will be computed on each new instance of the sound
+        /// </summary>
+        public bool RandomPitch { get; set; } = false;
+
+        /// <summary>
+        /// The pitch of the sound (used if RandomPitch is false)
+        /// </summary>
+		public float Pitch { get; set; }
+
+        /// <summary>
+        /// The minimum pitch of the sound (used if RandomPitch is true)
+        /// </summary>
+		public float MinPitch { get; set; }
+
+		/// <summary>
+		/// The maximum pitch of the sound (used if RandomPitch is true)
+		/// </summary>
+		public float MaxPitch { get; set; }
+
+        /// <summary>
+        /// The maximum distance between the source and target positions where this sound can be eared (used if IsSpatial is true)
+        /// </summary>
+        public float MaxDistance { get; set; } = 1200f;
+        
+        /// <summary>
+        /// Random instance
+        /// </summary>
+        private Random _random = new();
+
 		public void Dispose()
         {
             Effect?.Dispose();
@@ -65,33 +105,73 @@ namespace AlmostGoodEngine.Audio
         /// <param name="loop"></param>
         public void Play(float volume = 1f, bool loop = false)
         {
-            if (instances.Count > 0 && instances.Count >= MaxInstance)
-            {
-                if (ReplaceMax)
-                {
+            Play(false, loop, volume, Vector3.Zero, Vector3.Zero);
+        }
+
+        public void PlayAt(Vector3 source, Vector3 target, float volume = 1f)
+        {
+            Play(true, false, volume, source, target);
+        }
+
+        private void Play(bool spatial, bool loop, float volume, Vector3 source, Vector3 target)
+        {
+			if (instances.Count > 0 && instances.Count >= MaxInstance)
+			{
+				if (ReplaceMax)
+				{
 					instances[0].Stop();
 					instances.RemoveAt(0);
 				}
-                else
-                {
-                    return;
-                }
-            }
+				else
+				{
+					return;
+				}
+			}
 
-            var instance = Effect.CreateInstance();
-            if (Mixer.Channels.TryGetValue(Channel, out var channel))
-            {
+			var instance = Effect.CreateInstance();
+			if (Mixer.Channels.TryGetValue(Channel, out var channel))
+			{
 				instance.Volume = volume * channel.Volume;
 			}
-            else
-            {
+			else
+			{
 				instance.Volume = volume;
 			}
-            
-            instance.IsLooped = loop;
-            instance.Play();
-            instances.Add(instance);
-        }
+
+            if (spatial)
+            {
+                var distance = (target - source).Length();
+
+                var value = float.Lerp(0f, 1f, distance / MaxDistance);
+				var t = float.Clamp(value, 0f, 1f);
+
+				
+
+                var pan = target.X < source.X ? -t : t;
+                if (pan < 0.2f && pan > -0.2f)
+                {
+                    pan = 0f;
+                }
+
+				Console.WriteLine("distance: " + distance + ", value: " + value + ", pan: " + pan + ", t: " + t);
+
+				instance.Pan = 0.2f;
+                instance.Volume = float.Clamp(1 - t, 0f, 1f);
+            }
+
+            if (RandomPitch)
+            {
+                instance.Pitch = float.Clamp((float)_random.NextDouble() * (MaxPitch - MinPitch) + MinPitch, -1f, 1f);
+            }
+            else
+            {
+                instance.Pitch = float.Clamp((float)Pitch, -1f, 1f);
+            }
+
+			instance.IsLooped = loop;
+			instance.Play();
+			instances.Add(instance);
+		}
 
         /// <summary>
         /// Update instances of this sound
