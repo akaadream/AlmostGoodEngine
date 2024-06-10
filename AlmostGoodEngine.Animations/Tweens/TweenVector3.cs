@@ -2,12 +2,13 @@
 
 namespace AlmostGoodEngine.Animations.Tweens
 {
-	internal class TweenVector3 : Tween<Vector3>
+	public class TweenVector3 : Tween<Vector3>
 	{
-		public TweenVector3(Vector3 start, Vector3 end, object target, float duration, float delay) :
-			base(start, end, target, duration, delay)
-		{
+		internal TweenVector3(Vector3 from, Vector3 to, float duration, float delay) : base(from, to, duration, delay) { }
 
+		protected override void Compute()
+		{
+			Current = Vector3.Lerp(From, To, EasedT);
 		}
 	}
 }

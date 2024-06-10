@@ -2,12 +2,16 @@
 
 namespace AlmostGoodEngine.Animations.Tweens
 {
-	internal class TweenColor : Tween<Color>
+	public class TweenColor : Tween<Color>
 	{
-		public TweenColor(Color start, Color end, object target, float duration, float delay) :
-			base(start, end, target, duration, delay)
+		internal TweenColor(Color from, Color to, float duration, float delay) : base(from, to, duration, delay)
 		{
 
+		}
+
+		protected override void Compute()
+		{
+			Current = Color.Lerp(From, To, EasedT);
 		}
 	}
 }

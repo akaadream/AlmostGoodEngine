@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
 namespace AlmostGoodEngine.Animations.Tweens
 {
-	internal class TweenFloat : Tween<float>
+	public class TweenFloat : Tween<float>
 	{
-		public TweenFloat(float start, float end, object target, float duration, float delay):
-			base(start, end, target, duration, delay)
+		internal TweenFloat(float from, float to, float duration, float delay): base(from, to, duration, delay)
 		{
 
+		}
+
+		protected override void Compute()
+		{
+			Current = MathHelper.Lerp(From, To, EasedT);
 		}
 	}
 }

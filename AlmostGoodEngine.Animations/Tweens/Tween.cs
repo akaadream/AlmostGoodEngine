@@ -2,26 +2,35 @@
 
 namespace AlmostGoodEngine.Animations.Tweens
 {
-    public abstract class Tween<T>(T start, T end, object target, float duration, float delay) : Tween(target, duration, delay) where T : struct
+    public abstract class Tween<T>(T from, T to, float duration, float delay) : Tween(duration, delay) where T : struct
     {
 		/// <summary>
 		/// The starting value of the tween animation
 		/// </summary>
-		public T Start { get; set; } = start;
+		public T From { get; set; } = from;
 
 		/// <summary>
 		/// The ending value of the tween animation
 		/// </summary>
-		public T End { get; set; } = end;
+		public T To { get; set; } = to;
+
+        /// <summary>
+        /// The current value of the tween
+        /// </summary>
+        public T Current { get; set; } = from;
+
+        /// <summary>
+        /// Get a hashcode for a tween
+        /// </summary>
+        /// <returns></returns>
+		public override int GetHashCode()
+		{
+			return 11 + 7 ^ From.GetHashCode() + 3 ^ To.GetHashCode();
+		}
 	}
 
 	public abstract class Tween
     {
-        /// <summary>
-        /// The target which is using this tween
-        /// </summary>
-        public object Target { get; private set; }
-
         /// <summary>
         /// The duration of the tween animation
         /// </summary>
@@ -58,14 +67,14 @@ namespace AlmostGoodEngine.Animations.Tweens
         public EaseType EaseType { get; set; }
 
         /// <summary>
-        /// The current value of the tween
-        /// </summary>
-        public float Current { get; private set; }
-
-        /// <summary>
         /// The entry parameters used to compute the animation
         /// </summary>
-        public float Value { get => ElapsedTime / Duration; }
+        public float T { get => ElapsedTime / Duration; }
+
+        /// <summary>
+        /// Get the eased version of T
+        /// </summary>
+        public float EasedT { get => Easer.Ease(EaseType, T); }
 
         /// <summary>
         /// Callback invoked when the animation is starting
@@ -93,11 +102,11 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// <param name="target"></param>
         /// <param name="duration"></param>
         /// <param name="delay"></param>
-        internal Tween(object target, float duration, float delay)
+        internal Tween(float duration, float delay)
         {
-            Target = target;
             Duration = duration;
             Delay = delay;
+            EaseType = EaseType.Linear;
         }
 
         /// <summary>
@@ -119,6 +128,17 @@ namespace AlmostGoodEngine.Animations.Tweens
         public Tween SetPingPong(bool pingPong = true)
         {
             PingPong = pingPong;
+            return this;
+        }
+
+        /// <summary>
+        /// Define a new easing method for this tween animation
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Tween SetEase(EaseType type)
+        {
+            EaseType = type;
             return this;
         }
 
@@ -178,6 +198,11 @@ namespace AlmostGoodEngine.Animations.Tweens
             IsRunning = true;
         }
 
+        public void Stop()
+        {
+
+        }
+
         /// <summary>
         /// Update the current value if the animation is running
         /// </summary>
@@ -205,7 +230,6 @@ namespace AlmostGoodEngine.Animations.Tweens
 			}
             else
             {
-                Current = Easer.Ease(EaseType, Value);
                 Compute();
                 OnUpdate?.Invoke();
             }
@@ -246,7 +270,41 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         protected virtual void Compute()
         {
+		}
 
+        /// <summary>
+        /// Return true if the given object is equal to this tween aniamtion
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+            {
+                return false;
+            }
+
+            if (obj is not Tween)
+            {
+                return false;
+            }
+
+            return Equals(obj as Tween);
+		}
+
+        /// <summary>
+        /// Return true if the given tween is equal to this tween animation
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public virtual bool Equals(Tween other)
+        {
+            return other.GetHashCode() == GetHashCode();
         }
-    }
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+	}
 }

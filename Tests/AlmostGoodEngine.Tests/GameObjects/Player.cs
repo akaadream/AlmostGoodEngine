@@ -27,6 +27,9 @@ namespace AlmostGoodEngine.Tests.GameObjects
         Music music;
         Sound sound;
 
+        //TweenVector2 tweenVector2;
+        Vector2 position = new(200, 100);
+
         Vector3 velocity = Vector3.Zero;
         float speed = 390f;
 
@@ -82,6 +85,8 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 MinPitch = -0.2f,
                 MaxPitch = 0.2f
             };
+
+            //tweenVector2 = Tweener.Vector2(position, new Vector2(position.X + 150, position.Y), 2f);
 
             //Sprite2D sprite2D = new(content.Load<Texture2D>("Sprites/character"))
             //{
@@ -146,6 +151,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 {
 					music.NextVolume = 0f;
 				}
+            }
+
+            if (Input.Mouse.IsLeftButtonPressed())
+            {
+                //tweenVector2.Run(false, true);
             }
 
             // Text position management
