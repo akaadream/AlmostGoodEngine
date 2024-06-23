@@ -1,36 +1,25 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace AlmostGoodEngine.Animations.Tweens
 {
-    public abstract class Tween<T>(T from, T to, float duration, float delay) : Tween(duration, delay) where T : struct
+	public abstract class Tween<T> where T : struct
     {
-		/// <summary>
+        /// <summary>
 		/// The starting value of the tween animation
 		/// </summary>
-		public T From { get; set; } = from;
+		public T From { get; set; }
 
-		/// <summary>
-		/// The ending value of the tween animation
-		/// </summary>
-		public T To { get; set; } = to;
+        /// <summary>
+        /// The ending value of the tween animation
+        /// </summary>
+        public T To { get; set; }
 
         /// <summary>
         /// The current value of the tween
         /// </summary>
-        public T Current { get; set; } = from;
+        public T Current { get; set; }
 
-        /// <summary>
-        /// Get a hashcode for a tween
-        /// </summary>
-        /// <returns></returns>
-		public override int GetHashCode()
-		{
-			return 11 + 7 ^ From.GetHashCode() + 3 ^ To.GetHashCode();
-		}
-	}
-
-	public abstract class Tween
-    {
         /// <summary>
         /// The duration of the tween animation
         /// </summary>
@@ -52,9 +41,16 @@ namespace AlmostGoodEngine.Animations.Tweens
         public bool Looping { get; set; }
 
         /// <summary>
+        /// Number of iterations of the animation if it's not looping
+        /// </summary>
+        public int Iterations { get; set; }
+        private int _iterated { get; set; }
+
+        /// <summary>
         /// If the value is true, the tween animation will be played ping-pong (pong is the reversed animation)
         /// </summary>
         public bool PingPong { get; set; }
+        private bool _playingPong = false;
 
         /// <summary>
         /// The variable is true if the tween animation is currently running
@@ -69,12 +65,12 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// <summary>
         /// The entry parameters used to compute the animation
         /// </summary>
-        public float T { get => ElapsedTime / Duration; }
+        public float Parametric { get => ElapsedTime / Duration; }
 
         /// <summary>
         /// Get the eased version of T
         /// </summary>
-        public float EasedT { get => Easer.Ease(EaseType, T); }
+        public float Eased { get => Easer.Ease(EaseType, Parametric); }
 
         /// <summary>
         /// Callback invoked when the animation is starting
@@ -102,11 +98,16 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// <param name="target"></param>
         /// <param name="duration"></param>
         /// <param name="delay"></param>
-        internal Tween(float duration, float delay)
+        internal Tween(T from, T to, float duration, float delay)
         {
+            From = Current = from;
+            To = to;
+
             Duration = duration;
             Delay = delay;
+
             EaseType = EaseType.Linear;
+            Iterations = 1;
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="looping"></param>
         /// <returns></returns>
-        public Tween SetLooping(bool looping = true)
+        public Tween<T> SetLooping(bool looping = true)
         {
             Looping = looping;
             return this;
@@ -125,7 +126,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="pingPong"></param>
         /// <returns></returns>
-        public Tween SetPingPong(bool pingPong = true)
+        public Tween<T> SetPingPong(bool pingPong = true)
         {
             PingPong = pingPong;
             return this;
@@ -136,9 +137,31 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Tween SetEase(EaseType type)
+        public Tween<T> SetEase(EaseType type)
         {
             EaseType = type;
+            return this;
+        }
+
+        /// <summary>
+        /// Define the duration of the animation
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public Tween<T> SetDuration(float duration)
+        {
+            Duration = duration;
+            return this;
+        }
+
+        /// <summary>
+        /// Define the number of iterations the animation have to do
+        /// </summary>
+        /// <param name="iterations"></param>
+        /// <returns></returns>
+        public Tween<T> SetIterations(int iterations)
+        {
+            Iterations = iterations;
             return this;
         }
 
@@ -147,7 +170,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="onStart"></param>
         /// <returns></returns>
-        public Tween WhenStarted(Action onStart)
+        public Tween<T> WhenStarted(Action onStart)
         {
             OnStart = onStart;
             return this;
@@ -158,7 +181,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="onUpdate"></param>
         /// <returns></returns>
-        public Tween WhenUpdated(Action onUpdate)
+        public Tween<T> WhenUpdated(Action onUpdate)
         {
             OnUpdate = onUpdate;
             return this;
@@ -169,7 +192,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="onComplete"></param>
         /// <returns></returns>
-        public Tween WhenCompleted(Action onComplete)
+        public Tween<T> WhenCompleted(Action onComplete)
         {
             OnComplete = onComplete;
             return this;
@@ -180,7 +203,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="onLoop"></param>
         /// <returns></returns>
-        public Tween WhenLooped(Action onLoop)
+        public Tween<T> WhenLooped(Action onLoop)
         {
             OnLoop = onLoop;
             return this;
@@ -193,6 +216,8 @@ namespace AlmostGoodEngine.Animations.Tweens
         {
             Looping = looping;
             PingPong = pingPong;
+            _playingPong = false;
+            _iterated = 0;
 
             ElapsedTime = 0f;
             IsRunning = true;
@@ -200,13 +225,21 @@ namespace AlmostGoodEngine.Animations.Tweens
 
         public void Stop()
         {
+            IsRunning = false;
+        }
 
+        private void Reverse()
+        {
+            if (PingPong)
+            {
+                (To, From) = (From, To);
+            }
         }
 
         /// <summary>
         /// Update the current value if the animation is running
         /// </summary>
-        public void Update()
+        public void Update(float delta)
         {
             if (!IsRunning)
             {
@@ -216,20 +249,23 @@ namespace AlmostGoodEngine.Animations.Tweens
             // Animation may reached the end
             if (ElapsedTime >= Duration)
             {
-                if (Looping)
-                {
-                    Loop();
-                    return;
-                }
-                if (PingPong)
+                if (PingPong && !_playingPong)
                 {
                     Pong();
                     return;
                 }
+
+                if (Looping || _iterated + 1 < Iterations)
+                {
+                    Loop();
+                    return;
+                }
+
 				Finish();
 			}
             else
             {
+                ElapsedTime += delta;
                 Compute();
                 OnUpdate?.Invoke();
             }
@@ -240,8 +276,11 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         protected virtual void Loop()
         {
-			ElapsedTime -= Duration;
+            Reverse();
+            ElapsedTime -= Duration;
+            _iterated++;
 			OnUpdate?.Invoke();
+            Console.WriteLine("Loop");
 		}
 
         /// <summary>
@@ -250,7 +289,8 @@ namespace AlmostGoodEngine.Animations.Tweens
         protected virtual void Pong()
         {
             // Reverse end and start
-			// (End, Start) = (Start, End);
+            Reverse();
+            _playingPong = true;
 			ElapsedTime -= Duration;
 			OnUpdate?.Invoke();
 		}
@@ -260,7 +300,8 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         protected virtual void Finish()
         {
-			ElapsedTime = Duration;
+            Reverse();
+            ElapsedTime = Duration;
 			IsRunning = false;
 			OnComplete?.Invoke();
 		}
@@ -270,7 +311,7 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         protected virtual void Compute()
         {
-		}
+        }
 
         /// <summary>
         /// Return true if the given object is equal to this tween aniamtion
@@ -284,12 +325,12 @@ namespace AlmostGoodEngine.Animations.Tweens
                 return false;
             }
 
-            if (obj is not Tween)
+            if (obj is not Tween<T>)
             {
                 return false;
             }
 
-            return Equals(obj as Tween);
+            return Equals(obj as Tween<T>);
 		}
 
         /// <summary>
@@ -297,14 +338,18 @@ namespace AlmostGoodEngine.Animations.Tweens
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public virtual bool Equals(Tween other)
+        public virtual bool Equals(Tween<T> other)
         {
             return other.GetHashCode() == GetHashCode();
         }
 
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
-	}
+        /// <summary>
+        /// Get a hashcode for a tween
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return 11 + 7 ^ From.GetHashCode() + 3 ^ To.GetHashCode();
+        }
+    }
 }

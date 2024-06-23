@@ -38,6 +38,8 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public int EntitiesCount { get => Entities.Count; }
 
+        private RenderTarget2D _renderTarget = null;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -284,5 +286,17 @@ namespace AlmostGoodEngine.Core.Scenes
 
 			return actors;
 		}
+
+        public RenderTarget2D GetFrame(GameTime gameTime)
+        {
+            GameManager.Engine.GraphicsDevice.SetRenderTarget(_renderTarget);
+            GameManager.Engine.GraphicsDevice.Clear(Color.Black);
+
+            Draw(gameTime, GameManager.SpriteBatch);
+            DrawUI(gameTime, GameManager.SpriteBatch);
+
+            GameManager.Engine.GraphicsDevice.SetRenderTarget(null);
+            return _renderTarget;
+        }
     }
 }

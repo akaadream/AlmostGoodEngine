@@ -8,7 +8,7 @@ namespace AlmostGoodEngine.Animations.Tweens
 
 		protected override void Compute()
 		{
-			Current = Vector3.Lerp(From, To, EasedT);
+			Current = Vector3.Lerp(From, To, Eased);
 		}
 	}
 }

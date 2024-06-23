@@ -30,21 +30,21 @@ namespace AlmostGoodEngine.Tests
 		{
 			base.Initialize();
 
-            //_watcher = new(Content);
+            _watcher = new(Content);
 
-            //AssetReloader.Initialize(
-            //    _watcher.ProjectRootPath,
-            //    Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform.DesktopGL,
-            //    GraphicsDevice);
+            AssetReloader.Initialize(
+                _watcher.ProjectRootPath,
+                Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform.DesktopGL,
+                GraphicsDevice);
 
-            //_watcher.LoadFiles();
+            _watcher.LoadFiles();
 
-            //var file = _watcher.FilesTree.Find("styles/main");
-            //if (file != null)
-            //{
-            //    file.Updated += StyleUpdated;
-            //}
-		}
+            var file = _watcher.FilesTree.Find("styles/main");
+            if (file != null)
+            {
+                file.Updated += StyleUpdated;
+            }
+        }
 
 		protected override void Dispose(bool disposing)
 		{
@@ -52,7 +52,7 @@ namespace AlmostGoodEngine.Tests
 
             if (disposing)
             {
-                MainEditor.Dispose();
+                //MainEditor.Dispose();
             }
 		}
 
@@ -78,7 +78,7 @@ namespace AlmostGoodEngine.Tests
 			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
 			GUIManager.LoadStyle("styles/main");
 
-			MainEditor.Initialize(this);
+			//MainEditor.Initialize(this);
         }
 
 		protected override void Draw(GameTime gameTime)
@@ -88,7 +88,7 @@ namespace AlmostGoodEngine.Tests
 #if DEBUG
             if (CustomRendering)
             {
-				MainEditor.Draw(gameTime);
+				//MainEditor.Draw(gameTime);
 			}
 #endif
         }

@@ -128,6 +128,11 @@ namespace AlmostGoodEngine.Tests.Scenes
                 return;
             }
 
+            if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.F2))
+            {
+                GameManager.SceneManager.Set("inputs", "fade");
+            }
+
             if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.T))
             {
 				Random random = new();

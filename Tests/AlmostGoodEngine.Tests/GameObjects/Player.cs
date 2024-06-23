@@ -1,4 +1,5 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
+using AlmostGoodEngine.Animations.Tweens;
 using AlmostGoodEngine.Animations.Utils;
 using AlmostGoodEngine.Audio;
 using AlmostGoodEngine.Core;
@@ -27,7 +28,8 @@ namespace AlmostGoodEngine.Tests.GameObjects
         Music music;
         Sound sound;
 
-        //TweenVector2 tweenVector2;
+        TweenVector2 tweenVector2;
+        TweenColor tweenColor;
         Vector2 position = new(200, 100);
 
         Vector3 velocity = Vector3.Zero;
@@ -86,13 +88,16 @@ namespace AlmostGoodEngine.Tests.GameObjects
                 MaxPitch = 0.2f
             };
 
-            //tweenVector2 = Tweener.Vector2(position, new Vector2(position.X + 150, position.Y), 2f);
+            tweenVector2 = Tweener.Vector2(position, new Vector2(position.X + 150, position.Y));
+            tweenVector2.SetIterations(2);
+            tweenColor = Tweener.Color(Color.White, Color.Red);
+            tweenColor.SetIterations(2);
 
-            //Sprite2D sprite2D = new(content.Load<Texture2D>("Sprites/character"))
-            //{
-            //    Source = new(0, 0, 16, 24),
-            //};
-            //AddComponent(sprite2D);
+            Sprite2D sprite2D = new(content.Load<Texture2D>("Sprites/character"))
+            {
+                Source = new(0, 0, 16, 24),
+            };
+            AddComponent(sprite2D);
 
             timer = new(10)
             {
@@ -155,8 +160,11 @@ namespace AlmostGoodEngine.Tests.GameObjects
 
             if (Input.Mouse.IsLeftButtonPressed())
             {
-                //tweenVector2.Run(false, true);
+                tweenVector2.Run(false, true);
+                tweenColor.Run(false, true);
             }
+            tweenVector2.Update(Time.DeltaTime);
+            tweenColor.Update(Time.DeltaTime);
 
             // Text position management
             Text text = GetComponent<Text>();
@@ -274,6 +282,7 @@ namespace AlmostGoodEngine.Tests.GameObjects
 			base.DrawDebug(gameTime, spriteBatch);
 
             Debug.FillRectangle(spriteBatch, Collider.Bounds, Color.Yellow * 0.5f);
+            Debug.FillRectangle(spriteBatch, new Rectangle((int)tweenVector2.Current.X, (int)tweenVector2.Current.Y, 64, 64), tweenColor.Current);
 		}
 	}
 }

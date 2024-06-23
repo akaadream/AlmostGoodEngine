@@ -1,4 +1,5 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
+using AlmostGoodEngine.Animations.Tweens;
 using AlmostGoodEngine.Audio;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
@@ -183,6 +184,9 @@ namespace AlmostGoodEngine.Core
 
             // Game manager update functions
             GameManager.BeforeUpdate(gameTime);
+
+            // Tweens
+            Tweener.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             // Console update
             AlmostGoodConsole.Update(gameTime);
@@ -436,5 +440,10 @@ namespace AlmostGoodEngine.Core
                 MaxDepth = 1
             };
 		}
+
+        internal RenderTarget2D CreateRenderTarget()
+        {
+            return new(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+        }
     }
 }

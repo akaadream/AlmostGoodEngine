@@ -11,7 +11,7 @@ namespace AlmostGoodEngine.Animations.Tweens
 
 		protected override void Compute()
 		{
-			Current = MathHelper.Lerp(From, To, EasedT);
+			Current = MathHelper.Lerp(From, To, Eased);
 		}
 	}
 }

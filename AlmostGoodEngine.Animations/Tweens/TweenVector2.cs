@@ -11,7 +11,7 @@ namespace AlmostGoodEngine.Animations.Tweens
 
 		protected override void Compute()
 		{
-			Current = Vector2.Lerp(From, To, EasedT);
+			Current = Vector2.Lerp(From, To, Eased);
 		}
 	}
 }
