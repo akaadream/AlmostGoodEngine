@@ -8,7 +8,7 @@ namespace AlmostGoodEngine.Core.Components.Animations
 	{
 		public AnimationTree AnimationTree { get; set; }
 
-		public override void Update(GameTime gameTime)
+		public override void AnimationsUpdate(GameTime gameTime)
 		{
 			base.Update(gameTime);
 

@@ -122,6 +122,11 @@ namespace AlmostGoodEngine.Core.ECS
 
         }
 
+        public virtual void AnimationsUpdate(GameTime gameTime)
+        {
+
+        }
+
         public virtual void AfterUpdate(GameTime gameTime)
         {
             

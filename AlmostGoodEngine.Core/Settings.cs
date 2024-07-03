@@ -27,6 +27,16 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public string StartingScene { get; set; }
 
+        /// <summary>
+        /// If true, the vertical synchronization is enabled
+        /// </summary>
+        public bool VSync { get; set; }
+
+        /// <summary>
+        /// Put this to true if you want to force the game to be 60 FPS
+        /// </summary>
+        public bool Force60FPS { get; set; }
+
         #endregion
 
         #region Window
@@ -92,6 +102,8 @@ namespace AlmostGoodEngine.Core
             Borderless = false;
 
             OriginCentered = true;
+            VSync = true;
+            Force60FPS = true;
         }
     }
 }

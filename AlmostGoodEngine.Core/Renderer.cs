@@ -93,6 +93,14 @@ namespace AlmostGoodEngine.Core
 			}
 		}
 
+		public void AnimationsUpdate(GameTime gameTime)
+		{
+			foreach (var camera in Cameras)
+			{
+				camera.AnimationsUpdate(gameTime);
+			}
+		}
+
 		/// <summary>
 		/// Display the game
 		/// </summary>
@@ -114,7 +122,14 @@ namespace AlmostGoodEngine.Core
 					ScissorTestEnable = true,
 				};
 				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(camera.Viewport.X, camera.Viewport.Y, camera.Width, camera.Height);
-				spriteBatch.Begin(SpriteSortMode.Deferred, null, camera.SamplerState, null, rasterizerState, null, camera.GetTransform());
+				if (GameManager.SceneManager.DoingTransition)
+				{
+					spriteBatch.Begin();
+				}
+				else
+				{
+                    spriteBatch.Begin(SpriteSortMode.Deferred, null, camera.SamplerState, null, rasterizerState, null, camera.GetTransform());
+                }
 
 				// Draw scene objects
 				foreach (var entity in Scene.Entities)
@@ -124,7 +139,7 @@ namespace AlmostGoodEngine.Core
 						continue;
 					}
 
-					if (!camera.CanSee(entity.GetBounds()))
+					if (!camera.CanSee(entity.GetBounds()) && !GameManager.SceneManager.DoingTransition)
 					{
 						continue;
 					}

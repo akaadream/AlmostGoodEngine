@@ -11,7 +11,7 @@
 #-------------------------------- References --------------------------------#
 
 /reference:..\..\..\AlmostGameEngine.CssContent\bin\Debug\net6.0\AlmostGameEngine.CssContent.dll
-/reference:C:\Users\lorte\.nuget\packages\excss\4.2.5\lib\net6.0\ExCSS.dll
+/reference:C:\Users\Guillaume\.nuget\packages\excss\4.2.5\lib\net6.0\ExCSS.dll
 
 #---------------------------------- Content ---------------------------------#
 

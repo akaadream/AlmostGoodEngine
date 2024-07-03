@@ -213,6 +213,10 @@ namespace AlmostGoodEngine.Core.Entities
 
 		public Rectangle GetViewRect()
 		{
+            if (GameManager.SceneManager.DoingTransition)
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+            }
 			return new Rectangle((int)Position.X, (int)Position.Y, (int)(Width / Zoom), (int)(Height / Zoom));
 		}
 

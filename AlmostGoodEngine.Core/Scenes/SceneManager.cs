@@ -100,6 +100,7 @@ namespace AlmostGoodEngine.Core.Scenes
                 var nextSceneFrame = CurrentScene.GetFrame(new GameTime());
                 _transition = value;
                 _transition.Start(previousSceneFrame, nextSceneFrame, duration);
+                DoingTransition = true;
             }
         }
 
@@ -215,6 +216,16 @@ namespace AlmostGoodEngine.Core.Scenes
             CurrentScene?.FixedUpdate(gameTime);
         }
 
+        public void AnimationsUpdate(GameTime gameTime)
+        {
+            if (DoingTransition)
+            {
+                return;
+            }
+
+            CurrentScene?.AnimationsUpdate(gameTime);
+        }
+
         /// <summary>
         /// After the update of the scene
         /// </summary>
@@ -237,7 +248,10 @@ namespace AlmostGoodEngine.Core.Scenes
         {
             if (DoingTransition)
             {
-                GameManager.SpriteBatch.Draw(_transition.GetFrame(), Vector2.Zero, Color.White);
+                var frame = _transition.GetFrame();
+                spriteBatch.Begin();
+                GameManager.SpriteBatch.Draw(frame, Vector2.Zero, Color.White);
+                spriteBatch.End();
                 return;
             }
             CurrentScene?.Draw(gameTime, spriteBatch);

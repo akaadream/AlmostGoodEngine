@@ -20,6 +20,7 @@ namespace AlmostGoodEngine.Core.Scenes.Transitions
             NextSceneFrame = nextSceneFrame;
             Duration = duration;
             DurationLeft = duration;
+            T = 0;
         }
 
         public virtual bool Update()

@@ -47,6 +47,7 @@ namespace AlmostGoodEngine.Core.Scenes
         {
             Entities = [];
             Renderer = new(this);
+            _renderTarget = GameManager.Engine.CreateRenderTarget();
         }
 
         /// <summary>
@@ -154,6 +155,23 @@ namespace AlmostGoodEngine.Core.Scenes
 					continue;
 				}
 				entity.FixedUpdate(gameTime);
+            }
+        }
+
+        public virtual void AnimationsUpdate(GameTime gameTime)
+        {
+            Renderer.AnimationsUpdate(gameTime);
+            foreach (var entity in Entities)
+            {
+                if (GameManager.Paused && entity.Pausable)
+                {
+                    continue;
+                }
+                if (!entity.Enabled)
+                {
+                    continue;
+                }
+                entity.AnimationsUpdate(gameTime);
             }
         }
 

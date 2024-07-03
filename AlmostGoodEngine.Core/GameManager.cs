@@ -208,9 +208,22 @@ namespace AlmostGoodEngine.Core
             SceneManager?.Update(gameTime);
         }
 
+        /// <summary>
+        /// Life-cycle physics update
+        /// </summary>
+        /// <param name="gameTime"></param>
         internal static void FixedUpdate(GameTime gameTime)
         {
             SceneManager?.FixedUpdate(gameTime);
+        }
+
+        /// <summary>
+        /// Life-cycle animations update
+        /// </summary>
+        /// <param name="gameTime"></param>
+        internal static void AnimationsUpdate(GameTime gameTime)
+        {
+            SceneManager?.AnimationsUpdate(gameTime);
         }
 
         /// <summary>

@@ -53,7 +53,7 @@ namespace AlmostGoodEngine.Core.Components.Animations
             SpriteSheet.Reset();
         }
 
-        public override void AfterUpdate(GameTime gameTime)
+        public override void AnimationsUpdate(GameTime gameTime)
         {
             SpriteSheet.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }

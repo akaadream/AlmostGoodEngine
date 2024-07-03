@@ -50,7 +50,12 @@ namespace AlmostGoodEngine.Tests.Scenes
 		{
 			base.Update(gameTime);
 
-			if (Input.Keyboard.IsPressed(Keys.P))
+            if (Input.Keyboard.IsPressed(Keys.F2))
+            {
+                GameManager.SceneManager.Set("test", "fade");
+            }
+
+            if (Input.Keyboard.IsPressed(Keys.P))
 			{
 				Generator.Seed = NoiseHelper.Seed();
 				Generator.Initialize();

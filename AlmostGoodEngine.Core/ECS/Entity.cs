@@ -207,6 +207,19 @@ namespace AlmostGoodEngine.Core.ECS
             }
         }
 
+        public virtual void AnimationsUpdate(GameTime gameTime)
+        {
+            foreach (var component in Components)
+            {
+                component.AnimationsUpdate(gameTime);
+            }
+
+            foreach (var child in Children)
+            {
+                child.AnimationsUpdate(gameTime);
+            }
+        }
+
         /// <summary>
         /// After the update
         /// </summary>

@@ -106,11 +106,14 @@ namespace AlmostGoodEngine.Core
                     GraphicsDevice.Adapter.CurrentDisplayMode.Height / 2 - Settings.Height / 2);
             }
 
+            IsFixedTimeStep = Settings.Force60FPS;
+
             // Window size
             Graphics.PreferredBackBufferWidth = Settings.Width;
             Graphics.PreferredBackBufferHeight = Settings.Height;
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.PreferMultiSampling = true;
+            Graphics.SynchronizeWithVerticalRetrace = Settings.VSync;
             Graphics.ApplyChanges();
 
             // Window other settings
@@ -179,14 +182,12 @@ namespace AlmostGoodEngine.Core
 
             // Inputs
             Input.Update();
+
             // Coroutine engine
             Coroutines.Update(gameTime);
 
             // Game manager update functions
             GameManager.BeforeUpdate(gameTime);
-
-            // Tweens
-            Tweener.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             // Console update
             AlmostGoodConsole.Update(gameTime);
@@ -206,6 +207,12 @@ namespace AlmostGoodEngine.Core
 
 				GameManager.Update(gameTime);
             }
+
+            // Animations update
+            GameManager.AnimationsUpdate(gameTime);
+
+            // Tweens
+            Tweener.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             // Update the GUI layer
             GUIManager.Update(gameTime);

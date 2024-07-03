@@ -130,7 +130,7 @@ namespace AlmostGoodEngine.Tests.Scenes
 
             if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.F2))
             {
-                GameManager.SceneManager.Set("inputs", "fade");
+                GameManager.SceneManager.Set("procedural", "fade");
             }
 
             if (Input.Keyboard.IsPressed(Microsoft.Xna.Framework.Input.Keys.T))

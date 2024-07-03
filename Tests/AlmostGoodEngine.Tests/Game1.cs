@@ -1,5 +1,4 @@
 ﻿using AlmostGoodEngine.Core;
-using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.GUI;
 using AlmostGoodEngine.Tests.Scenes;
 using Microsoft.Xna.Framework;
@@ -18,6 +17,8 @@ namespace AlmostGoodEngine.Tests
             Settings.Name = "Almost Good Engine - Test";
             Settings.Description = "The project to test everything";
             Settings.OriginCentered = true;
+            Settings.VSync = true;
+            Settings.Force60FPS = true;
             Settings.StartingScene = "test";
 
             Content.RootDirectory = "Content";
