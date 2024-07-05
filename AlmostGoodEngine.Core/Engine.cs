@@ -74,6 +74,11 @@ namespace AlmostGoodEngine.Core
         /// </summary>
         public static Matrix ScreenScaleMatrix { get; private set; } = Matrix.Identity;
 
+        /// <summary>
+        /// The game's render target
+        /// </summary>
+        public static RenderTarget2D RenderTarget { get; private set; }
+
         public Engine()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -115,6 +120,8 @@ namespace AlmostGoodEngine.Core
             Graphics.PreferMultiSampling = true;
             Graphics.SynchronizeWithVerticalRetrace = Settings.VSync;
             Graphics.ApplyChanges();
+
+            RenderTarget = new(GraphicsDevice, Settings.Width, Settings.Height);
 
             // Window other settings
             Window.AllowUserResizing = Settings.Resizable;
@@ -236,12 +243,20 @@ namespace AlmostGoodEngine.Core
 
             if (!CustomRendering)
             {
+                GraphicsDevice.SetRenderTarget(RenderTarget);
+
 				GameManager.Draw(gameTime, SpriteBatch);
 				GameManager.DrawUI(gameTime, SpriteBatch);
+
+                GraphicsDevice.SetRenderTarget(null);
+
+                SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                SpriteBatch.Draw(RenderTarget, new Rectangle(GameViewport.X, GameViewport.Y, GameViewport.Width, GameViewport.Height), Color.White);
+                SpriteBatch.End();
 			}
             else
             {
-
+                // User will have it's own way to render the game
             }
 
 #if DEBUG
@@ -308,7 +323,7 @@ namespace AlmostGoodEngine.Core
 
                     // Update the screen's scale matrix
                     UpdateScreenScaleMatrix();
-					GameManager.Resize(GameViewport);
+					//GameManager.Resize(GameViewport);
 
 					Logger.Log("Viewport resized. New size: " + WindowViewport.ToString());
 
