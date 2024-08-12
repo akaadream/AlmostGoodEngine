@@ -12,7 +12,7 @@ namespace AlmostGoodEngine.Tests
     {
         private FileWatcher _watcher;
 
-        public Game1(): base()
+        public Game1(bool isServer = false): base()
         {
             Settings.Name = "Almost Good Engine - Test";
             Settings.Description = "The project to test everything";

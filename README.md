@@ -36,7 +36,7 @@ It contains a Tweener, a Animation state engine and a Coroutine system.
 - [X] Keyframes animations  
 - [X] Spritesheet animation  
 - [X] Coroutine engine  
-- [ ] Tweens animations  
+- [-] Tweens animations  
 - [ ] Bones animations (planned feature)
 
 ### AlmostGoodEngine.GUI
