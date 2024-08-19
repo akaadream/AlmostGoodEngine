@@ -28,7 +28,7 @@ You are tired of the Song issues? Our Audio system will help you implements your
 - [X] Audio listener  
 - [X] Max sound instances  
 - Audio effects (planned feature)
-- [X] Spacial sounds
+- [] Spacial sounds (should be improved by creating two sounds (1 per ear side) with a different volume related to the distance from the source)
 
 ### AlmostGoodEngine.Animations
 The animations packages is your best friend to animate everything you want.
@@ -36,19 +36,19 @@ It contains a Tweener, a Animation state engine and a Coroutine system.
 - [X] Keyframes animations  
 - [X] Spritesheet animation  
 - [X] Coroutine engine  
-- [-] Tweens animations  
+- [ ] Tweens animations  
 - [ ] Bones animations (planned feature)
 
 ### AlmostGoodEngine.GUI
 Do you want a fresh alternative of ImGUI? Our GUI library allow you to create complex interfaces using a simple API.  
+- [ ] Create the base of the GUI / UI library using Gum
 - [X] GUI core element  
 - [X] CSS loading styles  
 - [ ] Predefined elements (menu, buttons, user inputs, ...)
 
 ### AlmostGoodEngine.Physics
-The physics package of the Almost Good Engine is not a real physics library. It only gaves you the keys to works on simple tiles based physics or AABB physics. 
-- [ ] AABB
-- [ ] Tiled based physics
+The physics package is based on the Aethis.Physics with few helpers to give you all the keys you need to implement a physics engine inside your game.
+- [ ] Implement Aethis.Physics
 
 ### AlmostGoodEngine.Core
 A great place to start with, the core package contains all the Almost Good Engine packages and will help you create your game using an intuitive ECS architecture and a lot of components to start with.  

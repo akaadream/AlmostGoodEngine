@@ -12,6 +12,4 @@ If you want to use this package standalone, you can install it via the NuGeT pac
 >
 ```
 
-## SoundEffectManager
-
-## MusicManager
+## Usage
