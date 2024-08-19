@@ -24,7 +24,7 @@ namespace AlmostGoodEngine.Tests
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            CustomRendering = false;
+            CustomRendering = true;
         }
 
 		protected override void Initialize()
@@ -47,16 +47,6 @@ namespace AlmostGoodEngine.Tests
             }
         }
 
-		protected override void Dispose(bool disposing)
-		{
-			base.Dispose(disposing);
-
-            if (disposing)
-            {
-                //MainEditor.Dispose();
-            }
-		}
-
 		private void StyleUpdated(object sender, FileSystemEventArgs args)
         {
             if (!AssetsManager.DataFiles.TryGetValue("styles/main", out string value))
@@ -76,22 +66,13 @@ namespace AlmostGoodEngine.Tests
 			GameManager.SceneManager.Add("particles", new ParticlesScene());
 			//GameManager.SceneManager.Add("gui", new GUIScene());
 
-			GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
+            GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
 			GUIManager.LoadStyle("styles/main");
-
-			//MainEditor.Initialize(this);
         }
 
 		protected override void Draw(GameTime gameTime)
 		{
 			base.Draw(gameTime);
-
-#if DEBUG
-            if (CustomRendering)
-            {
-				//MainEditor.Draw(gameTime);
-			}
-#endif
         }
 	}
 }
