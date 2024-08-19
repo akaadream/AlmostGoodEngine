@@ -1,6 +1,7 @@
 ﻿using AlmostGoodEngine.Animations.Coroutine;
 using AlmostGoodEngine.Animations.Tweens;
 using AlmostGoodEngine.Audio;
+using AlmostGoodEngine.Editor;
 using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.Core.Utils.Consoles;
 using AlmostGoodEngine.GUI;
@@ -96,6 +97,14 @@ namespace AlmostGoodEngine.Core
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                MainEditor.Dispose();
+            }
+        }
+
         /// <summary>
         /// Load game's settings
         /// </summary>
@@ -179,6 +188,12 @@ namespace AlmostGoodEngine.Core
 
 #if DEBUG
             Logger.Log(GameViewport.ToString());
+
+            MainEditor.Initialize(this);
+            MainEditor.OnGameSizeChanged = (Vector2 gameSize) =>
+            {
+                
+            };
 #endif
         }
 
@@ -227,6 +242,10 @@ namespace AlmostGoodEngine.Core
             // After everything gets updated
             GameManager.AfterUpdate(gameTime);
 
+#if DEBUG
+            MainEditor.Update(gameTime);
+#endif
+
             base.Update(gameTime);
         }
 
@@ -267,6 +286,13 @@ namespace AlmostGoodEngine.Core
             GUIManager.Draw(gameTime, SpriteBatch);
 
             AlmostGoodConsole.Draw(SpriteBatch);
+
+#if DEBUG
+            if (MainEditor.CustomRendering)
+            {
+                MainEditor.Draw(gameTime, GameManager.ScreenTexture(gameTime));
+            }
+#endif
 
             base.Draw(gameTime);
         }

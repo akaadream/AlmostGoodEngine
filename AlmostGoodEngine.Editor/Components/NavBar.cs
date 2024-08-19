@@ -93,7 +93,10 @@ namespace AlmostGoodEngine.Editor.Components
 			tools.Children.Add(new MenuItem("Customize...", "", "\uf1fc"));
 			tools.Children.Add(new MenuItem("Settings", "", "\uf013"));
 
-			run.Children.Add(new MenuItem("Run the game", "F5", "\uf144"));
+			run.Children.Add(new MenuItem("Run the game", "F5", "\uf144", true, () =>
+			{
+				MainEditor.CustomRendering = false;
+			}));
 			run.Children.Add(new MenuSeparator());
 			run.Children.Add(new MenuItem("Full screen", "", "\uf065", true, false, true));
 

@@ -1,5 +1,4 @@
-﻿using AlmostGoodEngine.Core;
-using AlmostGoodEngine.Editor.Components;
+﻿using AlmostGoodEngine.Editor.Components;
 using AlmostGoodEngine.Editor.Themes;
 using AlmostGoodEngine.Editor.Utils;
 using AlmostGoodEngine.Inputs;
@@ -34,12 +33,26 @@ namespace AlmostGoodEngine.Editor
 		public static string CurrentTheme { get; set; }
 
 		/// <summary>
+		/// Force the game to do a custom rendering
+		/// </summary>
+		public static bool CustomRendering { get; set; }
+
+		/// <summary>
+		/// True if the editor is currently used
+		/// </summary>
+		public static bool CurrentlyUsed { get; set; }
+
+		/// <summary>
 		/// The previous window size of the current scene
 		/// </summary>
 
-		private static System.Numerics.Vector2 _previousWindowSize;
+		private static Vector2 _previousWindowSize;
 
 		private static IntPtr _sceneTextureId;
+
+		public static Vector2 GameSize { get; private set; }
+
+		public static Action<Vector2> OnGameSizeChanged { get; set; }
 
 		/// <summary>
 		/// Initialize the ImGUI renderer
@@ -56,6 +69,9 @@ namespace AlmostGoodEngine.Editor
 			Themes.Add("dracula", new DraculaTheme());
 			Themes.Add("cherry", new CherryTheme());
 			CurrentTheme = "default";
+
+			CustomRendering = true;
+			CurrentlyUsed = true;
 
 			BuildComponents();
 			ReloadTheme();
@@ -117,7 +133,7 @@ namespace AlmostGoodEngine.Editor
 		/// Draw
 		/// </summary>
 		/// <param name="gameTime"></param>
-		public static void Draw(GameTime gameTime)
+		public static void Draw(GameTime gameTime, Texture2D frameTexture)
 		{
 			GUIRenderer.BeginLayout(gameTime);
 
@@ -145,19 +161,19 @@ namespace AlmostGoodEngine.Editor
 			ImGui.Begin("Scene 1", windowFlags);
 
 			// Window size
-			System.Numerics.Vector2 windowSize = ImGui.GetWindowSize();
-			if (windowSize != _previousWindowSize)
+			GameSize = ImGui.GetWindowSize();
+			if (GameSize != _previousWindowSize)
 			{
-				_previousWindowSize = windowSize;
-				GameManager.UpdateRenderTarget((int)windowSize.X, (int)windowSize.Y);
+				_previousWindowSize = GameSize;
+
+				OnGameSizeChanged?.Invoke(GameSize);
 			}
 
 			// Add the game texture
-			Texture2D texture = GameManager.ScreenTexture(gameTime);
-			if (texture != null)
+			if (frameTexture != null)
 			{
-				nint bindedTexture = GUIRenderer.BindTexture(_sceneTextureId, texture, false);
-				ImGui.Image(bindedTexture, new System.Numerics.Vector2(texture.Width, texture.Height));
+				nint bindedTexture = GUIRenderer.BindTexture(_sceneTextureId, frameTexture, false);
+				ImGui.Image(bindedTexture, new System.Numerics.Vector2(frameTexture.Width, frameTexture.Height));
 			}
 			ImGui.PopStyleVar(1);
 			

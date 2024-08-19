@@ -11,7 +11,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AlmostGoodEngine.Core\AlmostGoodEngine.Core.csproj" />
+    <ProjectReference Include="..\AlmostGoodEngine.Inputs\AlmostGoodEngine.Inputs.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="fonts\fa-regular-400.otf">
