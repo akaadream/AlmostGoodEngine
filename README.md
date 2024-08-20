@@ -41,7 +41,7 @@ It contains a Tweener, a Animation state engine and a Coroutine system.
 
 ### AlmostGoodEngine.GUI
 Do you want a fresh alternative of ImGUI? Our GUI library allow you to create complex interfaces using a simple API.  
-- [ ] Create the base of the GUI / UI library using Gum
+- [X] Create the base of the GUI / UI library using Gum
 - [X] GUI core element  
 - [X] CSS loading styles  
 - [ ] Predefined elements (menu, buttons, user inputs, ...)
