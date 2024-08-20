@@ -86,7 +86,7 @@ namespace AlmostGoodEngine.Editor
 
 		public static void Dispose()
 		{
-			GUIRenderer.Dispose();
+			GUIRenderer?.Dispose();
 		}
 
 		private static void BuildComponents()
