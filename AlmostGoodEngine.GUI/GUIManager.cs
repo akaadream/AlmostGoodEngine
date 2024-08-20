@@ -1,21 +1,32 @@
 ﻿using Apos.Shapes;
 using ExCSS;
 using FontStashSharp;
+using Gum.DataTypes;
+using Gum.Managers;
+using Gum.Wireframe;
+using GumRuntime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
+using RenderingLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ToolsUtilities;
 
 namespace AlmostGoodEngine.GUI
 {
 	public static class GUIManager
 	{
+		/// <summary>
+		/// The current width of the layout
+		/// </summary>
 		public static int Width { get => _graphics.PreferredBackBufferWidth; }
 
+		/// <summary>
+		/// The current heigh of the layout
+		/// </summary>
 		public static int Height { get => _graphics.PreferredBackBufferHeight; }
 
 		/// <summary>
@@ -33,19 +44,55 @@ namespace AlmostGoodEngine.GUI
 		/// </summary>
 		private static GraphicsDevice _graphicsDevice { get; set; }
 
+		/// <summary>
+		/// The instance of the graphics device manager
+		/// </summary>
 		private static GraphicsDeviceManager _graphics { get; set; }
 
+		/// <summary>
+		/// Current mouse state
+		/// </summary>
 		public static MouseState MouseState { get; private set; }
+
+		/// <summary>
+		/// Previous mouse state
+		/// </summary>
 		public static MouseState PreviousState { get; private set; }
 
+		/// <summary>
+		/// The current X coordinate of the mouse
+		/// </summary>
 		public static int MouseX { get => MouseState.X; }
+
+		/// <summary>
+		/// The current Y coordinate of the mouse
+		/// </summary>
 		public static int MouseY { get => MouseState.Y; }
 
+		/// <summary>
+		/// The content manager used by the project
+		/// </summary>
 		private static ContentManager _contentManager;
 
+		/// <summary>
+		/// The font system used by the manager
+		/// </summary>
 		public static FontSystem FontSystem { get; private set; }
 
+		/// <summary>
+		/// The list of all loaded stylesheets
+		/// </summary>
 		internal static List<Stylesheet> Stylesheets { get; set; }
+
+		/// <summary>
+		/// The current gum project loaded
+		/// </summary>
+		public static GumProjectSave GumProject { get; private set; }
+
+		/// <summary>
+		/// The current screen loaded from the gum project save
+		/// </summary>
+		public static GraphicalUiElement CurrentScreen { get; private set; }
 
 		/// <summary>
 		/// Initialize the GUI library
@@ -66,6 +113,60 @@ namespace AlmostGoodEngine.GUI
 			}
 
 			FontSystem = new();
+
+			SystemManagers.Default = new();
+			SystemManagers.Default.Initialize(graphicsDevice, fullInstantiation: true);
+			FileManager.RelativeDirectory = contentManager.RootDirectory;
+		}
+
+		/// <summary>
+		/// Load the gum project
+		/// </summary>
+		/// <param name="fileName"></param>
+		public static void LoadGum(string fileName)
+		{
+			GumProject = GumProjectSave.Load(fileName);
+			ObjectFinder.Self.GumProjectSave = GumProject;
+            GumProject.Initialize();
+
+            CurrentScreen = GumProject.Screens.First().ToGraphicalUiElement(SystemManagers.Default, addToManagers: true);
+		}
+
+		/// <summary>
+		/// Try to load a screen from the current gum project
+		/// </summary>
+		/// <param name="screenName"></param>
+		/// <param name="screen"></param>
+		/// <returns></returns>
+		public static bool TryLoadScreen(string screenName, out GraphicalUiElement screen)
+		{
+			if (GumProject == null)
+			{
+				screen = null;
+				return false;
+			}
+
+			foreach (ScreenSave element in GumProject.Screens)
+			{
+				if (element.Name == screenName)
+				{
+					screen = element.ToGraphicalUiElement(SystemManagers.Default, addToManagers: true);
+					return true;
+				}
+			}
+
+			screen = null;
+			return false;
+		}
+
+		public static GraphicalUiElement GetScreenElement(string elementName)
+		{
+			if (CurrentScreen == null)
+			{
+				return null;
+			}
+
+			return CurrentScreen.GetGraphicalUiElementByName(elementName);
 		}
 
 		public static void LoadFont(string fontName)
@@ -221,6 +322,7 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="gameTime"></param>
 		public static void Update(GameTime gameTime)
 		{
+			SystemManagers.Default.Activity(gameTime.TotalGameTime.TotalSeconds);
 			MouseState = Mouse.GetState();
 
 			//Console.WriteLine("{Width: " + Width + ", Height: " + Height + "}");
@@ -263,6 +365,7 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="gameTime"></param>
 		public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
 		{
+			SystemManagers.Default.Draw();
 			if (_shapeBatch == null)
 			{
 				return;
