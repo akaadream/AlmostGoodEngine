@@ -24,11 +24,6 @@
     box-sizing: unset;
 }
 
-.test:hover {
-    background-color: #e95612;
-    border-color: #4655d7;
-}
-
 .main {
     background-color: #333333;
     width: 100%;
@@ -40,8 +35,4 @@
     height: 42px;
     background-color: #191919;
     transition: 200ms;
-}
-
-.menu:hover {
-    background-color: #292929;
 }

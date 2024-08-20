@@ -1,7 +1,8 @@
 ﻿using AlmostGoodEngine.Core.Scenes;
+using AlmostGoodEngine.Core.Utils;
 using AlmostGoodEngine.GUI;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Gum.Wireframe;
+using Microsoft.Xna.Framework.Content;
 
 namespace AlmostGoodEngine.Tests.Scenes
 {
@@ -16,7 +17,8 @@ namespace AlmostGoodEngine.Tests.Scenes
 
 			main = new();
 			main.Classes.Add("main");
-			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Cameras[0].Height - 42;
+			var mainStyle = main.Style;
+            mainStyle.Height = mainStyle.Height = mainStyle.Height = Renderer.Cameras[0].Height - 42;
 
 			GUIElement test = new();
 			test.Classes.Add("test");
@@ -25,13 +27,25 @@ namespace AlmostGoodEngine.Tests.Scenes
 
 			GUIManager.Layouts.Add(menu);
 			GUIManager.Layouts.Add(main);
-		}
 
-		public override void Resize(Viewport viewport)
-		{
-			base.Resize(viewport);
+            GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
+            GUIManager.LoadStyle("Content/styles/main.css");
+            GUIManager.LoadGum("TestUI");
+			GUIManager.TryLoadScreen("Title", out GraphicalUiElement screen);
 
-			main.Style.Height = main.HoverStyle.Height = main.FocusStyle.Height = Renderer.Cameras[0].Height - 42;
-		}
-	}
+			if (screen == null)
+			{
+				Logger.Log("Screen not found");
+			}
+			else
+			{
+				Logger.Log("Screen loaded");
+			}
+        }
+
+        public override void LoadContent(ContentManager content)
+        {
+            base.LoadContent(content);
+        }
+    }
 }

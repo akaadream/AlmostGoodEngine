@@ -1,0 +1,48 @@
+{
+  "UserEvents": {
+    "lorte": [
+      {
+        "NewName": null,
+        "OldName": "Button",
+        "ElementType": "Components",
+        "EventType": 1,
+        "TimestampUtc": "2024-08-20T10:46:04.1841425Z"
+      },
+      {
+        "NewName": "Button",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 0,
+        "TimestampUtc": "2024-08-20T10:46:07.8343513Z"
+      },
+      {
+        "NewName": "Title.ButtonInstance",
+        "OldName": null,
+        "ElementType": "Screens",
+        "EventType": 5,
+        "TimestampUtc": "2024-08-20T11:59:25.0474Z"
+      },
+      {
+        "NewName": null,
+        "OldName": "Title.Button ButtonInstance in Title",
+        "ElementType": "Screens",
+        "EventType": 6,
+        "TimestampUtc": "2024-08-20T11:59:28.9989663Z"
+      },
+      {
+        "NewName": null,
+        "OldName": "Button",
+        "ElementType": "Components",
+        "EventType": 1,
+        "TimestampUtc": "2024-08-20T12:03:18.3070472Z"
+      },
+      {
+        "NewName": "TestText",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 0,
+        "TimestampUtc": "2024-08-20T12:03:30.0953043Z"
+      }
+    ]
+  }
+}

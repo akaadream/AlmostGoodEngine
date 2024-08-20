@@ -24,27 +24,27 @@ namespace AlmostGoodEngine.Tests
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            CustomRendering = true;
+            CustomRendering = false;
         }
 
 		protected override void Initialize()
 		{
 			base.Initialize();
 
-            _watcher = new(Content);
+            //_watcher = new(Content);
 
-            AssetReloader.Initialize(
-                _watcher.ProjectRootPath,
-                Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform.DesktopGL,
-                GraphicsDevice);
+            //AssetReloader.Initialize(
+            //    _watcher.ProjectRootPath,
+            //    Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform.DesktopGL,
+            //    GraphicsDevice);
 
-            _watcher.LoadFiles();
+            //_watcher.LoadFiles();
 
-            var file = _watcher.FilesTree.Find("styles/main");
-            if (file != null)
-            {
-                file.Updated += StyleUpdated;
-            }
+            //var file = _watcher.FilesTree.Find("styles/main");
+            //if (file != null)
+            //{
+            //    file.Updated += StyleUpdated;
+            //}
         }
 
 		private void StyleUpdated(object sender, FileSystemEventArgs args)
@@ -60,14 +60,11 @@ namespace AlmostGoodEngine.Tests
         {
 			base.LoadContent();
 
-			GameManager.SceneManager.Add("test", new TestScene());
-			GameManager.SceneManager.Add("inputs", new InputScene());
-			GameManager.SceneManager.Add("procedural", new ProceduralScene());
-			GameManager.SceneManager.Add("particles", new ParticlesScene());
-			//GameManager.SceneManager.Add("gui", new GUIScene());
-
-            GUIManager.LoadFont("Content/Fonts/Signika-Bold.ttf");
-			GUIManager.LoadStyle("styles/main");
+			//GameManager.SceneManager.Add("test", new TestScene());
+			//GameManager.SceneManager.Add("inputs", new InputScene());
+			//GameManager.SceneManager.Add("procedural", new ProceduralScene());
+			//GameManager.SceneManager.Add("particles", new ParticlesScene());
+			GameManager.SceneManager.Add("gui", new GUIScene());
         }
 
 		protected override void Draw(GameTime gameTime)
