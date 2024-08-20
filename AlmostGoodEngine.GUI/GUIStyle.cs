@@ -1,17 +1,26 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using System;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AlmostGoodEngine.GUI
 {
-	public class GUIStyle()
+	public struct GUIStyle()
 	{
+		/// <summary>
+		/// The way to display the element
+		/// </summary>
 		public GUIDisplay Display { get; set; } = GUIDisplay.Block;
+
+		/// <summary>
+		/// The positionning of the element
+		/// </summary>
 		public GUIPosition Position { get; set; } = GUIPosition.Default;
 
 		#region Positionning
 
+		/// <summary>
+		/// The left position of the element
+		/// </summary>
 		public int Left { get; set; }
 		public bool LeftPercent { get; set; } = false;
 		public int Right { get; set; }
@@ -69,49 +78,105 @@ namespace AlmostGoodEngine.GUI
 
 		#region Colors
 
-		// Default
+		/// <summary>
+		/// The background color of the element
+		/// </summary>
 		public Color BackgroundColor { get; set; } = Color.Transparent;
+
+		/// <summary>
+		/// The text color of the element
+		/// </summary>
 		public Color TextColor { get; set; } = Color.White;
+
+		/// <summary>
+		/// The border color of the element
+		/// </summary>
 		public Color BorderColor { get; set; } = Color.Transparent;
 
 		#endregion
 
 		#region Transition
 
+		/// <summary>
+		/// The duration of the transition
+		/// </summary>
 		public float TransitionDuration { get; set; } = 0f;
 
 		#endregion
 
 		#region Text
 
+		/// <summary>
+		/// The text content of the element
+		/// </summary>
 		public string Content = string.Empty;
+
+		/// <summary>
+		/// The font-size used by the element
+		/// </summary>
 		public int FontSize { get; set; } = 12;
+
+		/// <summary>
+		/// The font family the element will use
+		/// </summary>
 		public string FontFamily { get; set; } = "inherit";
 		public SpriteFontBase Font { get; set; } = null;
+
+		/// <summary>
+		/// The horizontal alignment of the text
+		/// </summary>
 		public GUIHAlign HAlign { get; set; } = GUIHAlign.Center;
+
+		/// <summary>
+		/// The vertical alignment of the text
+		/// </summary>
 		public GUIVAlign VAlign { get; set; } = GUIVAlign.Middle;
 
 		#endregion
 
 		#region Others
 
+		/// <summary>
+		/// The border radius of the element
+		/// </summary>
 		public int BorderRadius { get; set; } = 0;
 
+		/// <summary>
+		/// The opacity of the element
+		/// </summary>
 		public float Opacity { get; set; } = 1f;
 
+		/// <summary>
+		/// True if the element can recieve mouse events
+		/// </summary>
 		public bool Events { get; set; } = true;
 
 		#endregion
 
 		#region Total
 
+		/// <summary>
+		/// The total width of the element
+		/// </summary>
 		public int TotalWidth { get => Width + PaddingLeft + PaddingRight; }
+
+		/// <summary>
+		/// The total height of the element
+		/// </summary>
 		public int TotalHeight { get => Height + PaddingTop + PaddingBottom; }
 
+		/// <summary>
+		/// True if the element can be considered as a circle
+		/// </summary>
 		public bool IsCircle { get => TotalWidth == TotalHeight; }
 
 		#endregion
 
+		/// <summary>
+		/// Get the computed width of the element
+		/// </summary>
+		/// <param name="element">The GUI element using this stylesheet</param>
+		/// <returns>The width of the element (in pixels)</returns>
 		public int GetWidth(GUIElement element)
 		{
 			if (FullWidth)
@@ -140,6 +205,11 @@ namespace AlmostGoodEngine.GUI
 			return Width;
 		}
 
+		/// <summary>
+		/// Get the computed height of the element
+		/// </summary>
+		/// <param name="element">The GUI element using this stylesheet</param>
+		/// <returns>The height of the element (in pixels)</returns>
 		public int GetHeight(GUIElement element)
 		{
 			if (FullHeight)

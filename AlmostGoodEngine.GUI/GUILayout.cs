@@ -1,12 +1,10 @@
 ﻿using Apos.Shapes;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 
 namespace AlmostGoodEngine.GUI
 {
 	public class GUILayout : GUIElement
-	{
+    {
 		public override void Update(float delta)
 		{
 			base.Update(delta);

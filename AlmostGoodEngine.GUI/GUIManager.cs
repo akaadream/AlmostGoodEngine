@@ -1,4 +1,10 @@
-﻿using Apos.Shapes;
+﻿using AngleSharp;
+using AngleSharp.Common;
+using AngleSharp.Css;
+using AngleSharp.Css.Dom;
+using AngleSharp.Css.Parser;
+using AngleSharp.Dom;
+using Apos.Shapes;
 using ExCSS;
 using FontStashSharp;
 using Gum.DataTypes;
@@ -10,9 +16,11 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RenderingLibrary;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ToolsUtilities;
 
 namespace AlmostGoodEngine.GUI
@@ -82,7 +90,10 @@ namespace AlmostGoodEngine.GUI
 		/// <summary>
 		/// The list of all loaded stylesheets
 		/// </summary>
-		internal static List<Stylesheet> Stylesheets { get; set; }
+		internal static List<ICssStyleSheet> Stylesheets { get; set; }
+
+		private static IConfiguration _configuration;
+		private static IBrowsingContext _context;
 
 		/// <summary>
 		/// The current gum project loaded
@@ -114,9 +125,11 @@ namespace AlmostGoodEngine.GUI
 
 			FontSystem = new();
 
+			CreateCssContext();
+
 			SystemManagers.Default = new();
 			SystemManagers.Default.Initialize(graphicsDevice, fullInstantiation: true);
-			FileManager.RelativeDirectory = contentManager.RootDirectory;
+			FileManager.RelativeDirectory = $"{contentManager.RootDirectory}/GUM/";
 		}
 
 		/// <summary>
@@ -125,7 +138,15 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="fileName"></param>
 		public static void LoadGum(string fileName)
 		{
-			GumProject = GumProjectSave.Load(fileName);
+			GumProject = GumProjectSave.Load($"{fileName}.gumx");
+			
+			if (GumProject == null)
+			{
+				throw new FileLoadException($"The Gum project {fileName} cannot be loaded!");
+			}
+
+			Console.WriteLine($"Gum project {GumProject.FullFileName} successfully loaded");
+
 			ObjectFinder.Self.GumProjectSave = GumProject;
             GumProject.Initialize();
 
@@ -150,7 +171,15 @@ namespace AlmostGoodEngine.GUI
 			{
 				if (element.Name == screenName)
 				{
-					screen = element.ToGraphicalUiElement(SystemManagers.Default, addToManagers: true);
+					CurrentScreen?.RemoveFromManagers();
+					var layers = SystemManagers.Default.Renderer.Layers;
+					while (layers.Count > 1)
+					{
+						SystemManagers.Default.Renderer.RemoveLayer(SystemManagers.Default.Renderer.Layers.LastOrDefault());
+					}
+					CurrentScreen = element.ToGraphicalUiElement(SystemManagers.Default, addToManagers: true);
+
+					screen = CurrentScreen;
 					return true;
 				}
 			}
@@ -196,85 +225,179 @@ namespace AlmostGoodEngine.GUI
 				return;
 			}
 
-			var stylesheet = _contentManager.Load<Stylesheet>(filename);
+			//var stylesheet = _contentManager.Load<ICssStyleSheet>(filename);
+			//Stylesheets.Add(stylesheet);
+			//ApplyStylesheets();
+			LoadPlainCss(filename);
+		}
+
+		public static void OldLoadPlainCss(string css)
+		{
+			var parser = new StylesheetParser();
+			var stylesheet = parser.Parse(css);
+			//Stylesheets.Add(stylesheet);
+			ApplyStylesheets();
+		}
+
+		private static void CreateCssContext()
+		{
+			// TODO: update this with the current display resolution
+            _configuration = Configuration.Default.WithCss().WithRenderDevice(new DefaultRenderDevice()
+			{
+				DeviceWidth = 1024,
+				DeviceHeight = 720,
+			});
+            _context = BrowsingContext.New(_configuration);
+        }
+
+		private static void LoadedStylesheet(ICssStyleSheet stylesheet)
+		{
 			Stylesheets.Add(stylesheet);
 			ApplyStylesheets();
 		}
 
-		public static void LoadPlainCss(string css)
+		public static void LoadPlainCss(string filename)
 		{
-			var parser = new StylesheetParser();
-			var stylesheet = parser.Parse(css);
-			Stylesheets.Add(stylesheet);
-			ApplyStylesheets();
+			var parser = _context.GetService<ICssParser>();
+			using var reader = new StreamReader(filename);
+			var css = reader.ReadToEnd();
+			var stylesheet = parser.ParseStyleSheet(css);
+
+			LoadedStylesheet(stylesheet);
+		}
+
+		public static async void LoadPlainCssAsync(string filename)
+		{			
+			var parser = new CssParser();
+			using var reader = new StreamReader(filename);
+			var css = await reader.ReadToEndAsync();
+			var stylesheet = await parser.ParseStyleSheetAsync(css);
+
+            LoadedStylesheet(stylesheet);
+        }
+
+		public static void OldApplyStylesheets()
+		{
+			//foreach (var stylesheet in Stylesheets)
+			//{
+			//	foreach (var rule in stylesheet.StyleRules)
+			//	{
+			//		string[] selectors = rule.SelectorText.Split(':');
+
+			//		if (selectors.Length == 0)
+			//		{
+			//			continue;
+			//		}
+
+			//		if (selectors.Length > 1)
+			//		{
+						
+			//		}
+
+			//		// Class
+			//		if (rule.SelectorText.StartsWith("."))
+			//		{
+			//			foreach (var element in FindElements(selectors[0].Substring(1)))
+			//			{
+			//				if (selectors.Length > 1)
+			//				{
+			//					if (selectors[1] == "hover")
+			//					{
+			//						element.ApplyHoverStyle(rule.Style, true);
+			//					}
+			//					else if (selectors[1] == "focus")
+			//					{
+			//						element.ApplyFocusStyle(rule.Style, true);
+			//					}
+			//				}
+			//				else
+			//				{
+			//					if (rule.SelectorText == ".test")
+			//					{
+
+			//					}
+			//					element.ApplyStyle(rule.Style);
+			//				}
+			//			}
+			//		}
+			//		// Id
+			//		else if (rule.SelectorText.StartsWith("#"))
+			//		{
+			//			var element = FindById(selectors[0].Substring(1));
+			//			if (element != null)
+			//			{
+			//				if (rule.SelectorText.EndsWith(":hover"))
+			//				{
+			//					element.ApplyHoverStyle(rule.Style, true);
+			//				}
+			//				else if (rule.SelectorText.EndsWith(":focus"))
+			//				{
+			//					element.ApplyFocusStyle(rule.Style, true);
+			//				}
+			//				else
+			//				{
+			//					element.ApplyStyle(rule.Style);
+			//				}
+			//			}
+			//		}
+			//	}
+			//}
 		}
 
 		public static void ApplyStylesheets()
 		{
 			foreach (var stylesheet in Stylesheets)
 			{
-				foreach (var rule in stylesheet.StyleRules)
+				if (stylesheet == null)
 				{
-					string[] selectors = rule.SelectorText.Split(':');
+					continue;
+				}
 
-					if (selectors.Length == 0)
+				foreach (ICssRule rule in stylesheet.Rules)
+				{
+                    string[] selectors = rule.CssText.Split(':');
+
+					if (rule is not ICssStyleRule)
 					{
 						continue;
 					}
 
-					if (selectors.Length > 1)
-					{
-						
-					}
+					var styleRule = rule as ICssStyleRule;
 
-					// Class
-					if (rule.SelectorText.StartsWith("."))
-					{
-						foreach (var element in FindElements(selectors[0].Substring(1)))
-						{
-							if (selectors.Length > 1)
-							{
-								if (selectors[1] == "hover")
-								{
-									element.ApplyHoverStyle(rule.Style, true);
-								}
-								else if (selectors[1] == "focus")
-								{
-									element.ApplyFocusStyle(rule.Style, true);
-								}
-							}
-							else
-							{
-								if (rule.SelectorText == ".test")
-								{
+                    if (selectors.Length == 0)
+                    {
+                        continue;
+                    }
 
-								}
-								element.ApplyStyle(rule.Style);
-							}
-						}
-					}
-					// Id
-					else if (rule.SelectorText.StartsWith("#"))
-					{
-						var element = FindById(selectors[0].Substring(1));
-						if (element != null)
-						{
-							if (rule.SelectorText.EndsWith(":hover"))
-							{
-								element.ApplyHoverStyle(rule.Style, true);
-							}
-							else if (rule.SelectorText.EndsWith(":focus"))
-							{
-								element.ApplyFocusStyle(rule.Style, true);
-							}
-							else
-							{
-								element.ApplyStyle(rule.Style);
-							}
-						}
-					}
-				}
+                    if (selectors.Length > 1)
+                    {
+
+                    }
+
+                    // Class
+                    if (rule.CssText.StartsWith("."))
+                    {
+                        foreach (var element in FindElements(selectors[0].Substring(1)))
+                        {
+                            if (rule.CssText == ".test")
+                            {
+
+                            }
+                            element.ApplyStyle(styleRule.Style);
+                        }
+                    }
+                    // Id
+                    else if (rule.CssText.StartsWith("#"))
+                    {
+                        var element = FindById(selectors[0].Substring(1));
+                        if (element != null)
+                        {
+                            element.ApplyStyle(styleRule.Style);
+                        }
+                    }
+                }
 			}
+			Console.WriteLine("Stylesheet applied");
 		}
 
 		public static GUIElement FindById(string id)
@@ -323,6 +446,7 @@ namespace AlmostGoodEngine.GUI
 		public static void Update(GameTime gameTime)
 		{
 			SystemManagers.Default.Activity(gameTime.TotalGameTime.TotalSeconds);
+
 			MouseState = Mouse.GetState();
 
 			//Console.WriteLine("{Width: " + Width + ", Height: " + Height + "}");
@@ -365,7 +489,6 @@ namespace AlmostGoodEngine.GUI
 		/// <param name="gameTime"></param>
 		public static void Draw(GameTime gameTime, SpriteBatch spriteBatch)
 		{
-			SystemManagers.Default.Draw();
 			if (_shapeBatch == null)
 			{
 				return;
@@ -377,24 +500,9 @@ namespace AlmostGoodEngine.GUI
 			}
 		}
 
-		internal static bool IsMouseLeftDown()
+		public static void DrawGum(GameTime gameTime, SpriteBatch spriteBatch)
 		{
-			return MouseState.LeftButton == ButtonState.Pressed && PreviousState.LeftButton == ButtonState.Pressed;
-		}
-
-		internal static bool IsMouseLeftPressed()
-		{
-			return MouseState.LeftButton == ButtonState.Released && PreviousState.LeftButton == ButtonState.Pressed;
-		}
-
-		internal static bool IsMouseRightDown()
-		{
-			return MouseState.RightButton == ButtonState.Pressed && PreviousState.RightButton == ButtonState.Pressed;
-		}
-
-		internal static bool IsMouseRightPressed()
-		{
-			return MouseState.RightButton == ButtonState.Released && PreviousState.RightButton == ButtonState.Pressed;
-		}
+            SystemManagers.Default.Draw();
+        }
 	}
 }
