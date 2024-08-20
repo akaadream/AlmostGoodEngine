@@ -189,11 +189,11 @@ namespace AlmostGoodEngine.Core
 #if DEBUG
             Logger.Log(GameViewport.ToString());
 
-            MainEditor.Initialize(this);
-            MainEditor.OnGameSizeChanged = (Vector2 gameSize) =>
-            {
+            //MainEditor.Initialize(this);
+            //MainEditor.OnGameSizeChanged = (Vector2 gameSize) =>
+            //{
                 
-            };
+            //};
 #endif
         }
 
@@ -243,7 +243,7 @@ namespace AlmostGoodEngine.Core
             GameManager.AfterUpdate(gameTime);
 
 #if DEBUG
-            MainEditor.Update(gameTime);
+            //MainEditor.Update(gameTime);
 #endif
 
             base.Update(gameTime);
@@ -284,6 +284,7 @@ namespace AlmostGoodEngine.Core
 
             // Draw the GUI
             GUIManager.Draw(gameTime, SpriteBatch);
+            GUIManager.DrawGum(gameTime, SpriteBatch);
 
             AlmostGoodConsole.Draw(SpriteBatch);
 
