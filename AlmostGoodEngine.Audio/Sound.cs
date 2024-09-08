@@ -141,22 +141,20 @@ namespace AlmostGoodEngine.Audio
             if (spatial)
             {
                 var distance = (target - source).Length();
+                float pan = MathHelper.Clamp(distance / MaxDistance, -1f, 1f);
 
-                var value = float.Lerp(0f, 1f, distance / MaxDistance);
-				var t = float.Clamp(value, 0f, 1f);
+                var rightChannelMultiplier = (pan + 1f) / 2f;
+                var leftChannerlMultiplier = 1f - rightChannelMultiplier;
 
-				
-
-                var pan = target.X < source.X ? -t : t;
-                if (pan < 0.2f && pan > -0.2f)
+                if (pan != 0f)
                 {
-                    pan = 0f;
+                    var instance2 = Effect.CreateInstance();
+                    instance2.Pan = -pan;
+                    instance2.Volume = volume * rightChannelMultiplier;
+                    instance2.Play();
                 }
-
-				Console.WriteLine("distance: " + distance + ", value: " + value + ", pan: " + pan + ", t: " + t);
-
-				instance.Pan = 0.2f;
-                instance.Volume = float.Clamp(1 - t, 0f, 1f);
+				instance.Pan = pan;
+                instance.Volume = volume * leftChannerlMultiplier;
             }
 
             if (RandomPitch)
