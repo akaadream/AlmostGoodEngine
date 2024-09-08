@@ -60,11 +60,12 @@ namespace AlmostGoodEngine.Tests
         {
 			base.LoadContent();
 
-			//GameManager.SceneManager.Add("test", new TestScene());
-			//GameManager.SceneManager.Add("inputs", new InputScene());
-			//GameManager.SceneManager.Add("procedural", new ProceduralScene());
-			//GameManager.SceneManager.Add("particles", new ParticlesScene());
-			GameManager.SceneManager.Add("gui", new GUIScene());
+            //GameManager.SceneManager.Add("test", new TestScene());
+            //GameManager.SceneManager.Add("inputs", new InputScene());
+            //GameManager.SceneManager.Add("procedural", new ProceduralScene());
+            //GameManager.SceneManager.Add("particles", new ParticlesScene());
+            //GameManager.SceneManager.Add("gui", new GUIScene());
+            GameManager.SceneManager.Add("audio", new AudioScene(), true);
         }
 
 		protected override void Draw(GameTime gameTime)
