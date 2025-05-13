@@ -1,13 +1,8 @@
-﻿using AlmostGoodEngine.Core.Components.Physics;
-using AlmostGoodEngine.Core.ECS;
-using AlmostGoodEngine.Core.Entities;
-using AlmostGoodEngine.Core.Interfaces;
+﻿using AlmostGoodEngine.Core.Interfaces;
 using AlmostGoodEngine.Inputs;
-using AlmostGoodEngine.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Core.Scenes
 {
@@ -24,19 +19,9 @@ namespace AlmostGoodEngine.Core.Scenes
         public Renderer Renderer { get; private set; }
 
         /// <summary>
-        /// Scene's entities
-        /// </summary>
-        internal List<Entity> Entities { get; set; }
-
-        /// <summary>
         /// If the scene's content has already been loaded
         /// </summary>
         public bool ContentLoaded { get; private set; }
-
-        /// <summary>
-        /// Get the number of entities registered inside the scene
-        /// </summary>
-        public int EntitiesCount { get => Entities.Count; }
 
         private RenderTarget2D _renderTarget = null;
 
@@ -45,7 +30,6 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public Scene()
         {
-            Entities = [];
             Renderer = new(this);
             _renderTarget = GameManager.Engine.CreateRenderTarget();
         }
@@ -55,11 +39,6 @@ namespace AlmostGoodEngine.Core.Scenes
         /// </summary>
         public virtual void LoadContent(ContentManager content)
         {
-            foreach (var entity in Entities)
-            {
-				entity.LoadContent(content);
-            }
-
             ContentLoaded = true;
         }
 
@@ -70,10 +49,6 @@ namespace AlmostGoodEngine.Core.Scenes
         {
             
             Renderer.Start();
-            foreach (var entity in Entities)
-            {
-				entity.Start();
-            }
         }
 
         /// <summary>
@@ -82,10 +57,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void End()
         {
             Renderer.End();
-            foreach (var entity in Entities)
-            {
-				entity.End();
-            }
         }
         /// <summary>
         /// Resize the scene
@@ -102,18 +73,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void BeforeUpdate(GameTime gameTime)
         {
             Renderer.BeforeUpdate(gameTime);
-            foreach (var entity in Entities)
-            {
-                if (GameManager.Paused && entity.Pausable)
-                {
-                    continue;
-                }
-				if (!entity.Enabled)
-				{
-					continue;
-				}
-				entity.BeforeUpdate(gameTime);
-            }
         }
 
         /// <summary>
@@ -123,18 +82,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void Update(GameTime gameTime)
         {
             Renderer.Update(gameTime);
-            foreach (var entity in Entities)
-            {
-				if (GameManager.Paused && entity.Pausable)
-				{
-					continue;
-				}
-				if (!entity.Enabled)
-				{
-					continue;
-				}
-				entity.Update(gameTime);
-            }
         }
 
         /// <summary>
@@ -144,35 +91,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void FixedUpdate(GameTime gameTime)
         {
             Renderer.FixedUpdate(gameTime);
-            foreach (var entity in Entities)
-            {
-				if (GameManager.Paused && entity.Pausable)
-				{
-					continue;
-				}
-				if (!entity.Enabled)
-				{
-					continue;
-				}
-				entity.FixedUpdate(gameTime);
-            }
-        }
-
-        public virtual void AnimationsUpdate(GameTime gameTime)
-        {
-            Renderer.AnimationsUpdate(gameTime);
-            foreach (var entity in Entities)
-            {
-                if (GameManager.Paused && entity.Pausable)
-                {
-                    continue;
-                }
-                if (!entity.Enabled)
-                {
-                    continue;
-                }
-                entity.AnimationsUpdate(gameTime);
-            }
         }
 
         /// <summary>
@@ -182,18 +100,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public virtual void AfterUpdate(GameTime gameTime)
         {
             Renderer.AfterUpdate(gameTime);
-            foreach (var entity in Entities)
-            {
-				if (GameManager.Paused && entity.Pausable)
-				{
-					continue;
-				}
-                if (!entity.Enabled)
-                {
-                    continue;
-                }
-				entity.AfterUpdate(gameTime);
-            }
         }
 
         /// <summary>
@@ -224,30 +130,6 @@ namespace AlmostGoodEngine.Core.Scenes
             Renderer.DrawDebug(gameTime, spriteBatch);
         }
 
-        public void AddEntity(Entity entity)
-        {
-            if (Entities.Contains(entity))
-            {
-                return;
-            }
-
-            entity.Scene = this;
-            if (string.IsNullOrEmpty(entity.Name))
-            {
-                entity.Name = "Entity";
-            }
-            Entities.Add(entity);
-        }
-
-        /// <summary>
-        /// Get all entities
-        /// </summary>
-        /// <returns></returns>
-        public List<Entity> GetEntities()
-        {
-            return Entities;
-        }
-
         public Vector2 MousePosition()
         {
             return new(Input.Mouse.X, Input.Mouse.Y);
@@ -256,53 +138,6 @@ namespace AlmostGoodEngine.Core.Scenes
         public Vector2 WorldMousePosition()
         {
             return GameManager.MainCamera().ScreenToWorld(MousePosition());
-		}
-
-        public List<Collider> GetColliders()
-        {
-            List<Collider> colliders = [];
-            foreach (var entity in Entities)
-            {
-                if (entity is Solid2D solid)
-                {
-					if (solid.Collider == null)
-					{
-						continue;
-					}
-
-					colliders.Add(solid.Collider);
-				}
-            }
-
-            return colliders;
-        }
-
-        public List<Actor2D> GetActors()
-        {
-            List<Actor2D> actors = [];
-            foreach (var entity in Entities)
-            {
-                if (entity is Actor2D actor)
-                {
-                    actors.Add(actor);
-                }
-            }
-
-            return actors;
-        }
-
-        public List<Actor2D> GetAllRidingActors(Solid2D solid)
-        {
-			List<Actor2D> actors = [];
-			foreach (var entity in Entities)
-			{
-				if (entity is Actor2D actor && actor.IsRiding(solid))
-				{
-					actors.Add(actor);
-				}
-			}
-
-			return actors;
 		}
 
         public RenderTarget2D GetFrame(GameTime gameTime)

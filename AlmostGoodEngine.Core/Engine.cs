@@ -153,7 +153,7 @@ namespace AlmostGoodEngine.Core
             // Inputs
             Input.Initialize();
             // Audio
-            Mixer.Initialize();
+            Mixer.Initialize(this);
             // In-engine console
             AlmostGoodConsole.Initialize();
 
@@ -493,6 +493,12 @@ namespace AlmostGoodEngine.Core
         internal RenderTarget2D CreateRenderTarget()
         {
             return new(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+        }
+
+        protected override void OnExiting(object sender, ExitingEventArgs args)
+        {
+            Mixer.OnExit();
+            base.OnExiting(sender, args);
         }
     }
 }

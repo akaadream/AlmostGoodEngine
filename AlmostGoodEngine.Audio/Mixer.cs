@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using MonoSound;
 
 namespace AlmostGoodEngine.Audio
 {
@@ -13,8 +15,10 @@ namespace AlmostGoodEngine.Audio
 		/// <summary>
 		/// Initialize the audio engine
 		/// </summary>
-		public static void Initialize()
+		public static void Initialize(Game game)
 		{
+			MonoSoundLibrary.Init(game);
+
 			Channels = [];
 
 			// Create default channels
@@ -24,6 +28,11 @@ namespace AlmostGoodEngine.Audio
 				Register("musics", master);
 				Register("sounds", master);
 			}
+		}
+
+		public static void OnExit()
+		{
+			MonoSoundLibrary.DeInit();
 		}
 
 		/// <summary>

@@ -7,6 +7,7 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="MonoSound" Version="1.8.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 </Project>

@@ -1,16 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using MonoSound;
 using System;
 using System.Collections.Generic;
 
 namespace AlmostGoodEngine.Audio
 {
-    public class Sound(SoundEffect soundEffect) : ISound
+    public class Sound(string filename) : ISound
 	{
 		/// <summary>
 		/// The sound effect ressource
 		/// </summary>
-		public SoundEffect Effect { get; private set; } = soundEffect;
+		public SoundEffect Effect { get; private set; } = EffectLoader.GetEffect(filename);
 
         /// <summary>
         /// If the sound should be eared inside the environnement
